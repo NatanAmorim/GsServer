@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text;
+using gs_server;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -108,7 +109,9 @@ builder.Services.AddRateLimiter(options =>
   options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 });
 
-var app = builder.Build();
+builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
+
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -128,6 +131,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
 app.MapControllers();
 
