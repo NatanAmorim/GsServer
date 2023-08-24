@@ -4,6 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace gs_server;
 
+/// <summary>
+/// This is a Middleware for unexpected errors.
+/// </summary>
+// Exceptions are ONLY for exceptional circumtances, they are good use for I/O
+// errors, don't use exceptions for control flow, because exceptions are slow.
 public class GlobalExceptionHandlingMiddleware : IMiddleware
 {
   private readonly ILogger _logger;
@@ -27,9 +32,9 @@ public class GlobalExceptionHandlingMiddleware : IMiddleware
       ProblemDetails details = new()
       {
         Status = (int)HttpStatusCode.InternalServerError,
-        Type = "Server Error",
-        Title = "Server Error",
-        Detail = "An internal server error has accurred",
+        Type = "Internal Server Errorr",
+        Title = "An internal server error has accurred",
+        Detail = "Something went wrong on our end. We apologize for the inconvenience, our team has been notified and is working to fix the issue. Please try again later.",
       };
 
       // string json = JsonSerializer.Serialize(details);
