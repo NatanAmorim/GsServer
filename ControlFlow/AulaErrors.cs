@@ -5,7 +5,7 @@ namespace sgd_cms.ControlFlow.Aulas;
 // OutOfRange: When a value is out of the acceptable range(e.g., age, date).
 // OverlappingSchedule: When the lecture schedule overlaps with another scheduled event.
 // CapacityExceeded: When the number of participants registered for the lecture exceeds the capacity.
-enum AulaErros
+public enum AulaErros
 {
   MissingRequiredField,
   InvalidFormat,

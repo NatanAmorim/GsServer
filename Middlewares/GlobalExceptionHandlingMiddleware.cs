@@ -11,8 +11,10 @@ namespace gs_server;
 // errors, don't use exceptions for control flow, because exceptions are slow.
 public class GlobalExceptionHandlingMiddleware : IMiddleware
 {
-  private readonly ILogger _logger;
-  public GlobalExceptionHandlingMiddleware(ILogger logger)
+  private readonly ILogger<GlobalExceptionHandlingMiddleware> _logger;
+  public GlobalExceptionHandlingMiddleware(
+    ILogger<GlobalExceptionHandlingMiddleware> logger
+  )
   {
     _logger = logger;
   }
@@ -32,7 +34,7 @@ public class GlobalExceptionHandlingMiddleware : IMiddleware
       ProblemDetails details = new()
       {
         Status = (int)HttpStatusCode.InternalServerError,
-        Type = "Internal Server Errorr",
+        Type = "Internal Server Error",
         Title = "An internal server error has accurred",
         Detail = "Something went wrong on our end. We apologize for the inconvenience, our team has been notified and is working to fix the issue. Please try again later.",
       };

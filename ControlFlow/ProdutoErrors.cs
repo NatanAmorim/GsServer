@@ -5,8 +5,7 @@ namespace sgd_cms.ControlFlow.Produtos;
 // DuplicateEntry: When a unique field(e.g., email) is duplicated during creation or editing.
 // RecordNotFound: When trying to access or manipulate a non-existent record.
 // QuantityOutOfRange: When the quantity value is outside an acceptable range.
-
-enum ProdutoErrors
+public enum ProdutoErrors
 {
   MissingRequiredField,
   InvalidFormat,

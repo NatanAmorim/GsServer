@@ -7,7 +7,7 @@ namespace sgd_cms.ControlFlow.Vendas;
 // InvalidProduct: When a product in the order doesn't exist or is not valid.
 // InvalidCustomer: When a customer associated with the order is not valid.
 // RecordNotFound: When trying to access or manipulate a non-existent order record.
-enum VendaErrors
+public enum VendaErrors
 {
   MissingRequiredField,
   InvalidFormat,
