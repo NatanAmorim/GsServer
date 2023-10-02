@@ -1,4 +1,4 @@
-namespace sgd_cms.ControlFlow.Mensalidades;
+namespace gs_server.ControlFlow.Mensalidades;
 
 // MissingRequiredField: When a required field is not provided during creation or editing.
 // InvalidFormat: When the format of a field is not valid(e.g., email, phone number, etc.).

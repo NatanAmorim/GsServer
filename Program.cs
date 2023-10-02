@@ -5,11 +5,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using sgd_cms.Services.Professores;
+using gs_server.Services.Professores;
 using Swashbuckle.AspNetCore.Filters;
+using gs_server.Services.Auth;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProfessorService, ProfessorService>();
 
 builder.Services.AddCors(options =>
@@ -38,11 +40,8 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddControllers();
-// builder.Services.AddDbContext<DataContext>(options =>
-//   options.UseNpgsql(
-//     builder.Configuration.GetConnectionString("Sql")
-//   )
-// );
+builder.Services.AddDbContext<DataBaseContext>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();

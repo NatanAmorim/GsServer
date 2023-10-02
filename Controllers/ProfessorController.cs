@@ -3,12 +3,12 @@ using gs_server;
 using gs_server.Dtos.Professores;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using sgd_cms.ControlFlow.Professores;
-using sgd_cms.Services.Professores;
+using gs_server.ControlFlow.Professores;
+using gs_server.Services.Professores;
 
-namespace sgd_cms.Controllers.Professores;
+namespace gs_server.Controllers.Professores;
 
-// [Authorize] //TODO
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]

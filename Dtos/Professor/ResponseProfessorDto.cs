@@ -1,7 +1,7 @@
 namespace gs_server.Dtos.Professores;
 
 /// <summary>
-/// Created professor object
+/// Returns a professor object
 /// </summary>
 public class ResponseProfessorDto
 {

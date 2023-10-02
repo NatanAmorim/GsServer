@@ -1,9 +1,9 @@
 using gs_server;
 using gs_server.Dtos.Professores;
 using Microsoft.AspNetCore.Mvc;
-using sgd_cms.ControlFlow.Professores;
+using gs_server.ControlFlow.Professores;
 
-namespace sgd_cms.Services.Professores;
+namespace gs_server.Services.Professores;
 
 public interface IProfessorService
 {

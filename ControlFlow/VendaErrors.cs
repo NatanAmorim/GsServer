@@ -1,4 +1,4 @@
-namespace sgd_cms.ControlFlow.Vendas;
+namespace gs_server.ControlFlow.Vendas;
 
 // MissingRequiredField: When a required field(e.g., order date, products) is not provided during order creation.
 // InvalidAmount: When the provided sale amount is not valid(e.g., negative or zero).

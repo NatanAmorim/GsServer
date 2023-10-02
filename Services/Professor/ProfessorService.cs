@@ -3,24 +3,26 @@ using AutoMapper;
 using gs_server;
 using gs_server.Dtos.Professores;
 using gs_server.Models.Professores;
-using Microsoft.AspNetCore.Mvc;
-using sgd_cms.ControlFlow.Professores;
+using gs_server.ControlFlow.Professores;
 
-namespace sgd_cms.Services.Professores;
+namespace gs_server.Services.Professores;
 
 public class ProfessorService : IProfessorService
 {
   private readonly ILogger<ProfessorService> _logger;
   private readonly IHttpContextAccessor? _httpContextAccessor;
+  private readonly DataBaseContext _dbContext;
   private readonly IMapper _mapper;
   public ProfessorService(
       ILogger<ProfessorService> logger,
       IHttpContextAccessor? httpContextAccessor,
+      DataBaseContext dbContext,
       IMapper mapper
     )
   {
     _logger = logger;
     _httpContextAccessor = httpContextAccessor;
+    _dbContext = dbContext;
     _mapper = mapper;
   }
 
@@ -34,18 +36,18 @@ public class ProfessorService : IProfessorService
 
     List<Professor> Professores = new List<Professor>();
 
-    if (String.IsNullOrEmpty(Query))
+    if (string.IsNullOrEmpty(Query))
     {
-      // empresas =
-      //  await _dbContext.Empresas
+      Professores =
+       await _dbContext.Professores
       //  .Skip((Page - 1) * Limit)
       //  .Take(Limit)
-      //  .ToListAsync();
+       .ToListAsync();
     }
     else
     {
-      // empresas =
-      //    await _dbContext.Empresas
+      // professores =
+      //    await _dbContext.Professores
       //    .Where(p => p.SearchVector.Matches(EF.Functions.ToTsQuery("portuguese", Query)))
       //    .Skip((Page - 1) * Limit)
       //    .Take(Limit)
@@ -60,8 +62,7 @@ public class ProfessorService : IProfessorService
 
   public async Task<Result<ResponseProfessorDto, ProfessorErrors>> FindAsync(int Id)
   {
-    Professor? Professor = null; //TODO
-    // await _dbContext.Empresas.FindAsync(Id);
+    Professor? Professor = await _dbContext.Professores.FindAsync(Id);
 
     if (Professor is null)
     {
@@ -78,7 +79,7 @@ public class ProfessorService : IProfessorService
   public async Task<Result<ResponseProfessorDto, ProfessorErrors>> PostAsync(CreateProfessorDto professorDto)
   {
     professorDto.CreatedBy =
-        _httpContextAccessor?.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+      _httpContextAccessor?.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     Professor professor = _mapper.Map<Professor>(professorDto);
 
@@ -91,16 +92,16 @@ public class ProfessorService : IProfessorService
     //   return ProfessorErrors.DuplicateEntry;
     // }
 
-    // _dbContext.Professors.Add(professor);
-    // await _dbContext.SaveChangesAsync();
+    _dbContext.Professores.Add(professor);
+    await _dbContext.SaveChangesAsync();
 
     return _mapper.Map<ResponseProfessorDto>(professor);
   }
 
   public async Task<ProfessorErrors?> PutAsync(ResponseProfessorDto professorDto)
   {
-    Professor? Professor = null; //TODO
-    // await _dbContext.Empresas.FindAsync(professorDto.Id);
+    Professor? Professor =
+      await _dbContext.Professores.FindAsync(professorDto.Id);
 
     if (Professor is null)
     {
@@ -111,24 +112,27 @@ public class ProfessorService : IProfessorService
       return ProfessorErrors.RecordNotFound;
     }
 
-    // // Attach the entity to the context in the modified state
-    // _dbContext.Empresas.Attach(empresa);
+    // Attach the entity to the context in the modified state
+    _dbContext.Professores.Attach(Professor);
 
-    // empresa.Telefone = empresaDto.Telefone;
-    // empresa.Email = empresaDto.Email;
-    // empresa.Cep = empresaDto.Cep;
-    // empresa.Endereco = empresaDto.Endereco;
+    Professor.Nome = professorDto.Nome;
+    Professor.DataNascimento = professorDto.DataNascimento;
+    Professor.Celular = professorDto.Celular;
+    Professor.Cep = professorDto.Cep;
+    Professor.Endereco = professorDto.Endereco;
+    Professor.Numero = professorDto.Numero;
+    Professor.Cpf = professorDto.Cpf;
 
-    // // Save the changes to the database
-    // await _dbContext.SaveChangesAsync();
+    // Save the changes to the database
+    await _dbContext.SaveChangesAsync();
 
     return null;
   }
 
   public async Task<ProfessorErrors?> DeleteAsync(int Id)
   {
-    Professor? Professor = null; //TODO
-    // await _dbContext.Empresas.FindAsync(professorDto.Id);
+    Professor? Professor =
+    await _dbContext.Professores.FindAsync(Id);
 
     if (Professor is null)
     {
@@ -139,8 +143,8 @@ public class ProfessorService : IProfessorService
       return ProfessorErrors.RecordNotFound;
     }
 
-    // _dbContext.Empresas.Remove(empresa);
-    // await _dbContext.SaveChangesAsync();
+    _dbContext.Professores.Remove(Professor);
+    await _dbContext.SaveChangesAsync();
 
     return null;
   }

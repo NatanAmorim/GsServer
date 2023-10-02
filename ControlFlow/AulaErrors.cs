@@ -1,4 +1,4 @@
-namespace sgd_cms.ControlFlow.Aulas;
+namespace gs_server.ControlFlow.Aulas;
 
 // MissingRequiredField: When a required field(e.g., sale date, products) is not provided during sale creation.
 // InvalidFormat: When the format of a field is not valid (e.g., invalid sale ID format).
