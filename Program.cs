@@ -8,6 +8,7 @@ using Serilog;
 using gs_server.Services.Professores;
 using Swashbuckle.AspNetCore.Filters;
 using gs_server.Services.Auth;
+using gs_server.Services.Produtos;
 using gs_server.Services.Usuarios;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,7 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProfessorService, ProfessorService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IProdutoService, ProdutoService>();
 
 builder.Services.AddCors(options =>
 {

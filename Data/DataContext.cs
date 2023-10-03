@@ -1,4 +1,5 @@
 global using Microsoft.EntityFrameworkCore;
+using gs_server.Models.Produtos;
 using gs_server.Models.Professores;
 using gs_server.Models.RefreshTokens;
 using gs_server.Models.Usuarios;
@@ -20,7 +21,8 @@ public class DataBaseContext : DbContext
     optionsBuilder.UseNpgsql(_configuration.GetConnectionString("db"));
   }
 
+  public DbSet<Usuario> Usuarios => Set<Usuario>();
   public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
   public DbSet<Professor> Professores => Set<Professor>();
-  public DbSet<Usuario> Usuarios => Set<Usuario>();
+  public DbSet<Produto> Produtos => Set<Produto>();
 }

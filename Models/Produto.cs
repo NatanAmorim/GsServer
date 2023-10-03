@@ -3,7 +3,7 @@ namespace gs_server.Models.Produtos;
 public class Produto
 {
   public required int Id { get; init; }
-  public required string Nome { get; set; } //TODO Convert to enum
+  public required string Nome { get; set; }
   public required List<ProdutoVariante> Variacoes { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   public required string CreatedBy { get; init; }
@@ -26,5 +26,4 @@ public class ProdutoHistoricoEstoque
   public required bool IsVenda { get; set; }
   public required bool IsRetornoItens { get; set; }
   public required bool IsReabastecimento { get; set; }
-
 }
