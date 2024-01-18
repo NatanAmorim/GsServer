@@ -25,8 +25,8 @@ builder.Services.AddCors(options =>
       {
         policy.WithOrigins(
           // TODO replace placeholder origins when deploying
-          "https://microsoft.com",
-          "https://outlook.live.com"
+          "https://placeholder.com",
+          "https://placeholder.com.br"
         )
         .AllowAnyHeader()
         .WithMethods("GET", "POST", "PUT", "DELETE");
