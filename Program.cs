@@ -1,89 +1,14 @@
-using System.Reflection;
 using System.Text;
-using gs_server;
+using gs_server.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Serilog;
-using gs_server.Services.Professores;
-using Swashbuckle.AspNetCore.Filters;
-using gs_server.Services.Auth;
-using gs_server.Services.Produtos;
-using gs_server.Services.Usuarios;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IProfessorService, ProfessorService>();
-builder.Services.AddScoped<IUsuarioService, UsuarioService>();
-builder.Services.AddScoped<IProdutoService, ProdutoService>();
-
-builder.Services.AddCors(options =>
-{
-  options.AddDefaultPolicy(
-      policy =>
-      {
-        policy.WithOrigins(
-          // TODO replace placeholder origins when deploying
-          "https://placeholder.com",
-          "https://placeholder.com.br"
-        )
-        .AllowAnyHeader()
-        .WithMethods("GET", "POST", "PUT", "DELETE");
-      });
-
-  // This is for local development only
-  options.AddPolicy("AllowAll",
-          builder =>
-          {
-            builder
-              .AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
-          });
-});
-
-builder.Services.AddControllers();
+// Add services to the container.
+builder.Services.AddGrpc();
 builder.Services.AddDbContext<DataBaseContext>();
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddSwaggerGen(options =>
-{
-  options.SwaggerDoc("v1", new OpenApiInfo
-  {
-    Version = "v1",
-    Title = "SGD-CMS API",
-    Description = "An example description",
-    // TermsOfService = new Uri("https://example.com/terms"),
-    // Contact = new OpenApiContact
-    // {
-    //   Name = "Example Contact",
-    //   Url = new Uri("https://example.com/contact")
-    // },
-    // License = new OpenApiLicense
-    // {
-    //   Name = "Example License",
-    //   Url = new Uri("https://example.com/license")
-    // }
-  });
-
-  options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-  {
-    Description = "Default authorization using Bearer schema (\"bearer {token}\")",
-    Name = "Authorization",
-    In = ParameterLocation.Header,
-    Type = SecuritySchemeType.ApiKey
-  });
-
-  options.OperationFilter<SecurityRequirementsOperationFilter>();
-
-  // This is used to generate swagger docs in XML
-  // More info in: https://learn.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-6.0&tabs=visual-studio-code
-  String xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-  options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -93,8 +18,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         ValidateIssuer = true,
         ValidateAudience = false,
         ValidIssuer = builder.Configuration.GetSection("Authentication:Schemes:Bearer:Issuer").Value!,
-        // TODO remover audiencia
-        // ValidAudiences = builder.Configuration.GetSection("Authentication:Schemes:Bearer:Audiences").Get<List<string>>(),
 
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
@@ -110,38 +33,18 @@ builder.Host.UseSerilog(
     configuration.ReadFrom.Configuration(context.Configuration)
 );
 
-builder.Services.AddRateLimiter(options =>
-{
-  options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-});
-
-builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
+// TODO add RateLimiter
+// TODO add GlobalExceptionHandlingMiddleware
 
 WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-  app.UseSwagger();
-  app.UseSwaggerUI();
-  app.UseCors("AllowAll");
-}
-else
-{
-  app.UseCors();
-}
+app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client.");
+app.MapGrpcService<GreeterService>();
 
 app.UseSerilogRequestLogging();
 
-app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
-
-app.MapControllers();
-
-app.UseRateLimiter();
 
 app.Run();
