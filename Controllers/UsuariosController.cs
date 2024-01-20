@@ -64,7 +64,7 @@ public class UsuariosController : ControllerBase
       IEnumerable<ResponseLeanUsuarioDto>? usuarios = await _usuarioService.GetAsync(Page, Limit ?? 10, Query);
 
       int TotalCount = await _usuarioService.CountAsync(Query);
-      Response.Headers.Add("X-Total-Count", TotalCount.ToString());
+      Response.Headers.Append("X-Total-Count", TotalCount.ToString());
 
       _logger.LogInformation("Usuários lidos com sucesso");
       return Ok(usuarios);

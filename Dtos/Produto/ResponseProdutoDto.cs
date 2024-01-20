@@ -6,7 +6,7 @@ public class ResponseProdutoDto
 {
   public required int Id { get; init; }
   public required string Nome { get; set; }
-  public required List<ResponseProdutoVarianteDto> Variacoes { get; set; }
+  public required List<ResponseProdutoVarianteDto> Variantes { get; set; }
 }
 
 public class ResponseProdutoVarianteDto

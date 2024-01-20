@@ -8,7 +8,7 @@ public class CreateProdutoDto
   [Required]
   public required string Nome { get; set; }
   [Required]
-  public required List<CreateProdutoVarianteDto> Variacoes { get; set; }
+  public required List<CreateProdutoVarianteDto> Variantes { get; set; }
   [JsonIgnore]
   public string CreatedBy { get; set; } = string.Empty;
 }

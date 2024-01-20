@@ -40,7 +40,7 @@ public class ProdutoService : IProdutoService
     {
       Produtos =
        await _dbContext.Produtos
-       .Include(x => x.Variacoes)
+       .Include(x => x.Variantes)
       //  .Skip((Page - 1) * Limit)
       //  .Take(Limit)
        .ToListAsync();
@@ -65,7 +65,7 @@ public class ProdutoService : IProdutoService
   {
     Produto? Produto = await _dbContext.Produtos
       .Where(x => x.Id == Id)
-      .Include(x => x.Variacoes)
+      .Include(x => x.Variantes)
       .FirstOrDefaultAsync();
 
     if (Produto is null)
@@ -106,7 +106,7 @@ public class ProdutoService : IProdutoService
   {
     Produto? Produto = await _dbContext.Produtos
                 .Where(x => x.Id == produtoDto.Id)
-                .Include(x => x.Variacoes)
+                .Include(x => x.Variantes)
                 .FirstOrDefaultAsync();
 
     if (Produto is null)
@@ -122,7 +122,7 @@ public class ProdutoService : IProdutoService
     _dbContext.Produtos.Attach(Produto);
 
     Produto.Nome = produtoDto.Nome;
-    // Produto.Variacoes = produtoDto.Variacoes; // TODO
+    // Produto.Variantes = produtoDto.Variantes; // TODO
 
     // Save the changes to the database
     await _dbContext.SaveChangesAsync();
@@ -134,7 +134,7 @@ public class ProdutoService : IProdutoService
   {
     Produto? Produto = await _dbContext.Produtos
                 .Where(x => x.Id == Id)
-                .Include(x => x.Variacoes)
+                .Include(x => x.Variantes)
                 .FirstOrDefaultAsync();
 
     if (Produto is null)
