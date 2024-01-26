@@ -11,7 +11,7 @@ public class Aula
   public required Professor Professor { get; set; }
   public required TimeOnly HoraInicio { get; set; }
   public required TimeOnly HoraFim { get; set; }
-  public required Dias DiasDaSemana { get; set; }
+  public required List<Dias> DiasDaSemana { get; set; }
   public List<Cliente> Alunos { get; set; } = [];
   public bool IsAtiva { get; set; } = true;
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;

@@ -4,6 +4,7 @@ public class Produto
 {
   public required int Id { get; init; }
   public required string Nome { get; set; }
+  public string? Foto { get; set; }
   public required List<ProdutoVariante> Variantes { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   public required string CreatedBy { get; init; }

@@ -6,6 +6,7 @@ public class Cliente
 {
   public required int Id { get; init; }
   public required string Nome { get; set; }
+  public string? Foto { get; set; }
   public required string Celular { get; set; }
   public required string DataNascimento { get; set; }
   public required string Cpf { get; set; }
