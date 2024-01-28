@@ -2,7 +2,9 @@
 
 ![Licença Proprietária](https://img.shields.io/badge/Licença-Proprietária-red)
 
+- [Licença](#licença)
 - [Segurança](#segurança)
+- [gRPC Documentation](#grpc-documentation)
 - [Pull Requests](#pull-requests)
 - [Corrigindo Bugs](#corrigindo-bugs)
 - [Licença](#licença)
@@ -19,6 +21,15 @@ Toda a documentação e código fonte do software é confidencial.
 ## Segurança
 
 Se você acredita que encontrou uma vulnerabilidade de segurança no software, encorajamos você a nos informar imediatamente. Investigaremos todos os relatórios legítimos e faremos o possível para corrigir o problema rapidamente.
+
+## gRPC Documentation
+
+- [Official website](https://grpc.io/) - Official documentation, libraries, resources, samples and FAQ
+- [Technical documentation](https://github.com/grpc/grpc/tree/master/doc) - Collection of useful technical documentation
+- [gRPC status codes](https://github.com/grpc/grpc/blob/master/doc/statuscodes.md) - Status codes and their use in gRPC
+- [gRPC status code mapping](https://github.com/grpc/grpc/blob/master/doc/http-grpc-status-mapping.md) - HTTP to gRPC Status Code Mapping
+- [grpc-errors](https://github.com/avinassh/grpc-errors) - Code examples in each language on how to return and handle error statuses.
+- [API Design Guide](https://cloud.google.com/apis/design/) - Google Cloud API Design Guide useful for gRPC API design insights
 
 ## Pull Requests
 
