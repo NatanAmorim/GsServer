@@ -1,13 +1,10 @@
-using gs_server.Models.Clientes;
-using gs_server.Models.Professores;
-
-namespace gs_server.Models.Aulas;
+namespace gs_server.Models;
 
 public class Aula
 {
   public required int Id { get; init; }
   public required string Nome { get; set; }
-  public required string Preco { get; set; }
+  public required int Preco { get; set; }
   public required Professor Professor { get; set; }
   public required TimeOnly HoraInicio { get; set; }
   public required TimeOnly HoraFim { get; set; }

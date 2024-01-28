@@ -1,4 +1,4 @@
-namespace gs_server.Models.RefreshTokens;
+namespace gs_server.Models;
 
 public class RefreshToken
 {

@@ -1,7 +1,4 @@
-using gs_server.Models.Clientes;
-using gs_server.Models.Produtos;
-
-namespace gs_server.Models.Encomendas;
+namespace gs_server.Models;
 
 public class Encomenda
 {
@@ -20,7 +17,6 @@ public class EncomendaItem
   public required ProdutoVariante Produto { get; set; }
 }
 
-// [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum EncomendaStatus
 {
   AguardandoPagamento = 0,

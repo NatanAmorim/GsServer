@@ -1,4 +1,4 @@
-namespace gs_server.Models.Produtos;
+namespace gs_server.Models;
 
 public class Produto
 {
@@ -16,8 +16,8 @@ public class ProdutoVariante
   public required string Descricao { get; set; }
   public required string CodigoBarras { get; set; }
   public required double PrecoUnitario { get; set; }
-  public required int EstoqueMinimo { get; set; }
   public required int Estoque { get; set; }
+  public required int EstoqueMinimo { get; set; }
 }
 
 public class ProdutoHistoricoEstoque

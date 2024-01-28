@@ -1,9 +1,9 @@
-namespace gs_server.Models.Usuarios;
+namespace gs_server.Models;
 
 public class Usuario
 {
   public required int Id { get; init; }
-  public required string Nome { get; set; }
+  public required string Role { get; set; }
   public required string Email { get; set; }
   public required byte[] SenhaHash { get; set; }
   public required byte[] SenhaSalt { get; set; }
