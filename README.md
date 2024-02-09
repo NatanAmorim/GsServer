@@ -4,11 +4,33 @@
 
 Licensed under the Apache License, Version 2.0; you may not use this app except in compliance with the License. You may obtain a copy of the License at <https://opensource.org/licenses/Apache-2.0>.
 
+- [About](#about)
+- [Recommended tools](#recommended-tools)
+- [Building project](#building-project)
+- [Contributing Guidelines](#contributing-guidelines)
+
 > [!IMPORTANT]\
 > Potential legal non-compliance (This is not legal advice).\
 > This software is currently under development and may not yet comply with all legal requirements and specific laws, like GDPR. There may be potential risks associated with using the software in its current state.
 
+## About
+
 Server used by the company "Gislaine Studio de Dança" in Andradina/Brazil.
+
+> [!Warning]\
+> **Guidelines for copyright and trademarks**
+> 
+> This project may contain trademarks or logos for projects, products, or services.
+> The images included in this repository are not part of the open-source license and cannot be freely used or modified without explicit permission. These images are protected by copyright and are provided solely for reference purposes within the context of this project.
+
+Individuals are not authorized to use these images (bitmap and vector) for any purpose without obtaining explicit permission from the copyright holder. Modifying these images is strictly prohibited without prior consent from the copyright holder. Permission is required for any commercial or non-commercial use of the images, including but no limited to advertising, marketing, or product development.
+
+By accessing or using the images in this repository, you agree to abide by these usage guidelines and respect the intellectual property rights associated with the images.
+
+Trademarks are names and designs that tell the world the source of a good or service. Protecting trademarks for an open source project is particularly important. Anyone can change the source code and produce a product from that code, so it’s important that only the original product, or variations that have been approved by the project, use the project’s trademarks. Trademarks cannot be used in ways that appear (to a casual observer) official, affiliated, or endorsed by the original project.
+
+TL;DR: Use of trademarks or logos in modified versions of this project must not cause confusion or imply sponsorship. Any use of third-party trademarks or logos are subject to those third-party's policies.
+
 
 ## gRPC Documentation
 
@@ -25,13 +47,13 @@ To get started, I recommend you to have the following tools installed:
 
 ### Visual Studio Code
 
-- [Visual Studio Code](https://code.visualstudio.com/)
+- I recommend installing the latest version of [Visual Studio Code](https://code.visualstudio.com/).
+- I use the extension [C# for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp).
 - My VS Code setup is available in [NatanAmorim/my-config](https://github.com/NatanAmorim/my-config) at [vscode_config.md](https://github.com/NatanAmorim/my-config/blob/master/vscode_config.md).
 
 ### Dotnet SDK
 
-- For .NET development, install [.NET Core SDK](https://dotnet.microsoft.com/download) I used the [.NET SDK 8.0](https://get.dot.net/8) for this project.
-- I use the extension [C# for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp).
+For .NET development, install [.NET Core SDK](https://dotnet.microsoft.com/download) I used the [.NET SDK 8.0](https://get.dot.net/8) for this project.
 
 ### Install Docker
 
@@ -44,7 +66,7 @@ To get started, I recommend you to have the following tools installed:
 - `docker pull postgres`
 - `docker run --name postgresql -e POSTGRES_PASSWORD=<password> -p 5432:5432 -d postgres`
 
-## Building the project
+## Building project
 
 The following instructions are for dotnet-cli that comes with the [.NET Core SDK](#dotnet-sdk):
 
