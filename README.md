@@ -1,26 +1,14 @@
-# Leia me
+# README
 
-![Licença Proprietária](https://img.shields.io/badge/Licença-Proprietária-red)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-- [Licença](#licença)
-- [Segurança](#segurança)
-- [gRPC Documentation](#grpc-documentation)
-- [Pull Requests](#pull-requests)
-- [Corrigindo Bugs](#corrigindo-bugs)
-- [Licença](#licença)
+Licensed under the Apache License, Version 2.0; you may not use this app except in compliance with the License. You may obtain a copy of the License at <https://opensource.org/licenses/Apache-2.0>.
 
-## Licença
+> [!IMPORTANT]\
+> Potential legal non-compliance (This is not legal advice).\
+> This software is currently under development and may not yet comply with all legal requirements and specific laws, like GDPR. There may be potential risks associated with using the software in its current state.
 
-Todo o código do software é propriedade da empresa.
-Toda a documentação e código fonte do software é confidencial.
-
-- Os direitos do software da são exclusivos a empresa.
-- A distribuição do código fonte, executável e documentação do software é proibida em qualquer forma ou meio não autorizado.
-- É proibido a terceiros executar, copiar, distribuir, estudar, mudar e melhorar o software.
-
-## Segurança
-
-Se você acredita que encontrou uma vulnerabilidade de segurança no software, encorajamos você a nos informar imediatamente. Investigaremos todos os relatórios legítimos e faremos o possível para corrigir o problema rapidamente.
+Server used by the company "Gislaine Studio de Dança" in Andradina/Brazil.
 
 ## gRPC Documentation
 
@@ -31,20 +19,90 @@ Se você acredita que encontrou uma vulnerabilidade de segurança no software, e
 - [grpc-errors](https://github.com/avinassh/grpc-errors) - Code examples in each language on how to return and handle error statuses.
 - [API Design Guide](https://cloud.google.com/apis/design/) - Google Cloud API Design Guide useful for gRPC API design insights
 
-## Pull Requests
+## Recommended tools
 
-- Descreva de forma clara o que deve ser consertado ou adicionado.
-- Tente minimizar a quantidade de alterações no código, use estilos/funções já existentes.
+To get started, I recommend you to have the following tools installed:
 
-## Corrigindo Bugs
+### Visual Studio Code
 
-Para facilitar a resposta a problemas por favor siga essas orientações quando for explicar o problema.
+- [Visual Studio Code](https://code.visualstudio.com/)
+- My VS Code setup is available in [NatanAmorim/my-config](https://github.com/NatanAmorim/my-config) at [vscode_config.md](https://github.com/NatanAmorim/my-config/blob/master/vscode_config.md).
 
-- Descreva o que deve ser consertado, se for relevante anexe logs/screenshots.
-- Descreva como reproduzir o bug, para que possa ser consertado.
+### Dotnet SDK
 
-## Definições
+- For .NET development, install [.NET Core SDK](https://dotnet.microsoft.com/download) I used the [.NET SDK 8.0](https://get.dot.net/8) for this project.
+- I use the extension [C# for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp).
 
-### Controle de versão
+### Install Docker
 
-- API usa o sistema de três números, [Semantic Versioning 2.0.0](https://semver.org/lang/pt-BR/), SemVer quando abreviado.
+- installation on [Mac](https://docs.docker.com/desktop/install/mac-install/)
+- installation on [Linux](https://docs.docker.com/engine/install/ubuntu/)
+- installation on [Windows](https://docs.docker.com/docker-for-windows/install/) (I recommend to use [Windows Subsystem for Linux 2](https://docs.microsoft.com/en-us/windows/wsl/wsl2-kernel))
+
+#### PostgreSQL on Docker
+
+- `docker pull postgres`
+- `docker run --name postgresql -e POSTGRES_PASSWORD=<password> -p 5432:5432 -d postgres`
+
+## Building the project
+
+The following instructions are for dotnet-cli that comes with the [.NET Core SDK](#dotnet-sdk):
+
+```sh
+dotnet restore
+dotnet build
+```
+
+## Contributing Guidelines
+
+We prefer all communications to be in English or Portuguese.
+
+This project uses GitHub Issues to track bugs and feature requests. Please search the existing issues before filing new issues to avoid duplicates. For new issues, file your bug or feature request as a new Issue.
+
+For help and questions about using this project, please uses the GitHub discussions.
+
+### Security
+<!--
+Please do not report security vulnerabilities through public GitHub issues.\
+Instead, please report them to {email-address}.\
+You should receive a response within 24 hours. If for some reason you do not, please follow up via email to ensure we received your original message.
+-->
+
+If you believe you have found a security vulnerability in this software, we encourage you to inform us immediately. We will investigate all legitimate reports and do our best to quickly correct the issue.
+
+Please include the requested information listed below (as much as you can provide) to help us better understand the nature and scope of the possible issue:
+
+- Type of issue (e.g. buffer overflow, SQL injection, cross-site scripting, etc.)
+- Full paths of source file(s) related to the manifestation of the issue
+- The location of the affected source code (tag/branch/commit or direct URL)
+- Any special configuration required to reproduce the issue
+- Step-by-step instructions to reproduce the issue
+- Proof-of-concept or exploit code (if possible)
+- Impact of the issue, including how an attacker might exploit the issue
+
+This information will help us triage your report more quickly.
+
+### Contributing Code
+
+1. Fork the repository and clone it to your local machine.
+2. Create a new branch for your changes: `git checkout -b my-new-feature`
+3. Make your changes and commit them: `git commit -am 'Add some feature'`
+    - Include tests that cover your changes.
+    - Update the documentation to reflect your changes, where appropriate.
+    - Add an entry to the `CHANGELOG.md` file describing your changes if appropriate.
+4. Push your changes to your fork: `git push origin my-new-feature`
+5. Create a pull request from your fork to the main repository. `gh pr create` (with the GitHub CLI)
+
+### Pull Request
+
+- Clearly describe what you aim to add or fix.
+- Try to minimize code changes and use existing style/functions.
+
+### Reporting Issues and Bugs
+
+If you find a bug, please report it by opening a new issue in the issue tracker. Please include as much detail as possible, including steps to reproduce the bug and any relevant error messages.
+
+To better respond to issues please follow these general guidelines when explaining the problem.
+
+1. Clearly describe what you aim to fix, if relevant attach output/logs/screenshots.
+2. Describe how developers can reproduce the bug.
