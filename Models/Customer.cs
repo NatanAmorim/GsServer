@@ -9,7 +9,6 @@ public class Customer
   public string? Picture { get; set; }
   public required string Pix { get; set; }
   public required List<Ward> Wards { get; set; }
-  public required List<Discipline> SubscribedDisciplines { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   public required string CreatedBy { get; init; }
 }

@@ -3,10 +3,11 @@ namespace gs_server.Models;
 public class Sale
 {
   public required int Id { get; init; }
-  public string Description { get; set; } = string.Empty;
-  public required double TotalPrice { get; set; }
-  public required double AmountPaid { get; set; }
-  public required double TotalDiscount { get; set; }
+  public Customer? Customer { get; set; }
+  public string Observations { get; set; } = string.Empty;
+  public required float TotalPrice { get; set; }
+  public required float AmountPaid { get; set; }
+  public required float TotalDiscount { get; set; }
   public required List<SaleItem> Itens { get; set; }
   public List<SalePayment> Payments { get; set; } = [];
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
@@ -23,6 +24,6 @@ public class SaleItem
 public class SalePayment
 {
   public required int Id { get; init; }
-  public required double AmountPaid { get; set; }
+  public required float AmountPaid { get; set; }
   public string PaymentMethod { get; set; } = string.Empty;
 }

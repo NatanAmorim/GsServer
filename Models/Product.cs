@@ -15,7 +15,7 @@ public class ProductVariant
   public required int Id { get; init; }
   public required string Description { get; set; }
   public required string BarCode { get; set; }
-  public required double UnitPrice { get; set; }
+  public required float UnitPrice { get; set; }
   public required int StockAmount { get; set; }
   public required int StockMinimumAmount { get; set; }
 }
