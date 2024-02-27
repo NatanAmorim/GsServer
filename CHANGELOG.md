@@ -21,7 +21,13 @@ Utils for quick Copy and paste
 ### Fixed
 -->
 
-## 0.2.2 (Feb 27, 2024)
+## 0.4.0 (Feb 27, 2024)
+
+### Changed
+
+- Pictures are now stored as bytes.
+
+## 0.3.0 (Feb 27, 2024)
 
 ### Changed
 

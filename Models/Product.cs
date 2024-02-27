@@ -4,7 +4,7 @@ public class Product
 {
   public required int Id { get; init; }
   public required string Name { get; set; }
-  public string? Picture { get; set; }
+  public byte[]? Picture { get; set; }
   public required List<ProductVariant> Variants { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   public required string CreatedBy { get; init; }
