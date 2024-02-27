@@ -7,6 +7,7 @@ public class Person
   public required string MobilePhone { get; set; }
   public required string BirthDate { get; set; }
   public required string Cpf { get; set; }
+  public required string Cin { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   public required string CreatedBy { get; init; }
 }
