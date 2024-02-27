@@ -18,28 +18,28 @@ public class DatabaseContext(
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     modelBuilder.UseSerialColumns();
-    modelBuilder.ApplyConfiguration(new AulaConfiguration());
-    modelBuilder.ApplyConfiguration(new ClienteConfiguration());
-    modelBuilder.ApplyConfiguration(new EncomendaConfiguration());
+    modelBuilder.ApplyConfiguration(new DisciplineConfiguration());
+    modelBuilder.ApplyConfiguration(new CustomerConfiguration());
+    modelBuilder.ApplyConfiguration(new OrderConfiguration());
     modelBuilder.ApplyConfiguration(new EnderecoConfiguration());
-    modelBuilder.ApplyConfiguration(new MensalidadeConfiguration());
-    modelBuilder.ApplyConfiguration(new PessoaConfiguration());
-    modelBuilder.ApplyConfiguration(new ProdutoConfiguration());
-    modelBuilder.ApplyConfiguration(new ProfessorConfiguration());
+    modelBuilder.ApplyConfiguration(new TuitionConfiguration());
+    modelBuilder.ApplyConfiguration(new PersonConfiguration());
+    modelBuilder.ApplyConfiguration(new ProductConfiguration());
+    modelBuilder.ApplyConfiguration(new TeacherConfiguration());
     modelBuilder.ApplyConfiguration(new RefreshTokenConfiguration());
-    modelBuilder.ApplyConfiguration(new UsuarioConfiguration());
-    modelBuilder.ApplyConfiguration(new VendaConfiguration());
+    modelBuilder.ApplyConfiguration(new UserConfiguration());
+    modelBuilder.ApplyConfiguration(new SaleConfiguration());
   }
 
-  public DbSet<Aula> Aulas => Set<Aula>();
-  public DbSet<Cliente> Clientes => Set<Cliente>();
-  public DbSet<Encomenda> Encomendas => Set<Encomenda>();
-  public DbSet<Endereco> Enderecos => Set<Endereco>();
-  public DbSet<Mensalidade> Mensalidades => Set<Mensalidade>();
-  public DbSet<Pessoa> Pessoas => Set<Pessoa>();
-  public DbSet<Produto> Produtos => Set<Produto>();
-  public DbSet<Professor> Professores => Set<Professor>();
+  public DbSet<Discipline> Disciplines => Set<Discipline>();
+  public DbSet<Customer> Customers => Set<Customer>();
+  public DbSet<Order> Orders => Set<Order>();
+  public DbSet<Address> Addresses => Set<Address>();
+  public DbSet<Tuition> Tuitions => Set<Tuition>();
+  public DbSet<Person> Person => Set<Person>();
+  public DbSet<Product> Product => Set<Product>();
+  public DbSet<Teacher> Teachers => Set<Teacher>();
   public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
-  public DbSet<Usuario> Usuarios => Set<Usuario>();
-  public DbSet<Venda> Vendas => Set<Venda>();
+  public DbSet<User> Users => Set<User>();
+  public DbSet<Sale> Sales => Set<Sale>();
 }

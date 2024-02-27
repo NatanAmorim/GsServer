@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace gs_server.EntityConfigurations;
 
-public class ClienteConfiguration : IEntityTypeConfiguration<Cliente>
+public class UserConfiguration : IEntityTypeConfiguration<User>
 {
-  public void Configure(EntityTypeBuilder<Cliente> typeBuilder)
+  public void Configure(EntityTypeBuilder<User> typeBuilder)
   {
 
   }

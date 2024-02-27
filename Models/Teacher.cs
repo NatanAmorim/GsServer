@@ -1,10 +1,10 @@
-namespace gs_server;
+namespace gs_server.Models;
 
-public class Endereco
+public class Teacher
 {
   public required int Id { get; init; }
-  public required string Logadouro { get; set; }
-  public required string Numero { get; set; }
+  public required Person Person { get; set; }
+  public required User User { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   public required string CreatedBy { get; init; }
 }
