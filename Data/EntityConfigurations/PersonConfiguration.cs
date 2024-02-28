@@ -9,7 +9,7 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
   {
     typeBuilder.HasIndex(x => x.Name).IsUnique();
     typeBuilder.Property(x => x.Name).HasColumnType("varchar(150)");
-    typeBuilder.Property(x => x.MobilePhone).HasColumnType("varchar(16)");
+    typeBuilder.Property(x => x.MobilePhoneNumber).HasColumnType("varchar(16)");
     typeBuilder.Property(x => x.BirthDate).HasColumnType("varchar(10)");
     typeBuilder.Property(x => x.Cpf).HasColumnType("varchar(14)");
   }

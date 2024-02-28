@@ -21,6 +21,13 @@ Utils for quick Copy and paste
 ### Fixed
 -->
 
+## 0.5.0 (Feb 27, 2024)
+
+### Changed
+
+- Change "Wards" to "Dependents" and use a Person model to make things simpler.
+- Update wrong "MobilePhone" to "MobilePhoneNumber" in EntityFramework configuration.
+
 ## 0.4.0 (Feb 27, 2024)
 
 ### Changed
