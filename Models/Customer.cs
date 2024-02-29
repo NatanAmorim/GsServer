@@ -2,7 +2,7 @@ namespace gs_server.Models;
 
 public class Customer
 {
-  public required int Id { get; init; }
+  public int Id { get; init; }
   public User? User { get; set; }
   public required Person Person { get; set; }
   public required Address Address { get; set; }

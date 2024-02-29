@@ -7,7 +7,7 @@ public class SaleConfiguration : IEntityTypeConfiguration<Sale>
 {
   public void Configure(EntityTypeBuilder<Sale> typeBuilder)
   {
-    typeBuilder.Property(x => x.Description).HasColumnType("varchar(80)");
+    typeBuilder.Property(x => x.Observations).HasColumnType("varchar(80)");
 
   }
 }

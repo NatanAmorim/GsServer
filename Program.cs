@@ -7,25 +7,26 @@ using Serilog;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<DatabaseContext>();
+builder.Services.AddAuthorization();
 builder.Services.AddGrpc();
 builder.Services.AddGrpcReflection();
-builder.Services.AddDbContext<DatabaseContext>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+  .AddJwtBearer(options =>
+  {
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-      options.TokenValidationParameters = new TokenValidationParameters
-      {
-        ValidateIssuer = true,
-        ValidateAudience = false,
-        ValidIssuer = builder.Configuration.GetSection("Authentication:Schemes:Bearer:Issuer").Value!,
-
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-          .GetBytes(builder.Configuration.GetSection("Authentication:Schemes:Bearer:Secret").Value!)
-        )
-      };
-    });
+      ValidateAudience = false,
+      ValidateIssuer = true,
+      ValidIssuer = builder.Configuration.GetSection("Authentication:Schemes:Bearer:Issuer").Value!,
+      ValidateIssuerSigningKey = true,
+      IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+        .GetBytes(builder.Configuration.GetSection("Authentication:Schemes:Bearer:Secret").Value!)
+      )
+    };
+  });
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
@@ -34,15 +35,23 @@ builder.Host.UseSerilog(
     configuration.ReadFrom.Configuration(context.Configuration)
 );
 
-// TODO add RateLimiter
-// TODO add GlobalExceptionHandlingMiddleware
 
 WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client.");
 
-app.MapGrpcService<GreeterService>();
+// app.MapGrpcService<AttendanceRpcService>();
+app.MapGrpcService<AuthRpcService>();
+// app.MapGrpcService<CustomerService>();
+// app.MapGrpcService<DisciplineService>();
+// app.MapGrpcService<OrderService>();
+app.MapGrpcService<ProductRpcService>();
+// app.MapGrpcService<SaleService>();
+// app.MapGrpcService<TeacherService>();
+// app.MapGrpcService<TuitionService>();
+// app.MapGrpcService<UserService>();
+app.MapGrpcService<UserRpcService>();
 
 if (app.Environment.IsDevelopment())
 {
@@ -52,5 +61,6 @@ if (app.Environment.IsDevelopment())
 app.UseSerilogRequestLogging();
 
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.Run();

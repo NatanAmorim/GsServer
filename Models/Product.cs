@@ -2,7 +2,7 @@ namespace gs_server.Models;
 
 public class Product
 {
-  public required int Id { get; init; }
+  public int Id { get; init; }
   public required string Name { get; set; }
   public byte[]? Picture { get; set; }
   public required List<ProductVariant> Variants { get; set; }
@@ -12,7 +12,7 @@ public class Product
 
 public class ProductVariant
 {
-  public required int Id { get; init; }
+  public int Id { get; init; }
   public required string Description { get; set; }
   public required string BarCode { get; set; }
   public required float UnitPrice { get; set; }
@@ -20,10 +20,9 @@ public class ProductVariant
   public required int StockMinimumAmount { get; set; }
 }
 
-// TODO track changes in a ephemeral table
 // public class ProductStockHistory
 // {
-//   public required int Id { get; init; }
+//   public int Id { get; init; }
 //   public required int Amount { get; set; }
 //   public required bool IsSale { get; set; }
 //   public required bool IsReturnedItem { get; set; }

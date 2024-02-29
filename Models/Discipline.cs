@@ -2,7 +2,7 @@ namespace gs_server.Models;
 
 public class Discipline
 {
-  public required int Id { get; init; }
+  public int Id { get; init; }
   public required string Name { get; set; }
   public required float TuitionPrice { get; set; }
   public required Teacher Teacher { get; set; }

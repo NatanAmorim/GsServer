@@ -2,6 +2,7 @@ global using Microsoft.EntityFrameworkCore;
 using gs_server;
 using gs_server.EntityConfigurations;
 using gs_server.Models;
+
 public class DatabaseContext(
     DbContextOptions<DatabaseContext> options,
     IConfiguration configuration
@@ -18,17 +19,18 @@ public class DatabaseContext(
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     modelBuilder.UseSerialColumns();
-    modelBuilder.ApplyConfiguration(new DisciplineConfiguration());
+    modelBuilder.ApplyConfiguration(new AddressConfiguration());
+    modelBuilder.ApplyConfiguration(new AttendanceConfiguration());
     modelBuilder.ApplyConfiguration(new CustomerConfiguration());
+    modelBuilder.ApplyConfiguration(new DisciplineConfiguration());
     modelBuilder.ApplyConfiguration(new OrderConfiguration());
-    modelBuilder.ApplyConfiguration(new EnderecoConfiguration());
-    modelBuilder.ApplyConfiguration(new TuitionConfiguration());
     modelBuilder.ApplyConfiguration(new PersonConfiguration());
     modelBuilder.ApplyConfiguration(new ProductConfiguration());
-    modelBuilder.ApplyConfiguration(new TeacherConfiguration());
     modelBuilder.ApplyConfiguration(new RefreshTokenConfiguration());
-    modelBuilder.ApplyConfiguration(new UserConfiguration());
     modelBuilder.ApplyConfiguration(new SaleConfiguration());
+    modelBuilder.ApplyConfiguration(new TeacherConfiguration());
+    modelBuilder.ApplyConfiguration(new TuitionConfiguration());
+    modelBuilder.ApplyConfiguration(new UserConfiguration());
   }
 
   public DbSet<Discipline> Disciplines => Set<Discipline>();
