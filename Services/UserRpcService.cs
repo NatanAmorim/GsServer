@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Grpc.Core;
 using gs_server.Models;
+using gs_server.Protobufs;
 using Microsoft.AspNetCore.Authorization;
 
 namespace gs_server.Services;
@@ -19,21 +20,22 @@ public class UserRpcService : UserService.UserServiceBase
   public override async Task<GetAllUsersResponse> GetAll(GetAllUsersRequest request, ServerCallContext context)
   {
     _logger.LogInformation("Listing Users");
-    List<User> Users =
+    List<UserModel> Users =
       await _dbContext.Users
       .ToListAsync();
 
     GetAllUsersResponse response = new();
 
-    foreach (User User in Users)
-    {
-      response.Users.Add(new GetUserByIdResponse()
-      {
-        Id = User.Id,
-        Email = User.Email,
-        Role = User.Role,
-      });
-    }
+    response.Users.AddRange(
+      Users.Select(
+        User => new GetUserByIdResponse
+        {
+          Id = User.Id,
+          Email = User.Email,
+          Role = User.Role,
+        }
+      )
+    );
 
     _logger.LogInformation("Users have been listed successfully");
     return response;
@@ -43,26 +45,26 @@ public class UserRpcService : UserService.UserServiceBase
   {
     _logger.LogInformation(
       "Searching for User with ID {Id}",
-      request.Id
+      request.UserId
     );
-    User? User = await _dbContext.Users.FindAsync(request.Id);
+    UserModel? User = await _dbContext.Users.FindAsync(request.UserId);
 
     if (User is null)
     {
       _logger.LogWarning(
         "Error search User request, no User with ID {Id}",
-        request.Id
+        request.UserId
       );
       throw new RpcException(new Status(
-        StatusCode.NotFound, $"Erro ao procurar usuário, nenhum usuário com ID {request.Id}"
+        StatusCode.NotFound, $"Erro ao procurar usuário, nenhum usuário com ID {request.UserId}"
       ));
     }
 
     _logger.LogInformation(
       "User with ID {Id} found successfully",
-      request.Id
+      request.UserId
     );
-    return new GetUserByIdResponse()
+    return new GetUserByIdResponse
     {
       Id = User.Id,
       Email = User.Email,
@@ -77,7 +79,7 @@ public class UserRpcService : UserService.UserServiceBase
     );
 
     _logger.LogInformation("Updating User with ID {Id}", UserId);
-    User? User = await _dbContext.Users.FindAsync(UserId);
+    UserModel? User = await _dbContext.Users.FindAsync(UserId);
 
     if (User is null)
     {
@@ -108,17 +110,17 @@ public class UserRpcService : UserService.UserServiceBase
 
   public override async Task<DeleteUserResponse> Delete(DeleteUserRequest request, ServerCallContext context)
   {
-    _logger.LogInformation("Deleting User with ID {Id}", request.Id);
-    User? User = await _dbContext.Users.FindAsync(request.Id);
+    _logger.LogInformation("Deleting User with ID {Id}", request.UserId);
+    UserModel? User = await _dbContext.Users.FindAsync(request.UserId);
 
     if (User is null)
     {
       _logger.LogWarning(
         "Error in delete User request, no User with ID {Id}",
-        request.Id
+        request.UserId
       );
       throw new RpcException(new Status(
-        StatusCode.NotFound, $"Erro ao remover usuário, nenhum usuário com ID {request.Id}"
+        StatusCode.NotFound, $"Erro ao remover usuário, nenhum usuário com ID {request.UserId}"
       ));
     }
 
@@ -127,7 +129,7 @@ public class UserRpcService : UserService.UserServiceBase
 
     _logger.LogInformation(
       "User deleted successfully ID {Id}",
-      request.Id
+      request.UserId
     );
 
     return new DeleteUserResponse();

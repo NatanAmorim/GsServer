@@ -1,14 +1,14 @@
 namespace gs_server.Models;
 
-public class Customer
+public class CustomerModel
 {
   public int Id { get; init; }
-  public User? User { get; set; }
-  public required Person Person { get; set; }
-  public required Address Address { get; set; }
-  public byte[]? Picture { get; set; }
+  public UserModel? User { get; set; }
+  public required PersonModel Person { get; set; }
+  public required string PhysicalAddress { get; set; }
+  public string? PicturePath { get; set; }
   public required string Pix { get; set; }
-  public required List<Person> Dependents { get; set; }
+  public required List<PersonModel> Dependents { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
-  public required string CreatedBy { get; init; }
+  public required int CreatedBy { get; init; }
 }

@@ -1,4 +1,5 @@
 using Grpc.Core;
+using gs_server.Protobufs;
 
 namespace gs_server.Services;
 

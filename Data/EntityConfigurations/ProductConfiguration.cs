@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace gs_server.EntityConfigurations;
 
-public class ProductConfiguration : IEntityTypeConfiguration<Product>
+public class ProductConfiguration : IEntityTypeConfiguration<ProductModel>
 {
-  public void Configure(EntityTypeBuilder<Product> typeBuilder)
+  public void Configure(EntityTypeBuilder<ProductModel> typeBuilder)
   {
 
   }

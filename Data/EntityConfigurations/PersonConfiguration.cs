@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace gs_server.EntityConfigurations;
 
-public class PersonConfiguration : IEntityTypeConfiguration<Person>
+public class PersonConfiguration : IEntityTypeConfiguration<PersonModel>
 {
-  public void Configure(EntityTypeBuilder<Person> typeBuilder)
+  public void Configure(EntityTypeBuilder<PersonModel> typeBuilder)
   {
     typeBuilder.HasIndex(x => x.Name).IsUnique();
     typeBuilder.Property(x => x.Name).HasColumnType("varchar(150)");

@@ -6,6 +6,7 @@ using Grpc.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using gs_server.Models;
+using gs_server.Protobufs;
 namespace gs_server.Services;
 
 [Authorize]
@@ -25,48 +26,48 @@ public class AuthRpcService : AuthService.AuthServiceBase
   public override async Task<LoginResponse> Login(LoginRequest request, ServerCallContext context)
   {
     _logger.LogInformation(
-      "Login attempt, searching for User {username}",
-      request.Email
+      "Login attempt, searching for User {Username}",
+      request.Email.Trim().ToLower()
     );
 
-    User? User =
+    UserModel? User =
       await _dbContext.Users.FirstOrDefaultAsync(
-        x => x.Email.ToLower().Equals(request.Email.ToLower())
+        x => x.Email.Equals(request.Email.Trim().ToLower())
       );
 
     if (User is null)
     {
       _logger.LogWarning(
-        "Error in login attempt, User {user} and/or incorrect password.",
-        request.Email
+        "Error in login attempt, Incorrect User {User} and/or incorrect password.",
+        request.Email.Trim().ToLower()
       );
       throw new RpcException(new Status(
-        StatusCode.Unauthenticated, "Erro na tentativa de login, Usuário e/ou Senha incorreto(a)."
+        StatusCode.Unauthenticated, "Erro na tentativa de login, Usuário e/ou Senha incorreto."
       ));
     }
 
-    bool isPasswordWrong = !VerifyPassword(
+    bool isPasswordCorrect = VerifyPassword(
       request.Password,
       User.PasswordHash,
       User.PasswordSalt
     );
 
-    if (isPasswordWrong)
+    if (isPasswordCorrect == false)
     {
       _logger.LogWarning(
-        "Error in login attempt, user {user} and/or incorrect password.",
-        request.Email
+        "Error in login attempt, incorrect User {User} and/or incorrect password.",
+        request.Email.Trim().ToLower()
       );
 
       throw new RpcException(new Status(
-        StatusCode.Unauthenticated, "Erro na tentativa de login, Usuário e/ou Senha incorreto(a)."
+        StatusCode.Unauthenticated, "Erro na tentativa de login, Usuário e/ou Senha incorreto."
       ));
     }
 
     string JwtToken = GenerateJwtToken(User);
     string RefreshToken = GenerateRefreshToken();
 
-    RefreshToken refreshTokenEntity = new()
+    RefreshTokenModel refreshTokenEntity = new()
     {
       UserId = User.Id,
       Token = RefreshToken
@@ -74,7 +75,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
 
     // RefreshToken is saved as stateful in the database, since it allows to
     // check if the RefreshToken is still valid and check if it belongs to the
-    // user that wants to mint a new JWT.
+    // User that wants to mint a new JWT.
     _dbContext.RefreshTokens.Add(refreshTokenEntity);
 
     // Save the changes to the database
@@ -82,17 +83,17 @@ public class AuthRpcService : AuthService.AuthServiceBase
 
     _logger.LogInformation(
       "Login successful! Email {Email}",
-      request.Email
+      request.Email.Trim().ToLower()
     );
 
-    return new LoginResponse()
+    return new LoginResponse
     {
       AccessToken = JwtToken,
       RefreshToken = RefreshToken
     };
   }
 
-  public override async Task<LogoutResponse> Logout(LogoutRequest request, ServerCallContext context)
+  public override Task<LogoutResponse> Logout(LogoutRequest request, ServerCallContext context)
   {
     throw new NotImplementedException();
   }
@@ -101,32 +102,35 @@ public class AuthRpcService : AuthService.AuthServiceBase
   public override async Task<RegisterResponse> Register(RegisterRequest request, ServerCallContext context)
   {
     _logger.LogInformation(
-      "Trying to create a new user. Email {Email}",
-      request.Email
+      "Trying to create a new User. Email {Email}",
+      request.Email.Trim().ToLower()
     );
 
-    User? User =
+    UserModel? User =
       await _dbContext.Users.FirstOrDefaultAsync(
-        x => x.Email.ToLower().Equals(request.Email.ToLower())
+        x => x.Email.Equals(request.Email.Trim().ToLower())
       );
 
     if (User is not null)
     {
       _logger.LogWarning(
         "Failed to create a new User, Email {Email} already exists in the Database.",
-        request.Email
+        request.Email.Trim().ToLower()
       );
 
-      throw new RpcException(new Status(
-        StatusCode.AlreadyExists, "Falha ao criar um novo usuário, o usuário já existe"
-      ));
+      throw new RpcException(
+        new Status(
+          StatusCode.AlreadyExists,
+          "Falha ao criar um novo usuário, o usuário já existe"
+        )
+      );
     }
 
     CreatePasswordHash(request.Password, out byte[] generatedPasswordHash, out byte[] generatedPasswordSalt);
 
-    User = new User()
+    User = new UserModel
     {
-      Email = request.Email,
+      Email = request.Email.Trim().ToLower(),
       Role = "user",
       PasswordHash = generatedPasswordHash,
       PasswordSalt = generatedPasswordSalt,
@@ -149,7 +153,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
       request.RefreshToken
     );
 
-    User? User = await _dbContext.Users.FindAsync(UserId);
+    UserModel? User = await _dbContext.Users.FindAsync(UserId);
 
     if (User is null)
     {
@@ -159,7 +163,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
       ));
     }
 
-    RefreshToken? RefreshToken =
+    RefreshTokenModel? RefreshToken =
       await _dbContext.RefreshTokens.FirstOrDefaultAsync(
         x => x.Token.Equals(request.RefreshToken)
       );
@@ -179,13 +183,13 @@ public class AuthRpcService : AuthService.AuthServiceBase
 
     string JwtToken = GenerateJwtToken(User);
 
-    return new RefreshTokenResponse()
+    return new RefreshTokenResponse
     {
       AccessToken = JwtToken
     };
   }
 
-  public override async Task<NewPasswordResponse> NewPassword(NewPasswordRequest request, ServerCallContext context)
+  public override Task<NewPasswordResponse> NewPassword(NewPasswordRequest request, ServerCallContext context)
   {
     throw new NotImplementedException();
   }
@@ -201,7 +205,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
       UserId
     );
 
-    User? User = await _dbContext.Users.FindAsync(UserId);
+    UserModel? User = await _dbContext.Users.FindAsync(UserId);
 
     if (User is null)
     {
@@ -211,16 +215,16 @@ public class AuthRpcService : AuthService.AuthServiceBase
       ));
     }
 
-    bool isPasswordWrong = !VerifyPassword(
+    bool isPasswordCorrect = VerifyPassword(
       request.OldPassword,
       User.PasswordHash,
       User.PasswordSalt
     );
 
-    if (isPasswordWrong)
+    if (isPasswordCorrect == false)
     {
       _logger.LogWarning(
-        "Password change request failed, incorrect username and/or password. UserId {UserId}",
+        "Password change request failed, incorrect Username and/or password. UserId {UserId}",
         UserId
       );
 
@@ -249,25 +253,25 @@ public class AuthRpcService : AuthService.AuthServiceBase
       out byte[] generatedPasswordSalt
     )
   {
-    using var hmac = new HMACSHA512();
+    using HMACSHA512 hmac = new();
     generatedPasswordSalt = hmac.Key;
     generatedPasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
   }
 
   private bool VerifyPassword(string password, byte[] passwordHash, byte[] passwordSalt)
   {
-    using var hmac = new HMACSHA512(passwordSalt);
+    using HMACSHA512 hmac = new(passwordSalt);
     byte[] computeHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
     return computeHash.SequenceEqual(passwordHash);
   }
   private string GenerateJwtToken(
-        User user
+        UserModel User
       )
   {
     List<Claim> claims =
     [
-        new Claim(ClaimTypes.NameIdentifier, user.Id!.ToString()),
-        new Claim(ClaimTypes.Email, user.Email)
+        new Claim(ClaimTypes.NameIdentifier, User.Id!.ToString()),
+        new Claim(ClaimTypes.Email, User.Email)
     ];
 
     SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(

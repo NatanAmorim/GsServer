@@ -28,8 +28,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     };
   });
 
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
-
 builder.Host.UseSerilog(
   (context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration)
@@ -41,16 +39,15 @@ WebApplication app = builder.Build();
 // Configure the HTTP request pipeline.
 app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client.");
 
-// app.MapGrpcService<AttendanceRpcService>();
+app.MapGrpcService<AttendanceRpcService>();
 app.MapGrpcService<AuthRpcService>();
-// app.MapGrpcService<CustomerService>();
-// app.MapGrpcService<DisciplineService>();
-// app.MapGrpcService<OrderService>();
+app.MapGrpcService<CustomerRpcService>();
+app.MapGrpcService<DisciplineRpcService>();
+app.MapGrpcService<OrderRpcService>();
 app.MapGrpcService<ProductRpcService>();
-// app.MapGrpcService<SaleService>();
-// app.MapGrpcService<TeacherService>();
-// app.MapGrpcService<TuitionService>();
-// app.MapGrpcService<UserService>();
+app.MapGrpcService<SaleRpcService>();
+app.MapGrpcService<TeacherRpcService>();
+app.MapGrpcService<TuitionRpcService>();
 app.MapGrpcService<UserRpcService>();
 
 if (app.Environment.IsDevelopment())

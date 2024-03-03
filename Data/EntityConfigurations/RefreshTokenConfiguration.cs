@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace gs_server.EntityConfigurations;
 
-public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
+public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshTokenModel>
 {
-  public void Configure(EntityTypeBuilder<RefreshToken> typeBuilder)
+  public void Configure(EntityTypeBuilder<RefreshTokenModel> typeBuilder)
   {
 
   }

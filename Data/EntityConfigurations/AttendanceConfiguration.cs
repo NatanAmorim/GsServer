@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace gs_server.EntityConfigurations;
 
-public class AttendanceConfiguration : IEntityTypeConfiguration<Attendance>
+public class AttendanceConfiguration : IEntityTypeConfiguration<AttendanceModel>
 {
-  public void Configure(EntityTypeBuilder<Attendance> typeBuilder)
+  public void Configure(EntityTypeBuilder<AttendanceModel> typeBuilder)
   {
 
   }

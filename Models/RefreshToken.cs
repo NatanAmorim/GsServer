@@ -1,6 +1,6 @@
 namespace gs_server.Models;
 
-public class RefreshToken
+public class RefreshTokenModel
 {
   public int Id { get; init; }
   public required int UserId { get; init; }

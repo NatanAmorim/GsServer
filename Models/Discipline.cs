@@ -1,18 +1,18 @@
 namespace gs_server.Models;
 
-public class Discipline
+public class DisciplineModel
 {
   public int Id { get; init; }
   public required string Name { get; set; }
   public required float TuitionPrice { get; set; }
-  public required Teacher Teacher { get; set; }
+  public required TeacherModel Teacher { get; set; }
   public required TimeOnly StartTime { get; set; }
   public required TimeOnly EndTime { get; set; }
   public required List<DayOfWeek> ClassDays { get; set; } // Dias de aula.
-  public List<Customer> Students { get; set; } = [];
+  public List<CustomerModel> Students { get; set; } = [];
   public bool IsActive { get; set; } = true;
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
-  public required string CreatedBy { get; init; }
+  public required int CreatedBy { get; init; }
 }
 
 public enum DayOfWeek

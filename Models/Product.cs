@@ -1,16 +1,16 @@
 namespace gs_server.Models;
 
-public class Product
+public class ProductModel
 {
   public int Id { get; init; }
   public required string Name { get; set; }
-  public byte[]? Picture { get; set; }
-  public required List<ProductVariant> Variants { get; set; }
+  public string? PicturePath { get; set; }
+  public required List<ProductVariantModel> Variants { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
-  public required string CreatedBy { get; init; }
+  public required int CreatedBy { get; init; }
 }
 
-public class ProductVariant
+public class ProductVariantModel
 {
   public int Id { get; init; }
   public required string Description { get; set; }
@@ -20,7 +20,7 @@ public class ProductVariant
   public required int StockMinimumAmount { get; set; }
 }
 
-// public class ProductStockHistory
+// public class ProductStockHistoryModel
 // {
 //   public int Id { get; init; }
 //   public required int Amount { get; set; }

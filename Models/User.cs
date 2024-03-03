@@ -1,6 +1,6 @@
 namespace gs_server.Models;
 
-public class User
+public class UserModel
 {
   public int Id { get; init; }
   public required string Role { get; set; }

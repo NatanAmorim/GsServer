@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace gs_server.EntityConfigurations;
 
-public class TuitionConfiguration : IEntityTypeConfiguration<Tuition>
+public class TuitionConfiguration : IEntityTypeConfiguration<TuitionModel>
 {
-  public void Configure(EntityTypeBuilder<Tuition> typeBuilder)
+  public void Configure(EntityTypeBuilder<TuitionModel> typeBuilder)
   {
 
   }

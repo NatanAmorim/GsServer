@@ -1,4 +1,4 @@
-# Change Log
+# Logging Changes
 
 ## English
 
@@ -16,10 +16,25 @@ e este projeto adere a [Versionamento Semântico (PT-BR)](https://semver.org/lan
 
 <!--
 for copy and paste
-### Added
-### Changed
-### Fixed
+added:
+changed:
+fixed:
 -->
+
+## 0.7.0 (Mar 03, 2024)
+
+- added: Create `CONTRIBUTING.md`.
+- added: Create `CODE_OF_CONDUCT.md`.
+- added: Create `Protos/` as a hack to solve proto import problem for now.
+- changed: Continue implementation of gRPC with the new protobufs.
+- changed: Update `CHANGELOG.md` move "How to contribute" to `CONTRIBUTING.md`.
+- changed: Add suffix "Model" to every model to avoid problems with generated files.
+- changed: Change "Address" data type to string and delete AddressModel.
+- changed: Picture now can be binary on upload and path from services like Imgur, AWS S3, Azure Blob, and more.
+- changed: Update protobufs to the most recent version.
+- changed: Remove AutoMapper package.
+- changed: Update Microsoft.EntityFrameworkCore.Design package to "8.0.2".
+- changed: gs_test_db dev password.
 
 ## 0.6.0 (Feb 29, 2024)
 

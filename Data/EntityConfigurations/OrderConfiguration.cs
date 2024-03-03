@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace gs_server.EntityConfigurations;
 
-public class OrderConfiguration : IEntityTypeConfiguration<Order>
+public class OrderConfiguration : IEntityTypeConfiguration<OrderModel>
 {
-  public void Configure(EntityTypeBuilder<Order> typeBuilder)
+  public void Configure(EntityTypeBuilder<OrderModel> typeBuilder)
   {
 
   }

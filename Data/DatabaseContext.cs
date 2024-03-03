@@ -19,7 +19,6 @@ public class DatabaseContext(
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     modelBuilder.UseSerialColumns();
-    modelBuilder.ApplyConfiguration(new AddressConfiguration());
     modelBuilder.ApplyConfiguration(new AttendanceConfiguration());
     modelBuilder.ApplyConfiguration(new CustomerConfiguration());
     modelBuilder.ApplyConfiguration(new DisciplineConfiguration());
@@ -33,15 +32,14 @@ public class DatabaseContext(
     modelBuilder.ApplyConfiguration(new UserConfiguration());
   }
 
-  public DbSet<Discipline> Disciplines => Set<Discipline>();
-  public DbSet<Customer> Customers => Set<Customer>();
-  public DbSet<Order> Orders => Set<Order>();
-  public DbSet<Address> Addresses => Set<Address>();
-  public DbSet<Tuition> Tuitions => Set<Tuition>();
-  public DbSet<Person> Person => Set<Person>();
-  public DbSet<Product> Product => Set<Product>();
-  public DbSet<Teacher> Teachers => Set<Teacher>();
-  public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
-  public DbSet<User> Users => Set<User>();
-  public DbSet<Sale> Sales => Set<Sale>();
+  public DbSet<DisciplineModel> Disciplines => Set<DisciplineModel>();
+  public DbSet<CustomerModel> Customers => Set<CustomerModel>();
+  public DbSet<OrderModel> Orders => Set<OrderModel>();
+  public DbSet<TuitionModel> Tuitions => Set<TuitionModel>();
+  public DbSet<PersonModel> People => Set<PersonModel>();
+  public DbSet<ProductModel> Products => Set<ProductModel>();
+  public DbSet<TeacherModel> Teachers => Set<TeacherModel>();
+  public DbSet<RefreshTokenModel> RefreshTokens => Set<RefreshTokenModel>();
+  public DbSet<UserModel> Users => Set<UserModel>();
+  public DbSet<SaleModel> Sales => Set<SaleModel>();
 }
