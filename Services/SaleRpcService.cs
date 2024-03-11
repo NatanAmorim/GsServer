@@ -13,7 +13,7 @@ public class SaleRpcService : SaleService.SaleServiceBase
     _dbContext = dbContext;
   }
 
-  public override Task<GetAllSalesResponse> GetAll(GetAllSalesRequest request, ServerCallContext context)
+  public override Task<GetPaginatedSalesResponse> GetPaginated(GetPaginatedSalesRequest request, ServerCallContext context)
   {
     throw new NotImplementedException();
   }

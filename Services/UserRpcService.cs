@@ -17,25 +17,34 @@ public class UserRpcService : UserService.UserServiceBase
     _dbContext = dbContext;
   }
 
-  public override async Task<GetAllUsersResponse> GetAll(GetAllUsersRequest request, ServerCallContext context)
+  public override async Task<GetPaginatedUsersResponse> GetPaginated(GetPaginatedUsersRequest request, ServerCallContext context)
   {
     _logger.LogInformation("Listing Users");
-    List<UserModel> Users =
-      await _dbContext.Users
+    IQueryable<GetUserByIdResponse> Query = _dbContext.Users.Select(
+      User => new GetUserByIdResponse
+      {
+        UserId = User.UserId,
+        Email = User.Email,
+        Role = User.Role,
+      }
+    );
+
+    List<GetUserByIdResponse> Users = [];
+
+    // If cursor is bigger than the size of the collection you will get the following error
+    // ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
+    // My solution (hack) will be on Front-end:
+    // if (response.collection.count < 20) don't make GetPaginated request anymore.
+    Users = await Query
+      .Where(x => x.UserId > request.Cursor)
+      .Take(20)
       .ToListAsync();
 
-    GetAllUsersResponse response = new();
+    GetPaginatedUsersResponse response = new();
 
-    response.Users.AddRange(
-      Users.Select(
-        User => new GetUserByIdResponse
-        {
-          Id = User.Id,
-          Email = User.Email,
-          Role = User.Role,
-        }
-      )
-    );
+    response.Users.AddRange(Users);
+    // Id of the last element of the list same as `Users[Users.Count - 1].Id`
+    response.NextCursor = Users[^1].UserId;
 
     _logger.LogInformation("Users have been listed successfully");
     return response;
@@ -66,7 +75,7 @@ public class UserRpcService : UserService.UserServiceBase
     );
     return new GetUserByIdResponse
     {
-      Id = User.Id,
+      UserId = User.UserId,
       Email = User.Email,
       Role = User.Role,
     };

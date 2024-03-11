@@ -2,19 +2,18 @@ namespace gs_server.Models;
 
 public class OrderModel
 {
-  public int Id { get; init; }
+  public int OrderId { get; init; }
   public required SaleModel Sale { get; set; }
+  public required OrderStatus Status { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   public required int CreatedBy { get; init; }
 }
 
-// TODO these Status should be per item
 public enum OrderStatus
 {
-  AwaitingPayment = 0, // Aguardando pagamento.
-  Pending = 1, // Pendente.
-  Delivered = 2, // Entregue.
-  Canceled = 3, // Cancelado.
-  Returned = 4, // Devolvido.
+  AwaitingPayment = 0,
+  Pending = 1,
+  Delivered = 2,
+  Canceled = 3,
+  Returned = 4,
 }
-

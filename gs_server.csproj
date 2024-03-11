@@ -36,7 +36,7 @@
     <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\person.proto" />
     <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\product.proto" />
     <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\sale.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\teacher.proto" />
+    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\instructor.proto" />
     <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\time_of_day.proto" />
     <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\tuition.proto" />
     <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\user.proto" />

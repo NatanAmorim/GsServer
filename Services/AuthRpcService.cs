@@ -69,7 +69,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
 
     RefreshTokenModel refreshTokenEntity = new()
     {
-      UserId = User.Id,
+      UserId = User.UserId,
       Token = RefreshToken
     };
 
@@ -270,7 +270,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
   {
     List<Claim> claims =
     [
-        new Claim(ClaimTypes.NameIdentifier, User.Id!.ToString()),
+        new Claim(ClaimTypes.NameIdentifier, User.UserId!.ToString()),
         new Claim(ClaimTypes.Email, User.Email)
     ];
 

@@ -13,7 +13,7 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
     _dbContext = dbContext;
   }
 
-  public override Task<GetAllAttendancesResponse> GetAll(GetAllAttendancesRequest request, ServerCallContext context)
+  public override Task<GetPaginatedAttendancesResponse> GetPaginated(GetPaginatedAttendancesRequest request, ServerCallContext context)
   {
     throw new NotImplementedException();
   }

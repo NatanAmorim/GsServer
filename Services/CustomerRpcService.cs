@@ -13,7 +13,7 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
     _dbContext = dbContext;
   }
 
-  public override Task<GetAllCustomersResponse> GetAll(GetAllCustomersRequest request, ServerCallContext context)
+  public override Task<GetPaginatedCustomersResponse> GetPaginated(GetPaginatedCustomersRequest request, ServerCallContext context)
   {
     throw new NotImplementedException();
   }

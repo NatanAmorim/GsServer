@@ -4,13 +4,15 @@
 
 - [x] Create a `TODO.md`
 - [ ] Implement gRPC services
+- [ ] Implement InvoiceBackgroundService
 
 ## Medium Priority
 
-- [ ] Finish implementing Order
-- [ ] Finish implementing Attendance
+- [ ] Finish implementing Order Architecture
+- [ ] Finish implementing Attendance Architecture
+- [ ] Implement RpcService Put Methods
 - [ ] Implement [ULID](https://github.com/Cysharp/Ulid) with EntityFramework
-- [ ] Add Something like RequestId to every log
+- [ ] Add Something like RequestId to every log (Maybe `RequestId = Guid.newGuid().ToString()`)
 - [ ] Track ProductStockAmount changes in a ephemeral table
 - [ ] Add something like `app.UseSerilogRequestLogging();` but for gRPC
 
@@ -22,6 +24,7 @@
 - [ ] Add a method to change Roles on AuthServices
 - [ ] Add a RateLimiter
 - [ ] Add a GlobalExceptionHandlingMiddleware
+- [ ] Add a Payment Gateway like Stripe, Paypal, MercadoPago, Nubank for invoice, billing and automatic debit payment.
 - [ ] Create Better documentation in a folder called `docs/`
 
 <!-- ## Notes -->

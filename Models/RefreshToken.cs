@@ -2,7 +2,7 @@ namespace gs_server.Models;
 
 public class RefreshTokenModel
 {
-  public int Id { get; init; }
+  public int RefreshTokenId { get; init; }
   public required int UserId { get; init; }
   public required string Token { get; set; }
   public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

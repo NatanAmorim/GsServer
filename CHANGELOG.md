@@ -21,6 +21,17 @@ changed:
 fixed:
 -->
 
+## 0.8.0 (Mar 11, 2024)
+
+- added: Create InvoiceBackgroundService (not finished).
+- added: Create Models "BackgroundJob, Notification, Subscription, SubscriptionBilling, SaleBilling, Promotion".
+- changed: Implement Cursor pagination (replaced GetAll).
+- changed: Update protobufs from `4bd2bcfe3` to `b1e3e6a23`.
+- changed: Every model ID now has a prefix in it to make it more readable.
+- changed: Major changes in models that will not be documented because it is not ready for release and consumption yet.
+- changed: Rename "Teacher" to "Instructor".
+- changed: Remove control flow enums.
+
 ## 0.7.0 (Mar 03, 2024)
 
 - added: Create `CONTRIBUTING.md`.
@@ -31,7 +42,7 @@ fixed:
 - changed: Add suffix "Model" to every model to avoid problems with generated files.
 - changed: Change "Address" data type to string and delete AddressModel.
 - changed: Picture now can be binary on upload and path from services like Imgur, AWS S3, Azure Blob, and more.
-- changed: Update protobufs to the most recent version.
+- changed: Update protobufs  from `726541499` to `4bd2bcfe3`.
 - changed: Remove AutoMapper package.
 - changed: Update Microsoft.EntityFrameworkCore.Design package to "8.0.2".
 - changed: gs_test_db dev password.
@@ -41,7 +52,7 @@ fixed:
 - added: Start implementation of gRPC with the new protobufs.
 - added: Authentication and Authorization.
 - added: Create `TODO.md`.
-- changed: Update protobufs to the most recent version.
+- changed: Update protobufs  from `3c0043404` to `726541499`.
 - changed: Removed wildcard operator `*` in `<ItemGroup>` on `gs_server.csproj` causing a warning loop on vscode when there's an error.
 
 ## 0.5.0 (Feb 27, 2024)

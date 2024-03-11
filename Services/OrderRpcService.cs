@@ -13,7 +13,7 @@ public class OrderRpcService : OrderService.OrderServiceBase
     _dbContext = dbContext;
   }
 
-  public override Task<GetAllOrdersResponse> GetAll(GetAllOrdersRequest request, ServerCallContext context)
+  public override Task<GetPaginatedOrdersResponse> GetPaginated(GetPaginatedOrdersRequest request, ServerCallContext context)
   {
     throw new NotImplementedException();
   }

@@ -13,7 +13,7 @@ public class DisciplineRpcService : DisciplineService.DisciplineServiceBase
     _dbContext = dbContext;
   }
 
-  public override Task<GetAllDisciplinesResponse> GetAll(GetAllDisciplinesRequest request, ServerCallContext context)
+  public override Task<GetPaginatedDisciplinesResponse> GetPaginated(GetPaginatedDisciplinesRequest request, ServerCallContext context)
   {
     throw new NotImplementedException();
   }
