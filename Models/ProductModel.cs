@@ -16,31 +16,31 @@ public class ProductModel
 
 public class ProductBrandModel
 {
-  public int ProductId { get; init; }
+  public int ProductBrandId { get; init; }
   public required string Name { get; set; }
 }
 
 public class ProductCategoryModel
 {
-  public int ProductId { get; init; }
+  public int ProductCategoryId { get; init; }
   public required string Name { get; set; }
 }
 
 public class ProductVariantModel
 {
-  public int VariantId { get; init; }
+  public int ProductVariantId { get; init; }
   public required string Color { get; set; }
   public required string Size { get; set; }
   public required string BarCode { get; set; }
   public required string Sku { get; set; }
-  public required float UnitPrice { get; set; }
+  public required decimal UnitPrice { get; set; }
   public required ProductVariantInventoryModel Inventory { get; set; }
 }
 
 public class ProductVariantInventoryModel
 {
-  public int InventoryId { get; init; }
-  public int VariantId { get; set; }
+  public int ProductVariantInventoryId { get; init; }
+  public int ProductVariantId { get; set; }
   public required int QuantityAvailable { get; set; }
   // The minimum number of units required to ensure no shortages will occur.
   // When the number of product units reaches this threshold level, a purchase

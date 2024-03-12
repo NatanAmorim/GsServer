@@ -4,12 +4,11 @@ public class DisciplineModel
 {
   public int DisciplineId { get; init; }
   public required string Name { get; set; }
-  public required float TuitionPrice { get; set; }
+  public required decimal TuitionPrice { get; set; }
   public required InstructorModel Instructor { get; set; }
   public required TimeOnly StartTime { get; set; }
   public required TimeOnly EndTime { get; set; }
   public required List<DayOfWeek> ClassDays { get; set; } // Dias de aula.
-  public List<CustomerModel> Students { get; set; } = [];
   public bool IsActive { get; set; } = true;
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   public required int CreatedBy { get; init; }

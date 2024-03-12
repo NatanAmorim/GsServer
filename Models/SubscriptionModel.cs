@@ -8,8 +8,8 @@ public class SubscriptionModel
   public required int PayDay { get; set; }
   public required DateOnly StartDate { get; set; }
   public DateOnly? EndDate { get; set; } // Date the subscription was cancelled
-  public required float Price { get; set; }
-  public required bool IsActive { get; set; }
+  public required decimal Price { get; set; }
+  public bool IsActive { get; set; } = true;
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   public required int CreatedBy { get; init; }
 }

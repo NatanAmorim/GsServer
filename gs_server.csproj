@@ -29,16 +29,24 @@
   <ItemGroup>
     <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\attendance.proto" />
     <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\auth.proto" />
+    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\background_job.proto" />
     <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\calendar_date.proto" />
     <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\customer.proto" />
+    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\decimal.proto" />
     <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\discipline.proto" />
+    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\instructor.proto" />
+    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\notification.proto" />
     <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\order.proto" />
+    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\payment.proto" />
     <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\person.proto" />
     <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\product.proto" />
+    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\promotion.proto" />
+    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\return.proto" />
     <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\sale.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\instructor.proto" />
+    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\sale_billing.proto" />
+    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\subscription.proto" />
+    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\subscription_billing.proto" />
     <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\time_of_day.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\tuition.proto" />
     <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\user.proto" />
     <!-- <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\*.proto" /> -->
   </ItemGroup>

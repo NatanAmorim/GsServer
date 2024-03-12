@@ -7,6 +7,16 @@ public class PaymentModel
   public required List<PaymentInstallmentModel> Installments { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   public required int CreatedBy { get; init; }
+
+  public decimal TotalAmountOwed()
+  {
+    throw new NotImplementedException();
+  }
+
+  public decimal TotalAmountPaid()
+  {
+    throw new NotImplementedException();
+  }
 }
 
 /*
@@ -29,23 +39,12 @@ There are three main types of installment payments:
 */
 public class PaymentInstallmentModel
 {
-  public int InstallmentId { get; init; }
+  public int PaymentInstallmentId { get; init; }
   public int PaymentId { get; set; }
   public int InstallmentNumber { get; set; } // Sequential number, (e.g, "${installment.InstallmentNumber} of {payment.Installments.Count}" = “2 of 6”)
   public decimal InstallmentAmount { get; set; }
-  public int Amount { get; set; }
   public required string PaymentMethod { get; set; } // (e.g., "money", "credit card", "debit card", ...).
   public DateOnly? DueDate { get; set; } // Optional property for due date
-
-  public float TotalAmountOwed()
-  {
-    throw new NotImplementedException();
-  }
-
-  public float TotalAmountPaid()
-  {
-    throw new NotImplementedException();
-  }
 }
 
 // TODO Implement promotional offers (discounts, trials, upgrades).
