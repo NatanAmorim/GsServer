@@ -9,7 +9,7 @@ public class SaleBillingModel
 {
   public int SaleBillingId { get; init; }
   public required int SaleId { get; set; }
-  public required string Observations { get; set; }
+  public required string Comments { get; set; }
   public required decimal TotalDiscount { get; init; }
   public required PaymentModel Payment { get; init; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;

@@ -8,7 +8,7 @@ public class DisciplineModel
   public required InstructorModel Instructor { get; set; }
   public required TimeOnly StartTime { get; set; }
   public required TimeOnly EndTime { get; set; }
-  public required List<DayOfWeek> ClassDays { get; set; } // Dias de aula.
+  public required List<DayOfWeek> ClassDays { get; set; }
   public bool IsActive { get; set; } = true;
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   public required int CreatedBy { get; init; }

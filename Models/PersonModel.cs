@@ -6,8 +6,10 @@ public class PersonModel
   public required string Name { get; set; }
   public required string MobilePhoneNumber { get; set; }
   public required string BirthDate { get; set; }
-  public required string Cpf { get; set; } // Cadastro de Pessoas Físicas (CPF)
-  public required string Cin { get; set; } // Carteira de Identidade Nacional (CIN)
+  // Cadastro de Pessoas Físicas (CPF)
+  public required string Cpf { get; set; }
+  // Carteira de Identidade Nacional (CIN)
+  public required string Cin { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   public required int CreatedBy { get; init; }
 }

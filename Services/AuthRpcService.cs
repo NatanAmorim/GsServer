@@ -25,9 +25,12 @@ public class AuthRpcService : AuthService.AuthServiceBase
   [AllowAnonymous]
   public override async Task<LoginResponse> Login(LoginRequest request, ServerCallContext context)
   {
+
+    string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     _logger.LogInformation(
-      "Login attempt, searching for User {Username}",
-      request.Email.Trim().ToLower()
+      "({TraceIdentifier}) Login attempt, searching for User {UserId}.",
+      RequestTracerId,
+      0 // TODO get something here, maybe phone like (18) XXXXX-3114
     );
 
     UserModel? User =
@@ -38,8 +41,8 @@ public class AuthRpcService : AuthService.AuthServiceBase
     if (User is null)
     {
       _logger.LogWarning(
-        "Error in login attempt, Incorrect User {User} and/or incorrect password.",
-        request.Email.Trim().ToLower()
+        "({TraceIdentifier}) Error in login attempt, Incorrect User and/or incorrect password.",
+        RequestTracerId
       );
       throw new RpcException(new Status(
         StatusCode.Unauthenticated, "Erro na tentativa de login, Usuário e/ou Senha incorreto."
@@ -55,8 +58,8 @@ public class AuthRpcService : AuthService.AuthServiceBase
     if (isPasswordCorrect == false)
     {
       _logger.LogWarning(
-        "Error in login attempt, incorrect User {User} and/or incorrect password.",
-        request.Email.Trim().ToLower()
+        "({TraceIdentifier}) Error in login attempt, incorrect User and/or incorrect password.",
+        RequestTracerId
       );
 
       throw new RpcException(new Status(
@@ -82,8 +85,8 @@ public class AuthRpcService : AuthService.AuthServiceBase
     await _dbContext.SaveChangesAsync();
 
     _logger.LogInformation(
-      "Login successful! Email {Email}",
-      request.Email.Trim().ToLower()
+      "({TraceIdentifier}) Login successful.",
+      RequestTracerId
     );
 
     return new LoginResponse
@@ -95,15 +98,22 @@ public class AuthRpcService : AuthService.AuthServiceBase
 
   public override Task<LogoutResponse> Logout(LogoutRequest request, ServerCallContext context)
   {
+    string RequestTracerId = context.GetHttpContext().TraceIdentifier;
+    _logger.LogInformation(
+      "({TraceIdentifier}) User to requested a new User. RefreshToken {RefreshToken}.",
+      RequestTracerId,
+      request.RefreshToken
+    );
     throw new NotImplementedException();
   }
 
   [AllowAnonymous]
   public override async Task<RegisterResponse> Register(RegisterRequest request, ServerCallContext context)
   {
+    string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     _logger.LogInformation(
-      "Trying to create a new User. Email {Email}",
-      request.Email.Trim().ToLower()
+      "({TraceIdentifier}) Trying to create a new User.",
+      RequestTracerId
     );
 
     UserModel? User =
@@ -114,8 +124,8 @@ public class AuthRpcService : AuthService.AuthServiceBase
     if (User is not null)
     {
       _logger.LogWarning(
-        "Failed to create a new User, Email {Email} already exists in the Database.",
-        request.Email.Trim().ToLower()
+        "({TraceIdentifier}) Failed to create a new User, Email already exists in the Database.",
+        RequestTracerId
       );
 
       throw new RpcException(
@@ -139,25 +149,37 @@ public class AuthRpcService : AuthService.AuthServiceBase
     _dbContext.Users.Add(User);
     await _dbContext.SaveChangesAsync();
 
+    /// DON'T log sensitive information
+    _logger.LogInformation(
+      "({TraceIdentifier}) User {UserId} registered",
+      RequestTracerId,
+      User.UserId
+    );
+
     return new RegisterResponse();
   }
 
   public override async Task<RefreshTokenResponse> RefreshToken(RefreshTokenRequest request, ServerCallContext context)
   {
+    string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
       context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
     );
 
     _logger.LogInformation(
-      "Trying to mint a new JWT with Refresh Token {RefreshToken}.",
-      request.RefreshToken
+      "({TraceIdentifier}) {UserId} minting a new JWT.",
+      RequestTracerId,
+      UserId
     );
 
     UserModel? User = await _dbContext.Users.FindAsync(UserId);
 
     if (User is null)
     {
-      _logger.LogWarning("Failed to mint a new JWT with Refresh Token that was provided, User not found.");
+      _logger.LogWarning(
+        "({TraceIdentifier}) minting JWT failed, User not found.",
+        RequestTracerId
+      );
       throw new RpcException(new Status(
         StatusCode.Unauthenticated, "RefreshToken inválido ou expirado."
       ));
@@ -171,7 +193,8 @@ public class AuthRpcService : AuthService.AuthServiceBase
     if (RefreshToken is null || RefreshToken.UserId != UserId || RefreshToken.ExpiresIn < DateTime.UtcNow || RefreshToken.IsValid == false)
     {
       _logger.LogWarning(
-        "Failed to mint a new JWT, Refresh Token {RefreshToken} Invalid or Expired.",
+        "({TraceIdentifier}) Failed to mint a new JWT, Refresh Token {RefreshToken} Invalid or Expired.",
+        RequestTracerId,
         request.RefreshToken
       );
       throw new RpcException(new Status(
@@ -179,7 +202,10 @@ public class AuthRpcService : AuthService.AuthServiceBase
       ));
     }
 
-    _logger.LogInformation("New JWT created successfully!");
+    _logger.LogInformation(
+      "({TraceIdentifier}) New JWT minted successfully",
+      RequestTracerId
+    );
 
     string JwtToken = GenerateJwtToken(User);
 
@@ -196,12 +222,14 @@ public class AuthRpcService : AuthService.AuthServiceBase
 
   public override async Task<ChangePasswordResponse> ChangePassword(ChangePasswordRequest request, ServerCallContext context)
   {
+    string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
       context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
     );
 
     _logger.LogInformation(
-      "Trying to change password, UserId {UserId}",
+      "({TraceIdentifier}) changing password, UserId {UserId}",
+      RequestTracerId,
       UserId
     );
 
@@ -209,7 +237,10 @@ public class AuthRpcService : AuthService.AuthServiceBase
 
     if (User is null)
     {
-      _logger.LogWarning("Password change request failed, User not found.");
+      _logger.LogWarning(
+        "({TraceIdentifier}) password change failed, User not found.",
+        RequestTracerId
+      );
       throw new RpcException(new Status(
         StatusCode.Unauthenticated, "Usuário e/ou Senha incorreto(s)."
       ));
@@ -224,7 +255,8 @@ public class AuthRpcService : AuthService.AuthServiceBase
     if (isPasswordCorrect == false)
     {
       _logger.LogWarning(
-        "Password change request failed, incorrect Username and/or password. UserId {UserId}",
+        "({TraceIdentifier}) password change failed, incorrect password. UserId {UserId}",
+        RequestTracerId,
         UserId
       );
 
@@ -247,7 +279,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
     return new ChangePasswordResponse();
   }
 
-  private void CreatePasswordHash(
+  private static void CreatePasswordHash(
       string password,
       out byte[] generatedPasswordHash,
       out byte[] generatedPasswordSalt
@@ -258,7 +290,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
     generatedPasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
   }
 
-  private bool VerifyPassword(string password, byte[] passwordHash, byte[] passwordSalt)
+  private static bool VerifyPassword(string password, byte[] passwordHash, byte[] passwordSalt)
   {
     using HMACSHA512 hmac = new(passwordSalt);
     byte[] computeHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
@@ -274,7 +306,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
         new Claim(ClaimTypes.Email, User.Email)
     ];
 
-    SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+    SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(
         _configuration.GetSection("Authentication:Schemes:Bearer:Secret").Value!
       )
     );

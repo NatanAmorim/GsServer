@@ -27,7 +27,8 @@ public class SubscriptionInvoiceBackgroundJob : BackgroundService
             {
                 _logger.LogInformation("Background subscription invoice service started.");
 
-                // Delay for Until 12 AM UTC (9 AM Brasilia time) time asynchronously.
+                // Delay for Until 12 AM UTC time asynchronously.
+                // 9 AM BRT (Brasília Time), UTC/GMT -3 hours.
                 await Task.Delay((int)Math.Ceiling(MillisecondsUntilTwelveAmUtc()), stoppingToken);
 
                 _logger.LogInformation("Background subscription invoice service, generating invoices.");

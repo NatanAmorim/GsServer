@@ -3,7 +3,8 @@ namespace gs_server.Models;
 public class PaymentModel
 {
   public int PaymentId { get; init; }
-  public required string Observations { get; set; } // For things like installment price changed because of returned item.
+  // Comments is for things like installment price changed because of returned item.
+  public required string Comments { get; set; }
   public required List<PaymentInstallmentModel> Installments { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   public required int CreatedBy { get; init; }
