@@ -1,4 +1,4 @@
-namespace gs_server.Models;
+namespace GsServer.Models;
 
 /// <summary>
 /// Billing: Refers to the process of stating the amount due to the customer, it

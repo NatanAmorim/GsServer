@@ -1,4 +1,4 @@
-namespace gs_server.Models;
+namespace GsServer.Models;
 
 // Sends reminders for upcoming events, invoice expirations, etc.
 public class NotificationModel

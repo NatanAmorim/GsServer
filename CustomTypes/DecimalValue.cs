@@ -1,4 +1,4 @@
-namespace gs_server.Protobufs;
+namespace GsServer.Protobufs;
 
 // Source: https://learn.microsoft.com/en-us/aspnet/core/grpc/protobuf?view=aspnetcore-8.0#decimals
 // Source: https://github.com/dotnet-architecture/eBooks/blob/1ed30275281b9060964fcb2a4c363fe7797fe3f3/current/grpc-for-wcf-developers/gRPC-for-WCF-Developers.pdf#decimals

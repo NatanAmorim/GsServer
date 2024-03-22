@@ -1,4 +1,4 @@
-namespace gs_server.Models;
+namespace GsServer.Models;
 
 public class AttendanceModel
 {

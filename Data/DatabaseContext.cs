@@ -1,7 +1,7 @@
 global using Microsoft.EntityFrameworkCore;
-using gs_server;
-using gs_server.EntityConfigurations;
-using gs_server.Models;
+using GsServer;
+using GsServer.EntityConfigurations;
+using GsServer.Models;
 
 public class DatabaseContext(
     DbContextOptions<DatabaseContext> options,

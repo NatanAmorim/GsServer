@@ -5,9 +5,9 @@ using System.Text;
 using Grpc.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
-using gs_server.Models;
-using gs_server.Protobufs;
-namespace gs_server.Services;
+using GsServer.Models;
+using GsServer.Protobufs;
+namespace GsServer.Services;
 
 [Authorize]
 public class AuthRpcService : AuthService.AuthServiceBase
@@ -28,7 +28,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
 
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     _logger.LogInformation(
-      "({TraceIdentifier}) Login attempt, searching for User {UserId}.",
+      "({TraceIdentifier}) Login attempt, searching for User {UserId}",
       RequestTracerId,
       0 // TODO get something here, maybe phone like (18) XXXXX-3114
     );
@@ -41,11 +41,11 @@ public class AuthRpcService : AuthService.AuthServiceBase
     if (User is null)
     {
       _logger.LogWarning(
-        "({TraceIdentifier}) Error in login attempt, Incorrect User and/or incorrect password.",
+        "({TraceIdentifier}) Error in login attempt, User not found",
         RequestTracerId
       );
       throw new RpcException(new Status(
-        StatusCode.Unauthenticated, "Erro na tentativa de login, Usuário e/ou Senha incorreto."
+        StatusCode.Unauthenticated, "Erro na tentativa de login, Usuário e/ou Senha incorreto"
       ));
     }
 
@@ -58,12 +58,12 @@ public class AuthRpcService : AuthService.AuthServiceBase
     if (isPasswordCorrect == false)
     {
       _logger.LogWarning(
-        "({TraceIdentifier}) Error in login attempt, incorrect User and/or incorrect password.",
+        "({TraceIdentifier}) Error in login attempt, incorrect User and/or incorrect password",
         RequestTracerId
       );
 
       throw new RpcException(new Status(
-        StatusCode.Unauthenticated, "Erro na tentativa de login, Usuário e/ou Senha incorreto."
+        StatusCode.Unauthenticated, "Erro na tentativa de login, Usuário e/ou Senha incorreto"
       ));
     }
 
@@ -85,7 +85,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
     await _dbContext.SaveChangesAsync();
 
     _logger.LogInformation(
-      "({TraceIdentifier}) Login successful.",
+      "({TraceIdentifier}) Login successful",
       RequestTracerId
     );
 
@@ -100,7 +100,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     _logger.LogInformation(
-      "({TraceIdentifier}) User to requested a new User. RefreshToken {RefreshToken}.",
+      "({TraceIdentifier}) User to requested a new User. RefreshToken {RefreshToken}",
       RequestTracerId,
       request.RefreshToken
     );
@@ -112,7 +112,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     _logger.LogInformation(
-      "({TraceIdentifier}) Trying to create a new User.",
+      "({TraceIdentifier}) Trying to create a new User",
       RequestTracerId
     );
 
@@ -124,7 +124,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
     if (User is not null)
     {
       _logger.LogWarning(
-        "({TraceIdentifier}) Failed to create a new User, Email already exists in the Database.",
+        "({TraceIdentifier}) Failed to create a new User, Email already exists in the Database",
         RequestTracerId
       );
 
@@ -167,7 +167,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
     );
 
     _logger.LogInformation(
-      "({TraceIdentifier}) {UserId} minting a new JWT.",
+      "({TraceIdentifier}) {UserId} minting a new JWT",
       RequestTracerId,
       UserId
     );
@@ -177,11 +177,11 @@ public class AuthRpcService : AuthService.AuthServiceBase
     if (User is null)
     {
       _logger.LogWarning(
-        "({TraceIdentifier}) minting JWT failed, User not found.",
+        "({TraceIdentifier}) minting JWT failed, User not found",
         RequestTracerId
       );
       throw new RpcException(new Status(
-        StatusCode.Unauthenticated, "RefreshToken inválido ou expirado."
+        StatusCode.Unauthenticated, "RefreshToken inválido ou expirado"
       ));
     }
 
@@ -193,12 +193,12 @@ public class AuthRpcService : AuthService.AuthServiceBase
     if (RefreshToken is null || RefreshToken.UserId != UserId || RefreshToken.ExpiresIn < DateTime.UtcNow || RefreshToken.IsValid == false)
     {
       _logger.LogWarning(
-        "({TraceIdentifier}) Failed to mint a new JWT, Refresh Token {RefreshToken} Invalid or Expired.",
+        "({TraceIdentifier}) Failed to mint a new JWT, Refresh Token {RefreshToken} Invalid or Expired",
         RequestTracerId,
         request.RefreshToken
       );
       throw new RpcException(new Status(
-        StatusCode.Unauthenticated, "RefreshToken inválido ou expirado."
+        StatusCode.Unauthenticated, "RefreshToken inválido ou expirado"
       ));
     }
 
@@ -238,11 +238,11 @@ public class AuthRpcService : AuthService.AuthServiceBase
     if (User is null)
     {
       _logger.LogWarning(
-        "({TraceIdentifier}) password change failed, User not found.",
+        "({TraceIdentifier}) password change failed, User not found",
         RequestTracerId
       );
       throw new RpcException(new Status(
-        StatusCode.Unauthenticated, "Usuário e/ou Senha incorreto(s)."
+        StatusCode.Unauthenticated, "login ou senha incorreto"
       ));
     }
 
@@ -261,7 +261,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
       );
 
       throw new RpcException(new Status(
-        StatusCode.Unauthenticated, "Usuário e/ou Senha incorreto(s)."
+        StatusCode.Unauthenticated, "login ou senha incorreto"
       ));
     }
 

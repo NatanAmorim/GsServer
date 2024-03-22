@@ -1,7 +1,7 @@
 using System.Text;
 using Amazon.CloudWatchLogs;
-using gs_server.BackgroundServices;
-using gs_server.Services;
+using GsServer.BackgroundServices;
+using GsServer.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -48,7 +48,7 @@ string AwsAccessKeyId = builder.Configuration.GetSection("AWS:S3:AwsAccessKeyId"
 string AwsSecretAccessKey = builder.Configuration.GetSection("AWS:S3:AwsSecretAccessKey").Value!;
 
 // AWS CloudWatch client
-AmazonCloudWatchLogsClient client = new(AwsAccessKeyId, AwsSecretAccessKey);
+// AmazonCloudWatchLogsClient client = new(AwsAccessKeyId, AwsSecretAccessKey);
 
 builder.Host.UseSerilog(
   (context, configuration) =>
@@ -90,7 +90,7 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-  Log.Information("Server initialized.");
+  Log.Information("Server initialized");
 }
 
 app.Use(async (context, next) =>
@@ -109,7 +109,7 @@ app.Use(async (context, next) =>
 
   // Log response details (e.g., status code, headers)
   Log.Information(
-    "({TraceIdentifier}) Sent gRPC response.",
+    "({TraceIdentifier}) Sent gRPC response",
     context.TraceIdentifier
   );
 });

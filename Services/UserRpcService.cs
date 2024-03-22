@@ -1,10 +1,10 @@
 using System.Security.Claims;
 using Grpc.Core;
-using gs_server.Models;
-using gs_server.Protobufs;
+using GsServer.Models;
+using GsServer.Protobufs;
 using Microsoft.AspNetCore.Authorization;
 
-namespace gs_server.Services;
+namespace GsServer.Services;
 
 [Authorize]
 public class UserRpcService : UserService.UserServiceBase

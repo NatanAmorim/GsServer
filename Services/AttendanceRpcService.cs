@@ -1,7 +1,7 @@
 using Grpc.Core;
-using gs_server.Protobufs;
+using GsServer.Protobufs;
 
-namespace gs_server.Services;
+namespace GsServer.Services;
 
 public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
 {

@@ -1,4 +1,4 @@
-namespace gs_server;
+namespace GsServer;
 
 public readonly struct Result<TValue, TError>
 {

@@ -1,4 +1,4 @@
-namespace gs_server.BackgroundServices;
+namespace GsServer.BackgroundServices;
 
 /// <summary>
 /// Invoice: Lists the products or services delivered or provided, along with
@@ -25,19 +25,19 @@ public class SubscriptionInvoiceBackgroundJob : BackgroundService
         {
             try
             {
-                _logger.LogInformation("Background subscription invoice service started.");
+                _logger.LogInformation("Background subscription invoice service started");
 
                 // Delay for Until 12 AM UTC time asynchronously.
                 // 9 AM BRT (Brasília Time), UTC/GMT -3 hours.
                 await Task.Delay((int)Math.Ceiling(MillisecondsUntilTwelveAmUtc()), stoppingToken);
 
-                _logger.LogInformation("Background subscription invoice service, generating invoices.");
+                _logger.LogInformation("Background subscription invoice service, generating invoices");
                 // TODO
 
-                _logger.LogInformation("Background subscription invoice service, sending emails.");
+                _logger.LogInformation("Background subscription invoice service, sending emails");
                 // TODO
 
-                _logger.LogInformation("Background subscription invoice service work completed.");
+                _logger.LogInformation("Background subscription invoice service work completed");
             }
             catch (Exception Exception)
             {
@@ -45,7 +45,7 @@ public class SubscriptionInvoiceBackgroundJob : BackgroundService
                     "Background invoice service stopped because of an error {Exception}",
                     Exception
                 );
-                // break; // TODO do i need to break?
+                // break; // TODO do I need to break?
             }
         }
     }

@@ -19,6 +19,11 @@ e este projeto adere a [Versionamento Semântico (PT-BR)](https://semver.org/lan
 - Finish implementation of gRPC with the new protobufs.
 -->
 
+## 0.11.0-BETA (Mar 22, 2024)
+
+- Rename Package and Project from "gs_server" to "GsServer".
+- Update protobufs from `617c788f5` to `a1d46b748`.
+
 ## 0.10.0-BETA (Mar 22, 2024)
 
 - Create "RequestTracerId" in every log using `HttpContext.TraceIdentifier`.
@@ -65,7 +70,7 @@ e este projeto adere a [Versionamento Semântico (PT-BR)](https://semver.org/lan
 - Authentication and Authorization.
 - Create `TODO.md`.
 - Update protobufs  from `3c0043404` to `726541499`.
-- Removed wildcard operator `*` in `<ItemGroup>` on `gs_server.csproj` causing a warning loop on vscode when there's an error.
+- Removed wildcard operator `*` in `<ItemGroup>` on `GsServer.csproj` causing a warning loop on vscode when there's an error.
 
 ## 0.5.0-BETA (Feb 27, 2024)
 

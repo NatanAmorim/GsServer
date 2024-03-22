@@ -3,7 +3,7 @@ using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
 
-namespace gs_server.Services;
+namespace GsServer.Services;
 
 public class AwsS3Service
 {

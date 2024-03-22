@@ -1,9 +1,9 @@
 using System.Security.Claims;
 using Grpc.Core;
-using gs_server.Models;
-using gs_server.Protobufs;
+using GsServer.Models;
+using GsServer.Protobufs;
 
-namespace gs_server.Services;
+namespace GsServer.Services;
 
 public class ProductRpcService : ProductService.ProductServiceBase
 {
@@ -22,7 +22,7 @@ public class ProductRpcService : ProductService.ProductServiceBase
       context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
     );
     _logger.LogInformation(
-      "({TraceIdentifier}) User {UserID} accessing all records ({RecordType}).",
+      "({TraceIdentifier}) User {UserID} accessing all records ({RecordType})",
       RequestTracerId,
       UserId,
       typeof(ProductModel).Name
@@ -84,7 +84,7 @@ public class ProductRpcService : ProductService.ProductServiceBase
     );
 
     _logger.LogInformation(
-      "({TraceIdentifier}) User {UserID} accessing record ({RecordType}) with ID ({RecordId}).",
+      "({TraceIdentifier}) User {UserID} accessing record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
       UserId,
       typeof(ProductModel).Name,
@@ -150,7 +150,7 @@ public class ProductRpcService : ProductService.ProductServiceBase
     );
 
     _logger.LogInformation(
-      "({TraceIdentifier}) User {UserID} creating new record ({RecordType}).",
+      "({TraceIdentifier}) User {UserID} creating new record ({RecordType})",
       RequestTracerId,
       UserId,
       typeof(ProductModel).Name
@@ -191,7 +191,7 @@ public class ProductRpcService : ProductService.ProductServiceBase
     await _dbContext.SaveChangesAsync();
 
     _logger.LogInformation(
-      "({TraceIdentifier}) record ({RecordType}) created successfully, RecordId {RecordId}.",
+      "({TraceIdentifier}) record ({RecordType}) created successfully, RecordId {RecordId}",
       RequestTracerId,
       typeof(ProductModel).Name,
       Product.ProductId
@@ -207,7 +207,7 @@ public class ProductRpcService : ProductService.ProductServiceBase
       context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
     );
     _logger.LogInformation(
-      "({TraceIdentifier}) User {UserID} updating record ({RecordType}) with ID ({RecordId}).",
+      "({TraceIdentifier}) User {UserID} updating record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
       UserId,
       typeof(ProductModel).Name,
@@ -215,7 +215,7 @@ public class ProductRpcService : ProductService.ProductServiceBase
     );
 
     _logger.LogInformation(
-      "({TraceIdentifier}) record ({RecordType}) updated successfully.",
+      "({TraceIdentifier}) record ({RecordType}) updated successfully",
       RequestTracerId,
       typeof(ProductModel).Name
     );
@@ -250,7 +250,7 @@ public class ProductRpcService : ProductService.ProductServiceBase
       context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
     );
     _logger.LogInformation(
-      "({TraceIdentifier}) User {UserID} deleting record ({RecordType}) with ID ({RecordId}).",
+      "({TraceIdentifier}) User {UserID} deleting record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
       UserId,
       typeof(ProductModel).Name,
@@ -276,7 +276,7 @@ public class ProductRpcService : ProductService.ProductServiceBase
     await _dbContext.SaveChangesAsync();
 
     _logger.LogInformation(
-      "({TraceIdentifier}) record ({RecordType}) deleted successfully.",
+      "({TraceIdentifier}) record ({RecordType}) deleted successfully",
       RequestTracerId,
       typeof(ProductModel).Name
     );

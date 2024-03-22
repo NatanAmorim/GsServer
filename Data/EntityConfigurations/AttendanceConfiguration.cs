@@ -1,7 +1,7 @@
-using gs_server.Models;
+using GsServer.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace gs_server.EntityConfigurations;
+namespace GsServer.EntityConfigurations;
 
 public class AttendanceConfiguration : IEntityTypeConfiguration<AttendanceModel>
 {
