@@ -6,13 +6,13 @@ using GsServer.Protobufs;
 
 namespace GsServer.Services;
 
-public class InstructorRpcService : InstructorService.InstructorServiceBase
+public class NotificationRpcService : NotificationService.NotificationServiceBase
 {
   private readonly DatabaseContext _dbContext;
-  private readonly ILogger<InstructorRpcService> _logger;
+  private readonly ILogger<NotificationRpcService> _logger;
   private readonly IMapper _mapper;
-  public InstructorRpcService(
-      ILogger<InstructorRpcService> logger,
+  public NotificationRpcService(
+      ILogger<NotificationRpcService> logger,
       DatabaseContext dbContext,
       IMapper mapper
     )
@@ -22,7 +22,7 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
     _mapper = mapper;
   }
 
-  public override async Task<GetPaginatedInstructorsResponse> GetPaginatedAsync(GetPaginatedInstructorsRequest request, ServerCallContext context)
+  public override async Task<GetPaginatedNotificationsResponse> GetPaginatedAsync(GetPaginatedNotificationsRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -32,43 +32,38 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       "({TraceIdentifier}) User {UserID} accessing multiple records ({RecordType}) with cursor {Cursor}",
       RequestTracerId,
       UserId,
-      typeof(Instructor).Name,
+      typeof(Notification).Name,
       request.Cursor
     );
 
-    IQueryable<GetInstructorByIdResponse> Query = _dbContext.Instructors.Select(
-      Instructor => _mapper.Map<GetInstructorByIdResponse>(Instructor)
+    IQueryable<GetNotificationByIdResponse> Query = _dbContext.Notifications.Select(
+      Notification => _mapper.Map<GetNotificationByIdResponse>(Notification)
     );
 
-    // TODO
-    // IQueryable<GetInstructorByIdResponse> Query = _dbContext.Instructors.Select(
-    //   Instructor => new GetInstructorByIdResponse
+    // Todo
+    // IQueryable<GetNotificationByIdResponse> Query = _dbContext.Notifications.Select(
+    //   Notification => new GetNotificationByIdResponse
     //   {
-    //     InstructorId = Instructor.InstructorId,
-    //     Person = new Person
-    //     {
-    //       Name = Instructor.Person.Name,
-    //       MobilePhoneNumber = Instructor.Person.MobilePhoneNumber,
-    //       BirthDate = Instructor.Person.BirthDate,
-    //       Cpf = Instructor.Person.Cpf,
-    //       Cin = Instructor.Person.Cin,
-    //     },
+    //     NotificationId = Notification.NotificationId,
+    //     Title = Notification.Title,
+    //     Message = Notification.Message,
+    //     IsUnread = Notification.IsUnread,
     //   }
     // );
 
-    List<GetInstructorByIdResponse> Instructors = [];
+    List<GetNotificationByIdResponse> Notifications = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    Instructors = await Query
-      .Where(x => x.InstructorId > request.Cursor)
+    Notifications = await Query
+      .Where(x => x.NotificationId > request.Cursor)
       .Take(20)
       .ToListAsync();
 
-    GetPaginatedInstructorsResponse response = new();
+    GetPaginatedNotificationsResponse response = new();
 
-    response.Instructors.AddRange(Instructors);
-    if (Instructors.Count < 20)
+    response.Notifications.AddRange(Notifications);
+    if (Notifications.Count < 20)
     {
       /// Avoiding `ArgumentOutOfRangeException`, basically, don't fetch if null
       response.NextCursor = null;
@@ -76,18 +71,18 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
     else
     {
       /// Id of the last element of the list, same value as `Users[Users.Count - 1].Id`
-      response.NextCursor = Instructors[^1].InstructorId;
+      response.NextCursor = Notifications[^1].NotificationId;
     }
 
     _logger.LogInformation(
       "({TraceIdentifier}) multiple records ({RecordType}) accessed successfully",
       RequestTracerId,
-      typeof(Instructor).Name
+      typeof(Notification).Name
     );
     return response;
   }
 
-  public override async Task<GetInstructorByIdResponse> GetByIdAsync(GetInstructorByIdRequest request, ServerCallContext context)
+  public override async Task<GetNotificationByIdResponse> GetByIdAsync(GetNotificationByIdRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -98,47 +93,42 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       "({TraceIdentifier}) User {UserID} accessing record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
       UserId,
-      typeof(Instructor).Name,
-      request.InstructorId
+      typeof(Notification).Name,
+      request.NotificationId
     );
 
-    Instructor? Instructor = await _dbContext.Instructors.FindAsync(request.InstructorId);
+    Notification? Notification = await _dbContext.Notifications.FindAsync(request.NotificationId);
 
-    if (Instructor is null)
+    if (Notification is null)
     {
       _logger.LogWarning(
         "({TraceIdentifier}) record ({RecordType}) not found",
         RequestTracerId,
-        typeof(Instructor).Name
+        typeof(Notification).Name
       );
       throw new RpcException(new Status(
-        StatusCode.NotFound, $"Nenhum produto com ID {request.InstructorId}"
+        StatusCode.NotFound, $"Nenhum produto com ID {request.NotificationId}"
       ));
     }
 
     _logger.LogInformation(
       "({TraceIdentifier}) record ({RecordType}) accessed successfully",
       RequestTracerId,
-      typeof(Instructor).Name
+      typeof(Notification).Name
     );
 
-    return _mapper.Map<GetInstructorByIdResponse>(Instructor);
+    return _mapper.Map<GetNotificationByIdResponse>(Notification);
     // TODO
-    // return new GetInstructorByIdResponse
+    // return new GetNotificationByIdResponse
     // {
-    //   InstructorId = Instructor.InstructorId,
-    //   Person = new Person
-    //   {
-    //     Name = Instructor.Person.Name,
-    //     MobilePhoneNumber = Instructor.Person.MobilePhoneNumber,
-    //     BirthDate = Instructor.Person.BirthDate,
-    //     Cpf = Instructor.Person.Cpf,
-    //     Cin = Instructor.Person.Cin,
-    //   },
+    //   NotificationId = Notification.NotificationId,
+    //   Title = Notification.Title,
+    //   Message = Notification.Message,
+    //   IsUnread = Notification.IsUnread,
     // };
   }
 
-  public override async Task<CreateInstructorResponse> PostAsync(CreateInstructorRequest request, ServerCallContext context)
+  public override async Task<CreateNotificationResponse> PostAsync(CreateNotificationRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -149,41 +139,35 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       "({TraceIdentifier}) User {UserID} creating new record ({RecordType})",
       RequestTracerId,
       UserId,
-      typeof(Instructor).Name
+      typeof(Notification).Name
     );
 
-    Instructor Instructor = _mapper.Map<Instructor>(request);
-    Instructor.CreatedBy = UserId;
+    Notification Notification = _mapper.Map<Notification>(request);
+    Notification.CreatedBy = UserId;
 
     // TODO
-    // var Instructor = new Instructor
+    // var Notification = new Notification
     // {
-    //   Person = new Person
-    //   {
-    //     Name = request.Person.Name,
-    //     MobilePhoneNumber = request.Person.MobilePhoneNumber,
-    //     BirthDate = request.Person.BirthDate,
-    //     Cpf = request.Person.Cpf,
-    //     Cin = request.Person.Cin,
-    //     CreatedBy = UserId,
-    //   },
+    //   UserFk = request.UserFk,
+    //   Title = request.Title,
+    //   Message = request.Message,
     //   CreatedBy = UserId,
     // };
 
-    await _dbContext.AddAsync(Instructor);
+    await _dbContext.AddAsync(Notification);
     await _dbContext.SaveChangesAsync();
 
     _logger.LogInformation(
       "({TraceIdentifier}) record ({RecordType}) created successfully, RecordId {RecordId}",
       RequestTracerId,
-      typeof(Instructor).Name,
-      Instructor.InstructorId
+      typeof(Notification).Name,
+      Notification.NotificationId
     );
 
-    return new CreateInstructorResponse();
+    return new CreateNotificationResponse();
   }
 
-  public override Task<UpdateInstructorResponse> PutAsync(UpdateInstructorRequest request, ServerCallContext context)
+  public override Task<UpdateNotificationResponse> PutAsync(UpdateNotificationRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -193,14 +177,14 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       "({TraceIdentifier}) User {UserID} updating record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
       UserId,
-      typeof(Instructor).Name,
-      request.InstructorId
+      typeof(Notification).Name,
+      request.NotificationId
     );
 
     _logger.LogInformation(
       "({TraceIdentifier}) record ({RecordType}) updated successfully",
       RequestTracerId,
-      typeof(Instructor).Name
+      typeof(Notification).Name
     );
 
     throw new NotImplementedException();
@@ -209,23 +193,23 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
     // if (request.Id <= 0)
     //   throw new RpcException(new Status(StatusCode.InvalidArgument, "You must supply a valid id"));
 
-    // InstructorModel? Instructor = await _dbContext.Instructors.FirstOrDefaultAsync(x => x.Id == request.Id);
-    // if (Instructor is null)
+    // NotificationModel? Notification = await _dbContext.Notifications.FirstOrDefaultAsync(x => x.Id == request.Id);
+    // if (Notification is null)
     // {
     //   throw new RpcException(new Status(
     //     StatusCode.NotFound, $"registro não encontrado"
     //   ));
     // }
 
-    // Instructor.Name = request.Name;
+    // Notification.Name = request.Name;
     // // TODO Add Another fields
 
     // await _dbContext.SaveChangesAsync();
     // // TODO Log => Record (record type) ID Y was updated. Old value of (field name): (old value). New value: (new value). (This logs specific changes made to a field within a record)
-    // return new UpdateInstructorResponse();
+    // return new UpdateNotificationResponse();
   }
 
-  public override async Task<DeleteInstructorResponse> DeleteAsync(DeleteInstructorRequest request, ServerCallContext context)
+  public override async Task<DeleteNotificationResponse> DeleteAsync(DeleteNotificationRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -235,36 +219,36 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
         "({TraceIdentifier}) User {UserID} deleting record ({RecordType}) with ID ({RecordId})",
         RequestTracerId,
         UserId,
-        typeof(Instructor).Name,
-        request.InstructorId
+        typeof(Notification).Name,
+        request.NotificationId
       );
 
-    Instructor? Instructor = await _dbContext.Instructors.FindAsync(request.InstructorId);
+    Notification? Notification = await _dbContext.Notifications.FindAsync(request.NotificationId);
 
-    if (Instructor is null)
+    if (Notification is null)
     {
       _logger.LogWarning(
         "({TraceIdentifier}) Error deleting record ({RecordType}) with ID {Id}, record not found",
         RequestTracerId,
-        typeof(Instructor).Name,
-        request.InstructorId
+        typeof(Notification).Name,
+        request.NotificationId
       );
       throw new RpcException(new Status(
-        StatusCode.NotFound, $"Erro ao remover registro, nenhum registro com ID {request.InstructorId}"
+        StatusCode.NotFound, $"Erro ao remover registro, nenhum registro com ID {request.NotificationId}"
       ));
     }
 
     /// TODO check if record is being used before deleting it use something like PK or FK
 
-    _dbContext.Instructors.Remove(Instructor);
+    _dbContext.Notifications.Remove(Notification);
     await _dbContext.SaveChangesAsync();
 
     _logger.LogInformation(
           "({TraceIdentifier}) record ({RecordType}) deleted successfully",
           RequestTracerId,
-          typeof(Instructor).Name
+          typeof(Notification).Name
         );
 
-    return new DeleteInstructorResponse();
+    return new DeleteNotificationResponse();
   }
 }

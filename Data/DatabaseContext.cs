@@ -1,6 +1,4 @@
 global using Microsoft.EntityFrameworkCore;
-using GsServer;
-using GsServer.EntityConfigurations;
 using GsServer.Models;
 
 public class DatabaseContext(
@@ -13,39 +11,50 @@ public class DatabaseContext(
   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
   {
     base.OnConfiguring(optionsBuilder);
+    /// This line should never be used in production and is only for debugging
+    // optionsBuilder.LogTo(str => Debug.WriteLine(str));
     optionsBuilder.UseNpgsql(_configuration.GetConnectionString("db"));
   }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     modelBuilder.UseSerialColumns();
-    modelBuilder.ApplyConfiguration(new AttendanceConfiguration());
-    modelBuilder.ApplyConfiguration(new CustomerConfiguration());
-    modelBuilder.ApplyConfiguration(new DisciplineConfiguration());
-    modelBuilder.ApplyConfiguration(new OrderConfiguration());
-    modelBuilder.ApplyConfiguration(new PersonConfiguration());
-    modelBuilder.ApplyConfiguration(new ProductConfiguration());
-    modelBuilder.ApplyConfiguration(new RefreshTokenConfiguration());
-    modelBuilder.ApplyConfiguration(new SaleConfiguration());
-    modelBuilder.ApplyConfiguration(new InstructorConfiguration());
-    modelBuilder.ApplyConfiguration(new UserConfiguration());
+    // modelBuilder.ApplyConfiguration(new AttendanceConfiguration());
+    // modelBuilder.ApplyConfiguration(new BackgroundJobConfiguration());
+    // modelBuilder.ApplyConfiguration(new CustomerConfiguration());
+    // modelBuilder.ApplyConfiguration(new DisciplineConfiguration());
+    // modelBuilder.ApplyConfiguration(new InstructorConfiguration());
+    // modelBuilder.ApplyConfiguration(new NotificationConfiguration());
+    // modelBuilder.ApplyConfiguration(new OrderConfiguration());
+    // modelBuilder.ApplyConfiguration(new PaymentConfiguration());
+    // modelBuilder.ApplyConfiguration(new PersonConfiguration());
+    // modelBuilder.ApplyConfiguration(new ProductConfiguration());
+    // modelBuilder.ApplyConfiguration(new PromotionConfiguration());
+    // modelBuilder.ApplyConfiguration(new RefreshTokenConfiguration());
+    // modelBuilder.ApplyConfiguration(new ReturnConfiguration());
+    // modelBuilder.ApplyConfiguration(new SaleConfiguration());
+    // modelBuilder.ApplyConfiguration(new SaleBillingConfiguration());
+    // modelBuilder.ApplyConfiguration(new SubscriptionConfiguration());
+    // modelBuilder.ApplyConfiguration(new SubscriptionBillingConfiguration());
+    // modelBuilder.ApplyConfiguration(new UserConfiguration());
   }
 
-  public DbSet<AttendanceModel> Attendances => Set<AttendanceModel>();
-  public DbSet<BackgroundJobModel> BackgroundJobs => Set<BackgroundJobModel>();
-  public DbSet<CustomerModel> Customers => Set<CustomerModel>();
-  public DbSet<DisciplineModel> Disciplines => Set<DisciplineModel>();
-  public DbSet<InstructorModel> Instructors => Set<InstructorModel>();
-  public DbSet<NotificationModel> Notifications => Set<NotificationModel>();
-  public DbSet<OrderModel> Orders => Set<OrderModel>();
-  public DbSet<PaymentModel> Payments => Set<PaymentModel>();
-  public DbSet<PersonModel> People => Set<PersonModel>();
-  public DbSet<ProductModel> Products => Set<ProductModel>();
-  public DbSet<PromotionModel> Promotions => Set<PromotionModel>();
-  public DbSet<RefreshTokenModel> RefreshTokens => Set<RefreshTokenModel>();
-  public DbSet<SaleModel> Sales => Set<SaleModel>();
-  public DbSet<SaleBillingModel> SalesBilling => Set<SaleBillingModel>();
-  public DbSet<SubscriptionModel> Subscriptions => Set<SubscriptionModel>();
-  public DbSet<SubscriptionBillingModel> SubscriptionsBilling => Set<SubscriptionBillingModel>();
-  public DbSet<UserModel> Users => Set<UserModel>();
+  public DbSet<Attendance> Attendances => Set<Attendance>();
+  public DbSet<BackgroundJobStatus> BackgroundJobs => Set<BackgroundJobStatus>();
+  public DbSet<Customer> Customers => Set<Customer>();
+  public DbSet<Discipline> Disciplines => Set<Discipline>();
+  public DbSet<Instructor> Instructors => Set<Instructor>();
+  public DbSet<Notification> Notifications => Set<Notification>();
+  public DbSet<Order> Orders => Set<Order>();
+  public DbSet<Payment> Payments => Set<Payment>();
+  public DbSet<Person> Persons => Set<Person>(); // Yes, it could also be called "People"
+  public DbSet<Product> Products => Set<Product>();
+  public DbSet<Promotion> Promotions => Set<Promotion>();
+  public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+  public DbSet<Return> Returns => Set<Return>();
+  public DbSet<Sale> Sales => Set<Sale>();
+  public DbSet<SaleBilling> SaleBillings => Set<SaleBilling>();
+  public DbSet<Subscription> Subscriptions => Set<Subscription>();
+  public DbSet<SubscriptionBilling> SubscriptionBillings => Set<SubscriptionBilling>();
+  public DbSet<User> Users => Set<User>();
 }

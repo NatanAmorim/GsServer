@@ -23,7 +23,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
   }
 
   [AllowAnonymous]
-  public override async Task<LoginResponse> Login(LoginRequest request, ServerCallContext context)
+  public override async Task<LoginResponse> LoginAsync(LoginRequest request, ServerCallContext context)
   {
 
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
@@ -33,7 +33,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
       0 // TODO get something here, maybe phone like (18) XXXXX-3114
     );
 
-    UserModel? User =
+    User? User =
       await _dbContext.Users.FirstOrDefaultAsync(
         x => x.Email.Equals(request.Email.Trim().ToLower())
       );
@@ -45,7 +45,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
         RequestTracerId
       );
       throw new RpcException(new Status(
-        StatusCode.Unauthenticated, "Erro na tentativa de login, Usuário e/ou Senha incorreto"
+        StatusCode.Unauthenticated, "Erro na tentativa de login, login ou senha incorreto"
       ));
     }
 
@@ -63,14 +63,14 @@ public class AuthRpcService : AuthService.AuthServiceBase
       );
 
       throw new RpcException(new Status(
-        StatusCode.Unauthenticated, "Erro na tentativa de login, Usuário e/ou Senha incorreto"
+        StatusCode.Unauthenticated, "Erro na tentativa de login, login ou senha incorreto"
       ));
     }
 
     string JwtToken = GenerateJwtToken(User);
     string RefreshToken = GenerateRefreshToken();
 
-    RefreshTokenModel refreshTokenEntity = new()
+    RefreshToken refreshTokenEntity = new()
     {
       UserId = User.UserId,
       Token = RefreshToken
@@ -96,7 +96,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
     };
   }
 
-  public override Task<LogoutResponse> Logout(LogoutRequest request, ServerCallContext context)
+  public override Task<LogoutResponse> LogoutAsync(LogoutRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     _logger.LogInformation(
@@ -108,7 +108,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
   }
 
   [AllowAnonymous]
-  public override async Task<RegisterResponse> Register(RegisterRequest request, ServerCallContext context)
+  public override async Task<RegisterResponse> RegisterAsync(RegisterRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     _logger.LogInformation(
@@ -116,7 +116,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
       RequestTracerId
     );
 
-    UserModel? User =
+    User? User =
       await _dbContext.Users.FirstOrDefaultAsync(
         x => x.Email.Equals(request.Email.Trim().ToLower())
       );
@@ -138,7 +138,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
 
     CreatePasswordHash(request.Password, out byte[] generatedPasswordHash, out byte[] generatedPasswordSalt);
 
-    User = new UserModel
+    User = new User
     {
       Email = request.Email.Trim().ToLower(),
       Role = "user",
@@ -159,7 +159,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
     return new RegisterResponse();
   }
 
-  public override async Task<RefreshTokenResponse> RefreshToken(RefreshTokenRequest request, ServerCallContext context)
+  public override async Task<RefreshTokenResponse> RefreshTokenAsync(RefreshTokenRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -172,7 +172,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
       UserId
     );
 
-    UserModel? User = await _dbContext.Users.FindAsync(UserId);
+    User? User = await _dbContext.Users.FindAsync(UserId);
 
     if (User is null)
     {
@@ -185,7 +185,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
       ));
     }
 
-    RefreshTokenModel? RefreshToken =
+    RefreshToken? RefreshToken =
       await _dbContext.RefreshTokens.FirstOrDefaultAsync(
         x => x.Token.Equals(request.RefreshToken)
       );
@@ -215,12 +215,12 @@ public class AuthRpcService : AuthService.AuthServiceBase
     };
   }
 
-  public override Task<NewPasswordResponse> NewPassword(NewPasswordRequest request, ServerCallContext context)
+  public override Task<NewPasswordResponse> NewPasswordAsync(NewPasswordRequest request, ServerCallContext context)
   {
     throw new NotImplementedException();
   }
 
-  public override async Task<ChangePasswordResponse> ChangePassword(ChangePasswordRequest request, ServerCallContext context)
+  public override async Task<ChangePasswordResponse> ChangePasswordAsync(ChangePasswordRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -233,7 +233,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
       UserId
     );
 
-    UserModel? User = await _dbContext.Users.FindAsync(UserId);
+    User? User = await _dbContext.Users.FindAsync(UserId);
 
     if (User is null)
     {
@@ -297,7 +297,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
     return computeHash.SequenceEqual(passwordHash);
   }
   private string GenerateJwtToken(
-        UserModel User
+        User User
       )
   {
     List<Claim> claims =

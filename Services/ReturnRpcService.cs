@@ -6,13 +6,13 @@ using GsServer.Protobufs;
 
 namespace GsServer.Services;
 
-public class InstructorRpcService : InstructorService.InstructorServiceBase
+public class ReturnRpcService : ReturnService.ReturnServiceBase
 {
   private readonly DatabaseContext _dbContext;
-  private readonly ILogger<InstructorRpcService> _logger;
+  private readonly ILogger<ReturnRpcService> _logger;
   private readonly IMapper _mapper;
-  public InstructorRpcService(
-      ILogger<InstructorRpcService> logger,
+  public ReturnRpcService(
+      ILogger<ReturnRpcService> logger,
       DatabaseContext dbContext,
       IMapper mapper
     )
@@ -22,7 +22,7 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
     _mapper = mapper;
   }
 
-  public override async Task<GetPaginatedInstructorsResponse> GetPaginatedAsync(GetPaginatedInstructorsRequest request, ServerCallContext context)
+  public override async Task<GetPaginatedReturnsResponse> GetPaginatedAsync(GetPaginatedReturnsRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -32,43 +32,45 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       "({TraceIdentifier}) User {UserID} accessing multiple records ({RecordType}) with cursor {Cursor}",
       RequestTracerId,
       UserId,
-      typeof(Instructor).Name,
+      typeof(Return).Name,
       request.Cursor
     );
 
-    IQueryable<GetInstructorByIdResponse> Query = _dbContext.Instructors.Select(
-      Instructor => _mapper.Map<GetInstructorByIdResponse>(Instructor)
+    IQueryable<GetReturnByIdResponse> Query = _dbContext.Returns.Select(
+      Return => _mapper.Map<GetReturnByIdResponse>(Return)
     );
 
     // TODO
-    // IQueryable<GetInstructorByIdResponse> Query = _dbContext.Instructors.Select(
-    //   Instructor => new GetInstructorByIdResponse
+    // IQueryable<GetReturnByIdResponse> Query = _dbContext.Returns.Select(
+    //   Return => new GetReturnByIdResponse
     //   {
-    //     InstructorId = Instructor.InstructorId,
-    //     Person = new Person
+    //     TotalAmountRefunded = Return.TotalAmountRefunded,
+    //     ItemsReturned =
     //     {
-    //       Name = Instructor.Person.Name,
-    //       MobilePhoneNumber = Instructor.Person.MobilePhoneNumber,
-    //       BirthDate = Instructor.Person.BirthDate,
-    //       Cpf = Instructor.Person.Cpf,
-    //       Cin = Instructor.Person.Cin,
-    //     },
+    //       Return.ItemsReturned.Select(
+    //         ItemReturned => new ReturnItem
+    //         {
+    //           ProductVariantFk = ItemReturned.ProductVariantFk,
+    //           QuantityReturned = ItemReturned.QuantityReturned,
+    //         }
+    //       ).ToList(),
+    //     }
     //   }
     // );
 
-    List<GetInstructorByIdResponse> Instructors = [];
+    List<GetReturnByIdResponse> Returns = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    Instructors = await Query
-      .Where(x => x.InstructorId > request.Cursor)
+    Returns = await Query
+      .Where(x => x.ReturnId > request.Cursor)
       .Take(20)
       .ToListAsync();
 
-    GetPaginatedInstructorsResponse response = new();
+    GetPaginatedReturnsResponse response = new();
 
-    response.Instructors.AddRange(Instructors);
-    if (Instructors.Count < 20)
+    response.Returns.AddRange(Returns);
+    if (Returns.Count < 20)
     {
       /// Avoiding `ArgumentOutOfRangeException`, basically, don't fetch if null
       response.NextCursor = null;
@@ -76,18 +78,18 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
     else
     {
       /// Id of the last element of the list, same value as `Users[Users.Count - 1].Id`
-      response.NextCursor = Instructors[^1].InstructorId;
+      response.NextCursor = Returns[^1].ReturnId;
     }
 
     _logger.LogInformation(
       "({TraceIdentifier}) multiple records ({RecordType}) accessed successfully",
       RequestTracerId,
-      typeof(Instructor).Name
+      typeof(Return).Name
     );
     return response;
   }
 
-  public override async Task<GetInstructorByIdResponse> GetByIdAsync(GetInstructorByIdRequest request, ServerCallContext context)
+  public override async Task<GetReturnByIdResponse> GetByIdAsync(GetReturnByIdRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -98,47 +100,50 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       "({TraceIdentifier}) User {UserID} accessing record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
       UserId,
-      typeof(Instructor).Name,
-      request.InstructorId
+      typeof(Return).Name,
+      request.ReturnId
     );
 
-    Instructor? Instructor = await _dbContext.Instructors.FindAsync(request.InstructorId);
+    Return? Return = await _dbContext.Returns.FindAsync(request.ReturnId);
 
-    if (Instructor is null)
+    if (Return is null)
     {
       _logger.LogWarning(
         "({TraceIdentifier}) record ({RecordType}) not found",
         RequestTracerId,
-        typeof(Instructor).Name
+        typeof(Return).Name
       );
       throw new RpcException(new Status(
-        StatusCode.NotFound, $"Nenhum produto com ID {request.InstructorId}"
+        StatusCode.NotFound, $"Nenhum produto com ID {request.ReturnId}"
       ));
     }
 
     _logger.LogInformation(
       "({TraceIdentifier}) record ({RecordType}) accessed successfully",
       RequestTracerId,
-      typeof(Instructor).Name
+      typeof(Return).Name
     );
 
-    return _mapper.Map<GetInstructorByIdResponse>(Instructor);
+    return _mapper.Map<GetReturnByIdResponse>(Return);
+
     // TODO
-    // return new GetInstructorByIdResponse
+    // return new GetReturnByIdResponse
     // {
-    //   InstructorId = Instructor.InstructorId,
-    //   Person = new Person
+    //   TotalAmountRefunded = Return.TotalAmountRefunded,
+    //   ItemsReturned =
     //   {
-    //     Name = Instructor.Person.Name,
-    //     MobilePhoneNumber = Instructor.Person.MobilePhoneNumber,
-    //     BirthDate = Instructor.Person.BirthDate,
-    //     Cpf = Instructor.Person.Cpf,
-    //     Cin = Instructor.Person.Cin,
-    //   },
+    //     Return.ItemsReturned.Select(
+    //       ItemReturned => new ReturnItem
+    //       {
+    //         ProductVariantFk = ItemReturned.ProductVariantFk,
+    //         QuantityReturned = ItemReturned.QuantityReturned,
+    //       }
+    //     ).ToList(),
+    //   }
     // };
   }
 
-  public override async Task<CreateInstructorResponse> PostAsync(CreateInstructorRequest request, ServerCallContext context)
+  public override async Task<CreateReturnResponse> PostAsync(CreateReturnRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -149,41 +154,40 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       "({TraceIdentifier}) User {UserID} creating new record ({RecordType})",
       RequestTracerId,
       UserId,
-      typeof(Instructor).Name
+      typeof(Return).Name
     );
 
-    Instructor Instructor = _mapper.Map<Instructor>(request);
-    Instructor.CreatedBy = UserId;
+    Return Return = _mapper.Map<Return>(request);
+    Return.CreatedBy = UserId;
 
     // TODO
-    // var Instructor = new Instructor
+    // var Return = new Return
     // {
-    //   Person = new Person
-    //   {
-    //     Name = request.Person.Name,
-    //     MobilePhoneNumber = request.Person.MobilePhoneNumber,
-    //     BirthDate = request.Person.BirthDate,
-    //     Cpf = request.Person.Cpf,
-    //     Cin = request.Person.Cin,
-    //     CreatedBy = UserId,
-    //   },
+    //   TotalAmountRefunded = request.TotalAmountRefunded,
+    //   ItemsReturned = request.ItemsReturned.Select(
+    //       ItemReturned => new ReturnItem
+    //       {
+    //         ProductVariantFk = ItemReturned.ProductVariantFk,
+    //         QuantityReturned = ItemReturned.QuantityReturned,
+    //       }
+    //     ).ToList(),
     //   CreatedBy = UserId,
     // };
 
-    await _dbContext.AddAsync(Instructor);
+    await _dbContext.AddAsync(Return);
     await _dbContext.SaveChangesAsync();
 
     _logger.LogInformation(
       "({TraceIdentifier}) record ({RecordType}) created successfully, RecordId {RecordId}",
       RequestTracerId,
-      typeof(Instructor).Name,
-      Instructor.InstructorId
+      typeof(Return).Name,
+      Return.ReturnId
     );
 
-    return new CreateInstructorResponse();
+    return new CreateReturnResponse();
   }
 
-  public override Task<UpdateInstructorResponse> PutAsync(UpdateInstructorRequest request, ServerCallContext context)
+  public override Task<UpdateReturnResponse> PutAsync(UpdateReturnRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -193,14 +197,14 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       "({TraceIdentifier}) User {UserID} updating record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
       UserId,
-      typeof(Instructor).Name,
-      request.InstructorId
+      typeof(Return).Name,
+      request.ReturnId
     );
 
     _logger.LogInformation(
       "({TraceIdentifier}) record ({RecordType}) updated successfully",
       RequestTracerId,
-      typeof(Instructor).Name
+      typeof(Return).Name
     );
 
     throw new NotImplementedException();
@@ -209,23 +213,23 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
     // if (request.Id <= 0)
     //   throw new RpcException(new Status(StatusCode.InvalidArgument, "You must supply a valid id"));
 
-    // InstructorModel? Instructor = await _dbContext.Instructors.FirstOrDefaultAsync(x => x.Id == request.Id);
-    // if (Instructor is null)
+    // ReturnModel? Return = await _dbContext.Returns.FirstOrDefaultAsync(x => x.Id == request.Id);
+    // if (Return is null)
     // {
     //   throw new RpcException(new Status(
     //     StatusCode.NotFound, $"registro não encontrado"
     //   ));
     // }
 
-    // Instructor.Name = request.Name;
+    // Return.Name = request.Name;
     // // TODO Add Another fields
 
     // await _dbContext.SaveChangesAsync();
     // // TODO Log => Record (record type) ID Y was updated. Old value of (field name): (old value). New value: (new value). (This logs specific changes made to a field within a record)
-    // return new UpdateInstructorResponse();
+    // return new UpdateReturnResponse();
   }
 
-  public override async Task<DeleteInstructorResponse> DeleteAsync(DeleteInstructorRequest request, ServerCallContext context)
+  public override async Task<DeleteReturnResponse> DeleteAsync(DeleteReturnRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -235,36 +239,36 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
         "({TraceIdentifier}) User {UserID} deleting record ({RecordType}) with ID ({RecordId})",
         RequestTracerId,
         UserId,
-        typeof(Instructor).Name,
-        request.InstructorId
+        typeof(Return).Name,
+        request.ReturnId
       );
 
-    Instructor? Instructor = await _dbContext.Instructors.FindAsync(request.InstructorId);
+    Return? Return = await _dbContext.Returns.FindAsync(request.ReturnId);
 
-    if (Instructor is null)
+    if (Return is null)
     {
       _logger.LogWarning(
         "({TraceIdentifier}) Error deleting record ({RecordType}) with ID {Id}, record not found",
         RequestTracerId,
-        typeof(Instructor).Name,
-        request.InstructorId
+        typeof(Return).Name,
+        request.ReturnId
       );
       throw new RpcException(new Status(
-        StatusCode.NotFound, $"Erro ao remover registro, nenhum registro com ID {request.InstructorId}"
+        StatusCode.NotFound, $"Erro ao remover registro, nenhum registro com ID {request.ReturnId}"
       ));
     }
 
     /// TODO check if record is being used before deleting it use something like PK or FK
 
-    _dbContext.Instructors.Remove(Instructor);
+    _dbContext.Returns.Remove(Return);
     await _dbContext.SaveChangesAsync();
 
     _logger.LogInformation(
           "({TraceIdentifier}) record ({RecordType}) deleted successfully",
           RequestTracerId,
-          typeof(Instructor).Name
+          typeof(Return).Name
         );
 
-    return new DeleteInstructorResponse();
+    return new DeleteReturnResponse();
   }
 }

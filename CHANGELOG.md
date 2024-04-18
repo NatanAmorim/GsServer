@@ -14,10 +14,11 @@ Todas as alterações notáveis ​​neste projeto serão documentadas neste ar
 O formato é baseado em [Keep a Changelog (PT-BR)](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere a [Versionamento Semântico (PT-BR)](https://semver.org/lang/pt-BR/).
 
-<!-- TODO
-## 1.0.0-RC-1 (Mar XX, 2024)
-- Finish implementation of gRPC with the new protobufs.
--->
+## 1.0.0-RC-1 (Apr 18, 2024)
+
+- Finish basic implementation of gRPC services with the new protobufs, some stuff will be implemented later, but it's not needed for critical functionality.
+- Add Middleware `GlobalExceptionHandler` to be able to log and return even when unknown errors occur, but at the moment does not work with gRPC.
+- Update protobufs from `a1d46b748` to `0adaf3a56`.
 
 ## 0.11.0-BETA (Mar 22, 2024)
 
@@ -27,8 +28,8 @@ e este projeto adere a [Versionamento Semântico (PT-BR)](https://semver.org/lan
 ## 0.10.0-BETA (Mar 22, 2024)
 
 - Create "RequestTracerId" in every log using `HttpContext.TraceIdentifier`.
-- Add Untested `AwsS3Service.cs`.
-- Add Untested `AwsCloudWatch` for logging.
+- Add **Untested** `AwsS3Service.cs`.
+- Add **Untested** `AwsCloudWatch` for logging.
 - Implement "DecimalValue" conversion to "C# Decimal".
 - Update protobufs from `9e568008b` to `617c788f5`.
 

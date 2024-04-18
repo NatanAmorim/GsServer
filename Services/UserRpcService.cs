@@ -17,9 +17,19 @@ public class UserRpcService : UserService.UserServiceBase
     _dbContext = dbContext;
   }
 
-  public override async Task<GetPaginatedUsersResponse> GetPaginated(GetPaginatedUsersRequest request, ServerCallContext context)
+  public override async Task<GetPaginatedUsersResponse> GetPaginatedAsync(GetPaginatedUsersRequest request, ServerCallContext context)
   {
-    _logger.LogInformation("Listing Users");
+    string RequestTracerId = context.GetHttpContext().TraceIdentifier;
+    int UserId = int.Parse(
+      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
+    );
+    _logger.LogInformation(
+      "({TraceIdentifier}) User {UserID} accessing multiple records ({RecordType}) with cursor {Cursor}",
+      RequestTracerId,
+      UserId,
+      typeof(User).Name,
+      request.Cursor
+    );
     IQueryable<GetUserByIdResponse> Query = _dbContext.Users.Select(
       User => new GetUserByIdResponse
       {
@@ -31,10 +41,8 @@ public class UserRpcService : UserService.UserServiceBase
 
     List<GetUserByIdResponse> Users = [];
 
-    // If cursor is bigger than the size of the collection you will get the following error
-    // ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    // My solution (hack) will be on Front-end:
-    // if (response.collection.count < 20) don't make GetPaginated request anymore.
+    /// If cursor is bigger than the size of the collection you will get the following error
+    /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
     Users = await Query
       .Where(x => x.UserId > request.Cursor)
       .Take(20)
@@ -43,20 +51,32 @@ public class UserRpcService : UserService.UserServiceBase
     GetPaginatedUsersResponse response = new();
 
     response.Users.AddRange(Users);
-    // Id of the last element of the list same as `Users[Users.Count - 1].Id`
-    response.NextCursor = Users[^1].UserId;
+    if (Users.Count < 20)
+    {
+      /// Avoiding `ArgumentOutOfRangeException`, basically, don't fetch if null
+      response.NextCursor = null;
+    }
+    else
+    {
+      /// Id of the last element of the list, same value as `Users[Users.Count - 1].Id`
+      response.NextCursor = Users[^1].UserId;
+    }
 
-    _logger.LogInformation("Users have been listed successfully");
+    _logger.LogInformation(
+      "({TraceIdentifier}) multiple records ({RecordType}) accessed successfully",
+      RequestTracerId,
+      typeof(User).Name
+    );
     return response;
   }
 
-  public override async Task<GetUserByIdResponse> GetById(GetUserByIdRequest request, ServerCallContext context)
+  public override async Task<GetUserByIdResponse> GetByIdAsync(GetUserByIdRequest request, ServerCallContext context)
   {
     _logger.LogInformation(
       "Searching for User with ID {Id}",
       request.UserId
     );
-    UserModel? User = await _dbContext.Users.FindAsync(request.UserId);
+    User? User = await _dbContext.Users.FindAsync(request.UserId);
 
     if (User is null)
     {
@@ -81,14 +101,14 @@ public class UserRpcService : UserService.UserServiceBase
     };
   }
 
-  public override async Task<UpdateUserResponse> Put(UpdateUserRequest request, ServerCallContext context)
+  public override async Task<UpdateUserResponse> PutAsync(UpdateUserRequest request, ServerCallContext context)
   {
     int UserId = int.Parse(
       context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
     );
 
     _logger.LogInformation("Updating User with ID {Id}", UserId);
-    UserModel? User = await _dbContext.Users.FindAsync(UserId);
+    User? User = await _dbContext.Users.FindAsync(UserId);
 
     if (User is null)
     {
@@ -117,10 +137,10 @@ public class UserRpcService : UserService.UserServiceBase
     return new UpdateUserResponse();
   }
 
-  public override async Task<DeleteUserResponse> Delete(DeleteUserRequest request, ServerCallContext context)
+  public override async Task<DeleteUserResponse> DeleteAsync(DeleteUserRequest request, ServerCallContext context)
   {
     _logger.LogInformation("Deleting User with ID {Id}", request.UserId);
-    UserModel? User = await _dbContext.Users.FindAsync(request.UserId);
+    User? User = await _dbContext.Users.FindAsync(request.UserId);
 
     if (User is null)
     {
@@ -137,9 +157,9 @@ public class UserRpcService : UserService.UserServiceBase
     await _dbContext.SaveChangesAsync();
 
     _logger.LogInformation(
-      "User deleted successfully ID {Id}",
-      request.UserId
-    );
+          "User deleted successfully ID {Id}",
+          request.UserId
+        );
 
     return new DeleteUserResponse();
   }

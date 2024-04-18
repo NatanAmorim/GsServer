@@ -6,13 +6,13 @@ using GsServer.Protobufs;
 
 namespace GsServer.Services;
 
-public class InstructorRpcService : InstructorService.InstructorServiceBase
+public class SaleBillingRpcService : SaleBillingService.SaleBillingServiceBase
 {
   private readonly DatabaseContext _dbContext;
-  private readonly ILogger<InstructorRpcService> _logger;
+  private readonly ILogger<SaleBillingRpcService> _logger;
   private readonly IMapper _mapper;
-  public InstructorRpcService(
-      ILogger<InstructorRpcService> logger,
+  public SaleBillingRpcService(
+      ILogger<SaleBillingRpcService> logger,
       DatabaseContext dbContext,
       IMapper mapper
     )
@@ -22,7 +22,7 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
     _mapper = mapper;
   }
 
-  public override async Task<GetPaginatedInstructorsResponse> GetPaginatedAsync(GetPaginatedInstructorsRequest request, ServerCallContext context)
+  public override async Task<GetPaginatedSaleBillingsResponse> GetPaginatedAsync(GetPaginatedSaleBillingsRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -32,43 +32,35 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       "({TraceIdentifier}) User {UserID} accessing multiple records ({RecordType}) with cursor {Cursor}",
       RequestTracerId,
       UserId,
-      typeof(Instructor).Name,
+      typeof(SaleBilling).Name,
       request.Cursor
     );
 
-    IQueryable<GetInstructorByIdResponse> Query = _dbContext.Instructors.Select(
-      Instructor => _mapper.Map<GetInstructorByIdResponse>(Instructor)
+    IQueryable<GetSaleBillingByIdResponse> Query = _dbContext.SaleBillings.Select(
+      SaleBilling => _mapper.Map<GetSaleBillingByIdResponse>(SaleBilling)
     );
 
     // TODO
-    // IQueryable<GetInstructorByIdResponse> Query = _dbContext.Instructors.Select(
-    //   Instructor => new GetInstructorByIdResponse
+    // IQueryable<GetSaleBillingByIdResponse> Query = _dbContext.SaleBillings.Select(
+    //   SaleBilling => new GetSaleBillingByIdResponse
     //   {
-    //     InstructorId = Instructor.InstructorId,
-    //     Person = new Person
-    //     {
-    //       Name = Instructor.Person.Name,
-    //       MobilePhoneNumber = Instructor.Person.MobilePhoneNumber,
-    //       BirthDate = Instructor.Person.BirthDate,
-    //       Cpf = Instructor.Person.Cpf,
-    //       Cin = Instructor.Person.Cin,
-    //     },
+    //     TODO
     //   }
     // );
 
-    List<GetInstructorByIdResponse> Instructors = [];
+    List<GetSaleBillingByIdResponse> SaleBillings = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    Instructors = await Query
-      .Where(x => x.InstructorId > request.Cursor)
+    SaleBillings = await Query
+      .Where(x => x.SaleBillingId > request.Cursor)
       .Take(20)
       .ToListAsync();
 
-    GetPaginatedInstructorsResponse response = new();
+    GetPaginatedSaleBillingsResponse response = new();
 
-    response.Instructors.AddRange(Instructors);
-    if (Instructors.Count < 20)
+    response.SaleBillings.AddRange(SaleBillings);
+    if (SaleBillings.Count < 20)
     {
       /// Avoiding `ArgumentOutOfRangeException`, basically, don't fetch if null
       response.NextCursor = null;
@@ -76,18 +68,18 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
     else
     {
       /// Id of the last element of the list, same value as `Users[Users.Count - 1].Id`
-      response.NextCursor = Instructors[^1].InstructorId;
+      response.NextCursor = SaleBillings[^1].SaleBillingId;
     }
 
     _logger.LogInformation(
       "({TraceIdentifier}) multiple records ({RecordType}) accessed successfully",
       RequestTracerId,
-      typeof(Instructor).Name
+      typeof(SaleBilling).Name
     );
     return response;
   }
 
-  public override async Task<GetInstructorByIdResponse> GetByIdAsync(GetInstructorByIdRequest request, ServerCallContext context)
+  public override async Task<GetSaleBillingByIdResponse> GetByIdAsync(GetSaleBillingByIdRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -98,47 +90,39 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       "({TraceIdentifier}) User {UserID} accessing record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
       UserId,
-      typeof(Instructor).Name,
-      request.InstructorId
+      typeof(SaleBilling).Name,
+      request.SaleBillingId
     );
 
-    Instructor? Instructor = await _dbContext.Instructors.FindAsync(request.InstructorId);
+    SaleBilling? SaleBilling = await _dbContext.SaleBillings.FindAsync(request.SaleBillingId);
 
-    if (Instructor is null)
+    if (SaleBilling is null)
     {
       _logger.LogWarning(
         "({TraceIdentifier}) record ({RecordType}) not found",
         RequestTracerId,
-        typeof(Instructor).Name
+        typeof(SaleBilling).Name
       );
       throw new RpcException(new Status(
-        StatusCode.NotFound, $"Nenhum produto com ID {request.InstructorId}"
+        StatusCode.NotFound, $"Nenhum produto com ID {request.SaleBillingId}"
       ));
     }
 
     _logger.LogInformation(
       "({TraceIdentifier}) record ({RecordType}) accessed successfully",
       RequestTracerId,
-      typeof(Instructor).Name
+      typeof(SaleBilling).Name
     );
 
-    return _mapper.Map<GetInstructorByIdResponse>(Instructor);
+    return _mapper.Map<GetSaleBillingByIdResponse>(SaleBilling);
     // TODO
-    // return new GetInstructorByIdResponse
+    // return new GetSaleBillingByIdResponse
     // {
-    //   InstructorId = Instructor.InstructorId,
-    //   Person = new Person
-    //   {
-    //     Name = Instructor.Person.Name,
-    //     MobilePhoneNumber = Instructor.Person.MobilePhoneNumber,
-    //     BirthDate = Instructor.Person.BirthDate,
-    //     Cpf = Instructor.Person.Cpf,
-    //     Cin = Instructor.Person.Cin,
-    //   },
+    //    TODO
     // };
   }
 
-  public override async Task<CreateInstructorResponse> PostAsync(CreateInstructorRequest request, ServerCallContext context)
+  public override async Task<CreateSaleBillingResponse> PostAsync(CreateSaleBillingRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -149,41 +133,36 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       "({TraceIdentifier}) User {UserID} creating new record ({RecordType})",
       RequestTracerId,
       UserId,
-      typeof(Instructor).Name
+      typeof(SaleBilling).Name
     );
 
-    Instructor Instructor = _mapper.Map<Instructor>(request);
-    Instructor.CreatedBy = UserId;
+    SaleBilling SaleBilling = _mapper.Map<SaleBilling>(request);
+    SaleBilling.CreatedBy = UserId;
 
     // TODO
-    // var Instructor = new Instructor
+    // var SaleBilling = new SaleBilling
     // {
-    //   Person = new Person
-    //   {
-    //     Name = request.Person.Name,
-    //     MobilePhoneNumber = request.Person.MobilePhoneNumber,
-    //     BirthDate = request.Person.BirthDate,
-    //     Cpf = request.Person.Cpf,
-    //     Cin = request.Person.Cin,
-    //     CreatedBy = UserId,
-    //   },
+    //   SaleFk = request.SaleFk,
+    //   Comments = request.Comments,
+    //   TotalDiscount = request.TotalDiscount,
+    //   Payment = request.Payment,
     //   CreatedBy = UserId,
     // };
 
-    await _dbContext.AddAsync(Instructor);
+    await _dbContext.AddAsync(SaleBilling);
     await _dbContext.SaveChangesAsync();
 
     _logger.LogInformation(
       "({TraceIdentifier}) record ({RecordType}) created successfully, RecordId {RecordId}",
       RequestTracerId,
-      typeof(Instructor).Name,
-      Instructor.InstructorId
+      typeof(SaleBilling).Name,
+      SaleBilling.SaleBillingId
     );
 
-    return new CreateInstructorResponse();
+    return new CreateSaleBillingResponse();
   }
 
-  public override Task<UpdateInstructorResponse> PutAsync(UpdateInstructorRequest request, ServerCallContext context)
+  public override Task<UpdateSaleBillingResponse> PutAsync(UpdateSaleBillingRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -193,14 +172,14 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       "({TraceIdentifier}) User {UserID} updating record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
       UserId,
-      typeof(Instructor).Name,
-      request.InstructorId
+      typeof(SaleBilling).Name,
+      request.SaleBillingId
     );
 
     _logger.LogInformation(
       "({TraceIdentifier}) record ({RecordType}) updated successfully",
       RequestTracerId,
-      typeof(Instructor).Name
+      typeof(SaleBilling).Name
     );
 
     throw new NotImplementedException();
@@ -209,23 +188,23 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
     // if (request.Id <= 0)
     //   throw new RpcException(new Status(StatusCode.InvalidArgument, "You must supply a valid id"));
 
-    // InstructorModel? Instructor = await _dbContext.Instructors.FirstOrDefaultAsync(x => x.Id == request.Id);
-    // if (Instructor is null)
+    // SaleBillingModel? SaleBilling = await _dbContext.SaleBillings.FirstOrDefaultAsync(x => x.Id == request.Id);
+    // if (SaleBilling is null)
     // {
     //   throw new RpcException(new Status(
     //     StatusCode.NotFound, $"registro não encontrado"
     //   ));
     // }
 
-    // Instructor.Name = request.Name;
+    // SaleBilling.Name = request.Name;
     // // TODO Add Another fields
 
     // await _dbContext.SaveChangesAsync();
     // // TODO Log => Record (record type) ID Y was updated. Old value of (field name): (old value). New value: (new value). (This logs specific changes made to a field within a record)
-    // return new UpdateInstructorResponse();
+    // return new UpdateSaleBillingResponse();
   }
 
-  public override async Task<DeleteInstructorResponse> DeleteAsync(DeleteInstructorRequest request, ServerCallContext context)
+  public override async Task<DeleteSaleBillingResponse> DeleteAsync(DeleteSaleBillingRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -235,36 +214,36 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
         "({TraceIdentifier}) User {UserID} deleting record ({RecordType}) with ID ({RecordId})",
         RequestTracerId,
         UserId,
-        typeof(Instructor).Name,
-        request.InstructorId
+        typeof(SaleBilling).Name,
+        request.SaleBillingId
       );
 
-    Instructor? Instructor = await _dbContext.Instructors.FindAsync(request.InstructorId);
+    SaleBilling? SaleBilling = await _dbContext.SaleBillings.FindAsync(request.SaleBillingId);
 
-    if (Instructor is null)
+    if (SaleBilling is null)
     {
       _logger.LogWarning(
         "({TraceIdentifier}) Error deleting record ({RecordType}) with ID {Id}, record not found",
         RequestTracerId,
-        typeof(Instructor).Name,
-        request.InstructorId
+        typeof(SaleBilling).Name,
+        request.SaleBillingId
       );
       throw new RpcException(new Status(
-        StatusCode.NotFound, $"Erro ao remover registro, nenhum registro com ID {request.InstructorId}"
+        StatusCode.NotFound, $"Erro ao remover registro, nenhum registro com ID {request.SaleBillingId}"
       ));
     }
 
     /// TODO check if record is being used before deleting it use something like PK or FK
 
-    _dbContext.Instructors.Remove(Instructor);
+    _dbContext.SaleBillings.Remove(SaleBilling);
     await _dbContext.SaveChangesAsync();
 
     _logger.LogInformation(
           "({TraceIdentifier}) record ({RecordType}) deleted successfully",
           RequestTracerId,
-          typeof(Instructor).Name
+          typeof(SaleBilling).Name
         );
 
-    return new DeleteInstructorResponse();
+    return new DeleteSaleBillingResponse();
   }
 }

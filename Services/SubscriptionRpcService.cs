@@ -6,13 +6,13 @@ using GsServer.Protobufs;
 
 namespace GsServer.Services;
 
-public class InstructorRpcService : InstructorService.InstructorServiceBase
+public class SubscriptionRpcService : SubscriptionService.SubscriptionServiceBase
 {
   private readonly DatabaseContext _dbContext;
-  private readonly ILogger<InstructorRpcService> _logger;
+  private readonly ILogger<SubscriptionRpcService> _logger;
   private readonly IMapper _mapper;
-  public InstructorRpcService(
-      ILogger<InstructorRpcService> logger,
+  public SubscriptionRpcService(
+      ILogger<SubscriptionRpcService> logger,
       DatabaseContext dbContext,
       IMapper mapper
     )
@@ -22,7 +22,7 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
     _mapper = mapper;
   }
 
-  public override async Task<GetPaginatedInstructorsResponse> GetPaginatedAsync(GetPaginatedInstructorsRequest request, ServerCallContext context)
+  public override async Task<GetPaginatedSubscriptionsResponse> GetPaginatedAsync(GetPaginatedSubscriptionsRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -32,43 +32,44 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       "({TraceIdentifier}) User {UserID} accessing multiple records ({RecordType}) with cursor {Cursor}",
       RequestTracerId,
       UserId,
-      typeof(Instructor).Name,
+      typeof(Subscription).Name,
       request.Cursor
     );
 
-    IQueryable<GetInstructorByIdResponse> Query = _dbContext.Instructors.Select(
-      Instructor => _mapper.Map<GetInstructorByIdResponse>(Instructor)
+    IQueryable<GetSubscriptionByIdResponse> Query = _dbContext.Subscriptions.Select(
+      Subscription => _mapper.Map<GetSubscriptionByIdResponse>(Subscription)
     );
 
     // TODO
-    // IQueryable<GetInstructorByIdResponse> Query = _dbContext.Instructors.Select(
-    //   Instructor => new GetInstructorByIdResponse
+    // IQueryable<GetSubscriptionByIdResponse> Query = _dbContext.Subscriptions.Select(
+    //   Subscription => new GetSubscriptionByIdResponse
     //   {
-    //     InstructorId = Instructor.InstructorId,
-    //     Person = new Person
+    //     Discipline = Subscription.DisciplineFk,
+    //     Customer = Subscription.CustomerFk,
+    //     PayDay = Subscription.PayDay,
+    //     StartDate = new()
     //     {
-    //       Name = Instructor.Person.Name,
-    //       MobilePhoneNumber = Instructor.Person.MobilePhoneNumber,
-    //       BirthDate = Instructor.Person.BirthDate,
-    //       Cpf = Instructor.Person.Cpf,
-    //       Cin = Instructor.Person.Cin,
+    //       Year = Subscription.StartDate.Year,
+    //       Month = Subscription.StartDate.Month,
+    //       Day = Subscription.StartDate.Day
     //     },
+    //     Price = Subscription.Price,
     //   }
     // );
 
-    List<GetInstructorByIdResponse> Instructors = [];
+    List<GetSubscriptionByIdResponse> Subscriptions = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    Instructors = await Query
-      .Where(x => x.InstructorId > request.Cursor)
+    Subscriptions = await Query
+      .Where(x => x.SubscriptionId > request.Cursor)
       .Take(20)
       .ToListAsync();
 
-    GetPaginatedInstructorsResponse response = new();
+    GetPaginatedSubscriptionsResponse response = new();
 
-    response.Instructors.AddRange(Instructors);
-    if (Instructors.Count < 20)
+    response.Subscriptions.AddRange(Subscriptions);
+    if (Subscriptions.Count < 20)
     {
       /// Avoiding `ArgumentOutOfRangeException`, basically, don't fetch if null
       response.NextCursor = null;
@@ -76,18 +77,18 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
     else
     {
       /// Id of the last element of the list, same value as `Users[Users.Count - 1].Id`
-      response.NextCursor = Instructors[^1].InstructorId;
+      response.NextCursor = Subscriptions[^1].SubscriptionId;
     }
 
     _logger.LogInformation(
       "({TraceIdentifier}) multiple records ({RecordType}) accessed successfully",
       RequestTracerId,
-      typeof(Instructor).Name
+      typeof(Subscription).Name
     );
     return response;
   }
 
-  public override async Task<GetInstructorByIdResponse> GetByIdAsync(GetInstructorByIdRequest request, ServerCallContext context)
+  public override async Task<GetSubscriptionByIdResponse> GetByIdAsync(GetSubscriptionByIdRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -98,47 +99,49 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       "({TraceIdentifier}) User {UserID} accessing record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
       UserId,
-      typeof(Instructor).Name,
-      request.InstructorId
+      typeof(Subscription).Name,
+      request.SubscriptionId
     );
 
-    Instructor? Instructor = await _dbContext.Instructors.FindAsync(request.InstructorId);
+    Subscription? Subscription = await _dbContext.Subscriptions.FindAsync(request.SubscriptionId);
 
-    if (Instructor is null)
+    if (Subscription is null)
     {
       _logger.LogWarning(
         "({TraceIdentifier}) record ({RecordType}) not found",
         RequestTracerId,
-        typeof(Instructor).Name
+        typeof(Subscription).Name
       );
       throw new RpcException(new Status(
-        StatusCode.NotFound, $"Nenhum produto com ID {request.InstructorId}"
+        StatusCode.NotFound, $"Nenhum produto com ID {request.SubscriptionId}"
       ));
     }
 
     _logger.LogInformation(
       "({TraceIdentifier}) record ({RecordType}) accessed successfully",
       RequestTracerId,
-      typeof(Instructor).Name
+      typeof(Subscription).Name
     );
 
-    return _mapper.Map<GetInstructorByIdResponse>(Instructor);
+    return _mapper.Map<GetSubscriptionByIdResponse>(Subscription);
+
     // TODO
-    // return new GetInstructorByIdResponse
+    // return new GetSubscriptionByIdResponse
     // {
-    //   InstructorId = Instructor.InstructorId,
-    //   Person = new Person
+    //   Discipline = Subscription.DisciplineFk,
+    //   Customer = Subscription.CustomerFk,
+    //   PayDay = Subscription.PayDay,
+    //   StartDate = new()
     //   {
-    //     Name = Instructor.Person.Name,
-    //     MobilePhoneNumber = Instructor.Person.MobilePhoneNumber,
-    //     BirthDate = Instructor.Person.BirthDate,
-    //     Cpf = Instructor.Person.Cpf,
-    //     Cin = Instructor.Person.Cin,
+    //     Year = Subscription.StartDate.Year,
+    //     Month = Subscription.StartDate.Month,
+    //     Day = Subscription.StartDate.Day
     //   },
+    //   Price = Subscription.Price,
     // };
   }
 
-  public override async Task<CreateInstructorResponse> PostAsync(CreateInstructorRequest request, ServerCallContext context)
+  public override async Task<CreateSubscriptionResponse> PostAsync(CreateSubscriptionRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -149,41 +152,41 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       "({TraceIdentifier}) User {UserID} creating new record ({RecordType})",
       RequestTracerId,
       UserId,
-      typeof(Instructor).Name
+      typeof(Subscription).Name
     );
 
-    Instructor Instructor = _mapper.Map<Instructor>(request);
-    Instructor.CreatedBy = UserId;
+    Subscription Subscription = _mapper.Map<Subscription>(request);
+    Subscription.CreatedBy = UserId;
 
     // TODO
-    // var Instructor = new Instructor
+    // var Subscription = new Subscription
     // {
-    //   Person = new Person
-    //   {
-    //     Name = request.Person.Name,
-    //     MobilePhoneNumber = request.Person.MobilePhoneNumber,
-    //     BirthDate = request.Person.BirthDate,
-    //     Cpf = request.Person.Cpf,
-    //     Cin = request.Person.Cin,
-    //     CreatedBy = UserId,
-    //   },
+    //   DisciplineFk = request.DisciplineFk,
+    //   CustomerFk = request.CustomerFk,
+    //   PayDay = request.PayDay,
+    //   StartDate = new(
+    //     request.StartDate.Year,
+    //     request.StartDate.Month,
+    //     request.StartDate.Day
+    //   ),
+    //   Price = request.Price,
     //   CreatedBy = UserId,
     // };
 
-    await _dbContext.AddAsync(Instructor);
+    await _dbContext.AddAsync(Subscription);
     await _dbContext.SaveChangesAsync();
 
     _logger.LogInformation(
       "({TraceIdentifier}) record ({RecordType}) created successfully, RecordId {RecordId}",
       RequestTracerId,
-      typeof(Instructor).Name,
-      Instructor.InstructorId
+      typeof(Subscription).Name,
+      Subscription.SubscriptionId
     );
 
-    return new CreateInstructorResponse();
+    return new CreateSubscriptionResponse();
   }
 
-  public override Task<UpdateInstructorResponse> PutAsync(UpdateInstructorRequest request, ServerCallContext context)
+  public override Task<UpdateSubscriptionResponse> PutAsync(UpdateSubscriptionRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -193,14 +196,14 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       "({TraceIdentifier}) User {UserID} updating record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
       UserId,
-      typeof(Instructor).Name,
-      request.InstructorId
+      typeof(Subscription).Name,
+      request.SubscriptionId
     );
 
     _logger.LogInformation(
       "({TraceIdentifier}) record ({RecordType}) updated successfully",
       RequestTracerId,
-      typeof(Instructor).Name
+      typeof(Subscription).Name
     );
 
     throw new NotImplementedException();
@@ -209,23 +212,23 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
     // if (request.Id <= 0)
     //   throw new RpcException(new Status(StatusCode.InvalidArgument, "You must supply a valid id"));
 
-    // InstructorModel? Instructor = await _dbContext.Instructors.FirstOrDefaultAsync(x => x.Id == request.Id);
-    // if (Instructor is null)
+    // SubscriptionModel? Subscription = await _dbContext.Subscriptions.FirstOrDefaultAsync(x => x.Id == request.Id);
+    // if (Subscription is null)
     // {
     //   throw new RpcException(new Status(
     //     StatusCode.NotFound, $"registro não encontrado"
     //   ));
     // }
 
-    // Instructor.Name = request.Name;
+    // Subscription.Name = request.Name;
     // // TODO Add Another fields
 
     // await _dbContext.SaveChangesAsync();
     // // TODO Log => Record (record type) ID Y was updated. Old value of (field name): (old value). New value: (new value). (This logs specific changes made to a field within a record)
-    // return new UpdateInstructorResponse();
+    // return new UpdateSubscriptionResponse();
   }
 
-  public override async Task<DeleteInstructorResponse> DeleteAsync(DeleteInstructorRequest request, ServerCallContext context)
+  public override async Task<DeleteSubscriptionResponse> DeleteAsync(DeleteSubscriptionRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -235,36 +238,36 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
         "({TraceIdentifier}) User {UserID} deleting record ({RecordType}) with ID ({RecordId})",
         RequestTracerId,
         UserId,
-        typeof(Instructor).Name,
-        request.InstructorId
+        typeof(Subscription).Name,
+        request.SubscriptionId
       );
 
-    Instructor? Instructor = await _dbContext.Instructors.FindAsync(request.InstructorId);
+    Subscription? Subscription = await _dbContext.Subscriptions.FindAsync(request.SubscriptionId);
 
-    if (Instructor is null)
+    if (Subscription is null)
     {
       _logger.LogWarning(
         "({TraceIdentifier}) Error deleting record ({RecordType}) with ID {Id}, record not found",
         RequestTracerId,
-        typeof(Instructor).Name,
-        request.InstructorId
+        typeof(Subscription).Name,
+        request.SubscriptionId
       );
       throw new RpcException(new Status(
-        StatusCode.NotFound, $"Erro ao remover registro, nenhum registro com ID {request.InstructorId}"
+        StatusCode.NotFound, $"Erro ao remover registro, nenhum registro com ID {request.SubscriptionId}"
       ));
     }
 
     /// TODO check if record is being used before deleting it use something like PK or FK
 
-    _dbContext.Instructors.Remove(Instructor);
+    _dbContext.Subscriptions.Remove(Subscription);
     await _dbContext.SaveChangesAsync();
 
     _logger.LogInformation(
           "({TraceIdentifier}) record ({RecordType}) deleted successfully",
           RequestTracerId,
-          typeof(Instructor).Name
+          typeof(Subscription).Name
         );
 
-    return new DeleteInstructorResponse();
+    return new DeleteSubscriptionResponse();
   }
 }

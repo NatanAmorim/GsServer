@@ -1,6 +1,9 @@
+using System.Net;
+using System.Net.Mime;
 using System.Text;
 using Amazon.CloudWatchLogs;
 using GsServer.BackgroundServices;
+using GsServer.Middlewares;
 using GsServer.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -8,6 +11,8 @@ using Serilog;
 using Serilog.Sinks.AwsCloudWatch;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.Configure<HostOptions>(options =>
 {
@@ -50,6 +55,8 @@ string AwsSecretAccessKey = builder.Configuration.GetSection("AWS:S3:AwsSecretAc
 // AWS CloudWatch client
 // AmazonCloudWatchLogsClient client = new(AwsAccessKeyId, AwsSecretAccessKey);
 
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
 builder.Host.UseSerilog(
   (context, configuration) =>
   {
@@ -71,37 +78,51 @@ WebApplication app = builder.Build();
 
 app.MapGrpcService<AttendanceRpcService>();
 app.MapGrpcService<AuthRpcService>();
+app.MapGrpcService<AwsS3Service>();
 app.MapGrpcService<CustomerRpcService>();
-app.MapGrpcService<DisciplineRpcService>();
-app.MapGrpcService<OrderRpcService>();
-app.MapGrpcService<ProductRpcService>();
-app.MapGrpcService<SaleRpcService>();
+// app.MapGrpcService<DisciplineRpcService>();
 app.MapGrpcService<InstructorRpcService>();
+app.MapGrpcService<NotificationRpcService>();
+app.MapGrpcService<OrderRpcService>();
+app.MapGrpcService<PaymentRpcService>();
+app.MapGrpcService<ProductRpcService>();
+app.MapGrpcService<PromotionRpcService>();
+app.MapGrpcService<ReturnRpcService>();
+app.MapGrpcService<SaleBillingRpcService>();
+app.MapGrpcService<SaleRpcService>();
+app.MapGrpcService<SubscriptionBillingRpcService>();
+app.MapGrpcService<SubscriptionRpcService>();
 app.MapGrpcService<UserRpcService>();
 
 if (app.Environment.IsDevelopment())
 {
-  // Configure the HTTP request pipeline.
-  app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client.");
+
   app.MapGrpcReflectionService();
-  Log.Debug(
-    "Server initialized at port 7063"
+  Log.Information(
+    "Server running on port 7063"
   );
 }
-else
-{
-  Log.Information("Server initialized");
-}
+
+// Configure the HTTP request pipeline.
+app.MapGet("/", () =>
+  Results.Text(
+    content: "<h1>Communication with gRPC endpoints must be made through a gRPC client.</h1>",
+    contentType: MediaTypeNames.Text.Html,
+    statusCode: StatusCodes.Status405MethodNotAllowed
+  )
+);
+
+Log.Information("Server is ready to accept requests");
 
 app.Use(async (context, next) =>
 {
   // Middleware Log request details (e.g., method, path, headers)
   Log.Information(
-    "({RequestIpAddress} - {TraceIdentifier}) Received gRPC request: {Method} {Path}",
-    context.Connection.RemoteIpAddress?.ToString() ?? string.Empty,
+    "Handling request ({TraceIdentifier}): {Method} {Path} {RequestIpAddress}",
     context.TraceIdentifier,
     context.Request.Method,
-    context.Request.Path
+    context.Request.Path,
+    context.Connection.RemoteIpAddress?.ToString() ?? string.Empty
   );
 
   // Proceed with handling the request
@@ -109,7 +130,7 @@ app.Use(async (context, next) =>
 
   // Log response details (e.g., status code, headers)
   Log.Information(
-    "({TraceIdentifier}) Sent gRPC response",
+    "Handled request ({TraceIdentifier})",
     context.TraceIdentifier
   );
 });

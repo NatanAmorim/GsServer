@@ -6,13 +6,12 @@ namespace GsServer.BackgroundServices;
 /// the customer should pay  and may  include detailed client information.
 /// An invoice may indicate the existence of credit, as payment is not immediate.
 /// </summary>
-public class SubscriptionInvoiceBackgroundJob : BackgroundService
+public class SubscriptionInvoiceBackgroundJob
+(
+    ILogger<SubscriptionInvoiceBackgroundJob> logger
+) : BackgroundService
 {
-    private readonly ILogger<SubscriptionInvoiceBackgroundJob> _logger;
-    public SubscriptionInvoiceBackgroundJob(ILogger<SubscriptionInvoiceBackgroundJob> logger)
-    {
-        _logger = logger;
-    }
+    private readonly ILogger<SubscriptionInvoiceBackgroundJob> _logger = logger;
 
     /// <summary>
     /// Generates invoices in the background, runs daily at 12 AM UTC time.
@@ -25,27 +24,42 @@ public class SubscriptionInvoiceBackgroundJob : BackgroundService
         {
             try
             {
-                _logger.LogInformation("Background subscription invoice service started");
+                _logger.LogInformation(
+                    "Executing Background Service: {BackgroundServiceName} started",
+                    typeof(SubscriptionInvoiceBackgroundJob).Name
+                );
 
                 // Delay for Until 12 AM UTC time asynchronously.
                 // 9 AM BRT (Brasília Time), UTC/GMT -3 hours.
                 await Task.Delay((int)Math.Ceiling(MillisecondsUntilTwelveAmUtc()), stoppingToken);
 
-                _logger.LogInformation("Background subscription invoice service, generating invoices");
-                // TODO
+                // TODO store job in DB
+                _logger.LogInformation(
+                    "Executing Background Service: {BackgroundServiceName}, generating invoices",
+                    typeof(SubscriptionInvoiceBackgroundJob).Name
+                );
+                // TODO generate invoices
 
-                _logger.LogInformation("Background subscription invoice service, sending emails");
-                // TODO
+                _logger.LogInformation(
+                    "Executing Background Service: {BackgroundServiceName}, sending notifications",
+                    typeof(SubscriptionInvoiceBackgroundJob).Name
+                );
+                // TODO alert send emails or push notifications
 
-                _logger.LogInformation("Background subscription invoice service work completed");
+                _logger.LogInformation(
+                    "Executing Background Service: {BackgroundServiceName} work completed",
+                    typeof(SubscriptionInvoiceBackgroundJob).Name
+                );
+                // TODO Update `isCompleted = true;` in DB
             }
             catch (Exception Exception)
             {
                 _logger.LogError(
-                    "Background invoice service stopped because of an error {Exception}",
+                    "Executing Background Service: {BackgroundServiceName} stopped because of an error {Exception}",
+                    typeof(SubscriptionInvoiceBackgroundJob).Name,
                     Exception
                 );
-                // break; // TODO do I need to break?
+                break; // TODO do I need to break?
             }
         }
     }

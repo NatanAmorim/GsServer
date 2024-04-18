@@ -13,6 +13,8 @@ Source <https://betterstack.com/community/guides/logging/how-to-control-journald
 Source <https://betterstack.com/community/guides/logging/how-to-start-logging-with-postgresql/>
 Source <https://betterstack.com/community/guides/logging/how-to-start-logging-with-docker/>
 Source <https://betterstack.com/community/guides/logging/aws-logging/>
+Source <https://betterstack.com/community/guides/logging/logging-best-practices/>
+Source <https://betterstack.com/community/guides/logging/how-to-start-logging-with-net/>
 
 ## Serilog
 

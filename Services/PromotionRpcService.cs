@@ -6,13 +6,13 @@ using GsServer.Protobufs;
 
 namespace GsServer.Services;
 
-public class InstructorRpcService : InstructorService.InstructorServiceBase
+public class PromotionRpcService : PromotionService.PromotionServiceBase
 {
   private readonly DatabaseContext _dbContext;
-  private readonly ILogger<InstructorRpcService> _logger;
+  private readonly ILogger<PromotionRpcService> _logger;
   private readonly IMapper _mapper;
-  public InstructorRpcService(
-      ILogger<InstructorRpcService> logger,
+  public PromotionRpcService(
+      ILogger<PromotionRpcService> logger,
       DatabaseContext dbContext,
       IMapper mapper
     )
@@ -22,7 +22,7 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
     _mapper = mapper;
   }
 
-  public override async Task<GetPaginatedInstructorsResponse> GetPaginatedAsync(GetPaginatedInstructorsRequest request, ServerCallContext context)
+  public override async Task<GetPaginatedPromotionsResponse> GetPaginatedAsync(GetPaginatedPromotionsRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -32,43 +32,50 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       "({TraceIdentifier}) User {UserID} accessing multiple records ({RecordType}) with cursor {Cursor}",
       RequestTracerId,
       UserId,
-      typeof(Instructor).Name,
+      typeof(Promotion).Name,
       request.Cursor
     );
 
-    IQueryable<GetInstructorByIdResponse> Query = _dbContext.Instructors.Select(
-      Instructor => _mapper.Map<GetInstructorByIdResponse>(Instructor)
+    IQueryable<GetPromotionByIdResponse> Query = _dbContext.Promotions.Select(
+      Promotion => _mapper.Map<GetPromotionByIdResponse>(Promotion)
     );
 
     // TODO
-    // IQueryable<GetInstructorByIdResponse> Query = _dbContext.Instructors.Select(
-    //   Instructor => new GetInstructorByIdResponse
+    // IQueryable<GetPromotionByIdResponse> Query = _dbContext.Promotions.Select(
+    //   Promotion => new GetPromotionByIdResponse
     //   {
-    //     InstructorId = Instructor.InstructorId,
-    //     Person = new Person
+    //     Customer = Promotion.CustomerFk,
+    //     Name = Promotion.Name,
+    //     Description = Promotion.Description,
+    //     DiscountType = Promotion.DiscountType,
+    //     StartDate = new()
     //     {
-    //       Name = Instructor.Person.Name,
-    //       MobilePhoneNumber = Instructor.Person.MobilePhoneNumber,
-    //       BirthDate = Instructor.Person.BirthDate,
-    //       Cpf = Instructor.Person.Cpf,
-    //       Cin = Instructor.Person.Cin,
+    //       Year = Promotion.StartDate.Year,
+    //       Month = Promotion.StartDate.Month,
+    //       Day = Promotion.StartDate.Day,
+    //     },
+    //     EndDate = new()
+    //     {
+    //       Year = Promotion.EndDate.Year,
+    //       Month = Promotion.EndDate.Month,
+    //       Day = Promotion.EndDate.Day,
     //     },
     //   }
     // );
 
-    List<GetInstructorByIdResponse> Instructors = [];
+    List<GetPromotionByIdResponse> Promotions = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    Instructors = await Query
-      .Where(x => x.InstructorId > request.Cursor)
+    Promotions = await Query
+      .Where(x => x.PromotionId > request.Cursor)
       .Take(20)
       .ToListAsync();
 
-    GetPaginatedInstructorsResponse response = new();
+    GetPaginatedPromotionsResponse response = new();
 
-    response.Instructors.AddRange(Instructors);
-    if (Instructors.Count < 20)
+    response.Promotions.AddRange(Promotions);
+    if (Promotions.Count < 20)
     {
       /// Avoiding `ArgumentOutOfRangeException`, basically, don't fetch if null
       response.NextCursor = null;
@@ -76,18 +83,18 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
     else
     {
       /// Id of the last element of the list, same value as `Users[Users.Count - 1].Id`
-      response.NextCursor = Instructors[^1].InstructorId;
+      response.NextCursor = Promotions[^1].PromotionId;
     }
 
     _logger.LogInformation(
       "({TraceIdentifier}) multiple records ({RecordType}) accessed successfully",
       RequestTracerId,
-      typeof(Instructor).Name
+      typeof(Promotion).Name
     );
     return response;
   }
 
-  public override async Task<GetInstructorByIdResponse> GetByIdAsync(GetInstructorByIdRequest request, ServerCallContext context)
+  public override async Task<GetPromotionByIdResponse> GetByIdAsync(GetPromotionByIdRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -98,47 +105,55 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       "({TraceIdentifier}) User {UserID} accessing record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
       UserId,
-      typeof(Instructor).Name,
-      request.InstructorId
+      typeof(Promotion).Name,
+      request.PromotionId
     );
 
-    Instructor? Instructor = await _dbContext.Instructors.FindAsync(request.InstructorId);
+    Promotion? Promotion = await _dbContext.Promotions.FindAsync(request.PromotionId);
 
-    if (Instructor is null)
+    if (Promotion is null)
     {
       _logger.LogWarning(
         "({TraceIdentifier}) record ({RecordType}) not found",
         RequestTracerId,
-        typeof(Instructor).Name
+        typeof(Promotion).Name
       );
       throw new RpcException(new Status(
-        StatusCode.NotFound, $"Nenhum produto com ID {request.InstructorId}"
+        StatusCode.NotFound, $"Nenhum produto com ID {request.PromotionId}"
       ));
     }
 
     _logger.LogInformation(
       "({TraceIdentifier}) record ({RecordType}) accessed successfully",
       RequestTracerId,
-      typeof(Instructor).Name
+      typeof(Promotion).Name
     );
 
-    return _mapper.Map<GetInstructorByIdResponse>(Instructor);
+    return _mapper.Map<GetPromotionByIdResponse>(Promotion);
+
     // TODO
-    // return new GetInstructorByIdResponse
+    // return new GetPromotionByIdResponse
     // {
-    //   InstructorId = Instructor.InstructorId,
-    //   Person = new Person
+    //   Customer = Promotion.CustomerFk,
+    //   Name = Promotion.Name,
+    //   Description = Promotion.Description,
+    //   DiscountType = Promotion.DiscountType,
+    //   StartDate = new()
     //   {
-    //     Name = Instructor.Person.Name,
-    //     MobilePhoneNumber = Instructor.Person.MobilePhoneNumber,
-    //     BirthDate = Instructor.Person.BirthDate,
-    //     Cpf = Instructor.Person.Cpf,
-    //     Cin = Instructor.Person.Cin,
+    //     Year = Promotion.StartDate.Year,
+    //     Month = Promotion.StartDate.Month,
+    //     Day = Promotion.StartDate.Day,
+    //   },
+    //   EndDate = new()
+    //   {
+    //     Year = Promotion.EndDate.Year,
+    //     Month = Promotion.EndDate.Month,
+    //     Day = Promotion.EndDate.Day,
     //   },
     // };
   }
 
-  public override async Task<CreateInstructorResponse> PostAsync(CreateInstructorRequest request, ServerCallContext context)
+  public override async Task<CreatePromotionResponse> PostAsync(CreatePromotionRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -149,41 +164,46 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       "({TraceIdentifier}) User {UserID} creating new record ({RecordType})",
       RequestTracerId,
       UserId,
-      typeof(Instructor).Name
+      typeof(Promotion).Name
     );
 
-    Instructor Instructor = _mapper.Map<Instructor>(request);
-    Instructor.CreatedBy = UserId;
+    Promotion Promotion = _mapper.Map<Promotion>(request);
+    Promotion.CreatedBy = UserId;
 
     // TODO
-    // var Instructor = new Instructor
+    // var Promotion = new Promotion
     // {
-    //   Person = new Person
-    //   {
-    //     Name = request.Person.Name,
-    //     MobilePhoneNumber = request.Person.MobilePhoneNumber,
-    //     BirthDate = request.Person.BirthDate,
-    //     Cpf = request.Person.Cpf,
-    //     Cin = request.Person.Cin,
-    //     CreatedBy = UserId,
-    //   },
+    //   CustomerFk = request.CustomerFk,
+    //   Name = request.Name,
+    //   Description = request.Description,
+    //   DiscountType = request.DiscountType,
+    //   StartDate = new(
+    //     request.StartDate.Year,
+    //     request.StartDate.Month,
+    //     request.StartDate.Day
+    //   ),
+    //   EndDate = new(
+    //     request.EndDate.Year,
+    //     request.EndDate.Month,
+    //     request.EndDate.Day
+    //   ),
     //   CreatedBy = UserId,
     // };
 
-    await _dbContext.AddAsync(Instructor);
+    await _dbContext.AddAsync(Promotion);
     await _dbContext.SaveChangesAsync();
 
     _logger.LogInformation(
       "({TraceIdentifier}) record ({RecordType}) created successfully, RecordId {RecordId}",
       RequestTracerId,
-      typeof(Instructor).Name,
-      Instructor.InstructorId
+      typeof(Promotion).Name,
+      Promotion.PromotionId
     );
 
-    return new CreateInstructorResponse();
+    return new CreatePromotionResponse();
   }
 
-  public override Task<UpdateInstructorResponse> PutAsync(UpdateInstructorRequest request, ServerCallContext context)
+  public override Task<UpdatePromotionResponse> PutAsync(UpdatePromotionRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -193,14 +213,14 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       "({TraceIdentifier}) User {UserID} updating record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
       UserId,
-      typeof(Instructor).Name,
-      request.InstructorId
+      typeof(Promotion).Name,
+      request.PromotionId
     );
 
     _logger.LogInformation(
       "({TraceIdentifier}) record ({RecordType}) updated successfully",
       RequestTracerId,
-      typeof(Instructor).Name
+      typeof(Promotion).Name
     );
 
     throw new NotImplementedException();
@@ -209,23 +229,23 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
     // if (request.Id <= 0)
     //   throw new RpcException(new Status(StatusCode.InvalidArgument, "You must supply a valid id"));
 
-    // InstructorModel? Instructor = await _dbContext.Instructors.FirstOrDefaultAsync(x => x.Id == request.Id);
-    // if (Instructor is null)
+    // PromotionModel? Promotion = await _dbContext.Promotions.FirstOrDefaultAsync(x => x.Id == request.Id);
+    // if (Promotion is null)
     // {
     //   throw new RpcException(new Status(
     //     StatusCode.NotFound, $"registro não encontrado"
     //   ));
     // }
 
-    // Instructor.Name = request.Name;
+    // Promotion.Name = request.Name;
     // // TODO Add Another fields
 
     // await _dbContext.SaveChangesAsync();
     // // TODO Log => Record (record type) ID Y was updated. Old value of (field name): (old value). New value: (new value). (This logs specific changes made to a field within a record)
-    // return new UpdateInstructorResponse();
+    // return new UpdatePromotionResponse();
   }
 
-  public override async Task<DeleteInstructorResponse> DeleteAsync(DeleteInstructorRequest request, ServerCallContext context)
+  public override async Task<DeletePromotionResponse> DeleteAsync(DeletePromotionRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -235,36 +255,36 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
         "({TraceIdentifier}) User {UserID} deleting record ({RecordType}) with ID ({RecordId})",
         RequestTracerId,
         UserId,
-        typeof(Instructor).Name,
-        request.InstructorId
+        typeof(Promotion).Name,
+        request.PromotionId
       );
 
-    Instructor? Instructor = await _dbContext.Instructors.FindAsync(request.InstructorId);
+    Promotion? Promotion = await _dbContext.Promotions.FindAsync(request.PromotionId);
 
-    if (Instructor is null)
+    if (Promotion is null)
     {
       _logger.LogWarning(
         "({TraceIdentifier}) Error deleting record ({RecordType}) with ID {Id}, record not found",
         RequestTracerId,
-        typeof(Instructor).Name,
-        request.InstructorId
+        typeof(Promotion).Name,
+        request.PromotionId
       );
       throw new RpcException(new Status(
-        StatusCode.NotFound, $"Erro ao remover registro, nenhum registro com ID {request.InstructorId}"
+        StatusCode.NotFound, $"Erro ao remover registro, nenhum registro com ID {request.PromotionId}"
       ));
     }
 
     /// TODO check if record is being used before deleting it use something like PK or FK
 
-    _dbContext.Instructors.Remove(Instructor);
+    _dbContext.Promotions.Remove(Promotion);
     await _dbContext.SaveChangesAsync();
 
     _logger.LogInformation(
           "({TraceIdentifier}) record ({RecordType}) deleted successfully",
           RequestTracerId,
-          typeof(Instructor).Name
+          typeof(Promotion).Name
         );
 
-    return new DeleteInstructorResponse();
+    return new DeletePromotionResponse();
   }
 }
