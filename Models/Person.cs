@@ -1,21 +1,29 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GsServer.Models;
 
 [Index(nameof(MobilePhoneNumber), IsUnique = true)]
+[Index(nameof(Cpf), IsUnique = true)]
 public class Person
 {
   public int PersonId { get; init; }
-  [Length(5, 55)]
-  public required string Name { get; set; }
-  [MaxLength(16)]
+  [MinLength(5, ErrorMessage = "O nome completo deve ter no mínimo 5 caracteres")]
+  [MaxLength(55, ErrorMessage = "O nome completo deve ter no máximo 55 caracteres")]
+  public required string FullName { get; set; }
+  [MinLength(15, ErrorMessage = "O nome deve ter no mínimo 15 caracteres")]
+  [MaxLength(16, ErrorMessage = "O número de celular deve ter no máximo 16 caracteres")]
   public required string MobilePhoneNumber { get; set; }
-  [Length(10, 10)]
+  [Column(TypeName = "char(10)")]
+  [MinLength(10, ErrorMessage = "A data de nascimento deve ter 10 caracteres")]
+  [MaxLength(10, ErrorMessage = "A data de nascimento deve ter 10 caracteres")]
   public required string BirthDate { get; set; }
   /// <summary>
   /// Cadastro de Pessoas Físicas (CPF)
   /// </summary>
-  [Length(14, 14)]
+  [Column(TypeName = "char(14)")]
+  [MinLength(14, ErrorMessage = "O CPF deve ter 14 caracteres")]
+  [MaxLength(14, ErrorMessage = "O CPF deve ter 14 caracteres")]
   public required string Cpf { get; set; }
   // TODO
   /// <summary>

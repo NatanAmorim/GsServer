@@ -28,7 +28,8 @@ public class PaymentInstallment
   public int InstallmentNumber { get; set; } // Sequential number, (e.g, "${installment.InstallmentNumber} of {payment.Installments.Count}" = “2 of 6”)
   [Column(TypeName = "decimal(19, 4)")]
   public decimal InstallmentAmount { get; set; }
-  [Length(2, 16)]
+  [MinLength(2, ErrorMessage = "O método de pagamento deve ter no mínimo 2 caracteres")]
+  [MaxLength(16, ErrorMessage = "O método de pagamento deve ter no máximo 16 caracteres")]
   public required string PaymentMethod { get; set; } // (e.g., "money", "credit card", "debit card", ...).
   public DateOnly DueDate { get; set; } // Optional property for due date
 }

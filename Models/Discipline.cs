@@ -7,8 +7,8 @@ namespace GsServer.Models;
 public class Discipline
 {
   public int DisciplineId { get; init; }
-  [MaxLength(16)]
-  [Length(4, 10, ErrorMessage = "O nome deve ter entre 4 e 16 caracteres")]
+  [MinLength(4, ErrorMessage = "O nome deve ter no mínimo 4 caracteres")]
+  [MaxLength(16, ErrorMessage = "O nome deve ter no máximo 16 caracteres")]
   public required string Name { get; set; }
   [Column(TypeName = "decimal(19, 4)")]
   public required decimal TuitionPrice { get; set; }

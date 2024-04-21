@@ -14,6 +14,11 @@ Todas as alterações notáveis ​​neste projeto serão documentadas neste ar
 O formato é baseado em [Keep a Changelog (PT-BR)](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere a [Versionamento Semântico (PT-BR)](https://semver.org/lang/pt-BR/).
 
+## 1.0.0-RC-2 (Apr 21, 2024)
+
+- Change some data validation.
+- Fix instances where a composite index was created, instead of multiple indexes.
+
 ## 1.0.0-RC-1 (Apr 18, 2024)
 
 - Finish basic implementation of gRPC services with the new protobufs, some stuff will be implemented later, but it's not needed for critical functionality.

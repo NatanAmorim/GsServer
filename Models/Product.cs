@@ -5,7 +5,8 @@ namespace GsServer.Models;
 public class Product
 {
   public int ProductId { get; init; }
-  [Length(5, 32)]
+  [MinLength(4, ErrorMessage = "O nome deve ter no mínimo 4 caracteres")]
+  [MaxLength(32, ErrorMessage = "O nome deve ter no máximo 32 caracteres")]
   public required string Name { get; set; }
   // Image path on a Cloud Storage (Like: Imgur, S3, Azure blob).
   // All images will be scaled to 128px(w) x 128px(h).

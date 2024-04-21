@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GsServer.Models;
 
@@ -10,7 +11,7 @@ public class Attendance
   public virtual Discipline Discipline { get; init; } = null!;
   public required DateOnly Date { get; set; }
   public required ICollection<AttendanceAttendeeStatus> AttendeesStatuses { get; set; }
-  [MaxLength(500)]
+  [MaxLength(240, ErrorMessage = "As Observações devem ter no máximo 240 caracteres")]
   public string Observations { get; set; } = string.Empty;
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   [Required(ErrorMessage = "CreatedBy é obrigatório")]

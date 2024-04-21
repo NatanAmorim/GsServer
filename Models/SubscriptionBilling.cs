@@ -13,7 +13,8 @@ public class SubscriptionBilling
   public int SubscriptionBillingId { get; init; }
   public required int SubscriptionId { get; init; }
   public virtual Subscription Subscription { get; set; } = null!;
-  [Length(4, 240, ErrorMessage = "O comentário deve ter entre 4 e 240 caracteres")]
+  [MinLength(4, ErrorMessage = "O comentário deve ter no mínimo 4 caracteres")]
+  [MaxLength(240, ErrorMessage = "O comentário deve ter no máximo 240 caracteres")]
   public required string Comments { get; set; }
   [Column(TypeName = "decimal(19, 4)")]
   public required decimal TotalDiscount { get; init; }
