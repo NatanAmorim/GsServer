@@ -14,6 +14,11 @@ Todas as alterações notáveis ​​neste projeto serão documentadas neste ar
 O formato é baseado em [Keep a Changelog (PT-BR)](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere a [Versionamento Semântico (PT-BR)](https://semver.org/lang/pt-BR/).
 
+## 1.0.0-RC-3 (Apr 23, 2024)
+
+- Change some data validation.
+- Improve mapping of SQL relationships in EF Core.
+
 ## 1.0.0-RC-2 (Apr 21, 2024)
 
 - Change some data validation.

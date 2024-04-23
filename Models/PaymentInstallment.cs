@@ -21,15 +21,19 @@ There are three main types of installment payments:
 - Pay later - the entire purchase cost is delayed for a period (usually between 14 to 30 days) and then repaid in full.
 - Pay on delivery - your customer pays for goods after they have been delivered. An example of this is the service
 */
+[Owned]
 public class PaymentInstallment
 {
   public int PaymentInstallmentId { get; init; }
   [Range(1, 12)]
   public int InstallmentNumber { get; set; } // Sequential number, (e.g, "${installment.InstallmentNumber} of {payment.Installments.Count}" = “2 of 6”)
-  [Column(TypeName = "decimal(19, 4)")]
+  [Column(TypeName = "decimal(8, 4)")]
+  [Range(1, 999_999.99, ErrorMessage = "O valor da parcela não deve ser menos que R$ 1,00 ou exceder R$ 999999,99")]
+  [Required(ErrorMessage = "O valor da parcela é obrigatório")]
   public decimal InstallmentAmount { get; set; }
   [MinLength(2, ErrorMessage = "O método de pagamento deve ter no mínimo 2 caracteres")]
   [MaxLength(16, ErrorMessage = "O método de pagamento deve ter no máximo 16 caracteres")]
+  [Required(ErrorMessage = "Obrigatório preencher o método de pagamento", AllowEmptyStrings = false)]
   public required string PaymentMethod { get; set; } // (e.g., "money", "credit card", "debit card", ...).
   public DateOnly DueDate { get; set; } // Optional property for due date
 }

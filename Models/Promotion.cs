@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GsServer.Models;
 
@@ -13,16 +14,30 @@ Implementation Considerations:
 public class Promotion // Represents special offers or discounts.
 {
   public int PromotionId { get; init; }
+  [ForeignKey(nameof(CustomerId))]
   public int CustomerId { get; init; }
   public virtual Customer Customer { get; set; } = null!;
-  // Name of the offer (e.g., "Summer Sale", "Introductory Discount", "Free Trials", "Referral Bonuses").
+  /// <summary>
+  /// Name of the offer (e.g., "Summer Sale", "Introductory Discount", "Free Trials", "Referral Bonuses").
+  /// </summary>
+  [Required(ErrorMessage = "Obrigatório preencher o nome", AllowEmptyStrings = false)]
   public required string Name { get; set; }
+  [Required(ErrorMessage = "A descrição é obrigatória", AllowEmptyStrings = true)]
   public required string Description { get; set; }
-  // Type of discount offered (e.g., "percentage", "fixed amount").
+  /// <summary>
+  /// Type of discount offered (e.g., "percentage", "fixed amount").
+  /// </summary>
+  [Required(ErrorMessage = "Obrigatório preencher o tipo de desconto", AllowEmptyStrings = false)]
   public required string DiscountType { get; set; }
-  // Date the offer becomes active.
+  /// <summary>
+  /// Date the offer becomes active.
+  /// </summary>
+  [Required(ErrorMessage = "A data de início é obrigatória")]
   public required DateOnly StartDate { get; set; }
-  // Date the offer expires (optional).
+  /// <summary>
+  /// Date the offer expires (optional).
+  /// </summary>
+  [Required(ErrorMessage = "A data de fim é obrigatória")]
   public required DateOnly EndDate { get; set; }
   public bool IsActive { get; set; } = true;
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;

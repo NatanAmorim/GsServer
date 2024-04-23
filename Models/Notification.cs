@@ -9,13 +9,16 @@ namespace GsServer.Models;
 public class Notification
 {
   public int NotificationId { get; init; }
+  [ForeignKey(nameof(UserId))]
   public int UserId { get; init; }
   public virtual User User { get; set; } = null!;
   [MinLength(4, ErrorMessage = "O título deve ter no mínimo 4 caracteres")]
   [MaxLength(16, ErrorMessage = "O título deve ter no máximo 16 caracteres")]
+  [Required(ErrorMessage = "Obrigatório preencher o título", AllowEmptyStrings = false)]
   public required string Title { get; set; }
-  [MinLength(4, ErrorMessage = "A mensagem deve ter no mínimo 4 caracteres")]
+  [MinLength(16, ErrorMessage = "A mensagem deve ter no mínimo 16 caracteres")]
   [MaxLength(120, ErrorMessage = "A mensagem deve ter no máximo 120 caracteres")]
+  [Required(ErrorMessage = "Obrigatório preencher a mensagem", AllowEmptyStrings = false)]
   public required string Message { get; set; }
   public bool IsUnread { get; set; } = true;
   public bool IsRead() => !IsUnread;

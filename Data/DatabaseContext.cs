@@ -13,7 +13,7 @@ public class DatabaseContext(
     base.OnConfiguring(optionsBuilder);
     /// This line should never be used in production and is only for debugging
     // optionsBuilder.LogTo(str => Debug.WriteLine(str));
-    optionsBuilder.UseNpgsql(_configuration.GetConnectionString("db"));
+    optionsBuilder.UseNpgsql(_configuration.GetConnectionString("DB"));
   }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)

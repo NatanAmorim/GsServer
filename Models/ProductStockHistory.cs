@@ -1,8 +1,15 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace GsServer.Models;
 
 public class ProductStockHistory
 {
-  public int Id { get; init; }
+  public int ProductStockHistoryId { get; init; }
+  [Required(ErrorMessage = "A quantidade alterada é obrigatória")]
   public required int AmountChanged { get; set; }
-  public required string ChangeDescription { get; set; } // (e.g., Returned, sold, restocked,...)
+  /// <summary>
+  /// (e.g., Returned, sold, restocked,...)
+  /// </summary>
+  [Required(ErrorMessage = "Obrigatório preencher a descrição da mudança", AllowEmptyStrings = false)]
+  public required string ChangeDescription { get; set; }
 }

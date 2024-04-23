@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GsServer.Models;
 
@@ -9,9 +8,10 @@ public class Payment
   /// <summary>
   /// Comments is for things like installment price changed because of returned item.
   /// </summary>
-  [MinLength(4, ErrorMessage = "O comentário deve ter no mínimo 4 caracteres")]
   [MaxLength(240, ErrorMessage = "O comentário deve ter no máximo 240 caracteres")]
+  [Required(ErrorMessage = "O comentário é obrigatório", AllowEmptyStrings = true)]
   public required string Comments { get; set; }
+  [Required(ErrorMessage = "As parcelas são obrigatórias")]
   public required ICollection<PaymentInstallment> Installments { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   [Required(ErrorMessage = "CreatedBy é obrigatório")]

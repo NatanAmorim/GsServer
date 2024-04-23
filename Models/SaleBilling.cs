@@ -11,12 +11,17 @@ namespace GsServer.Models;
 public class SaleBilling
 {
   public int SaleBillingId { get; init; }
+  [ForeignKey(nameof(SaleId))]
   public required int SaleId { get; set; }
-  [MinLength(4, ErrorMessage = "O comentário deve ter no mínimo 4 caracteres")]
+  public virtual Sale Sale { get; set; } = null!;
   [MaxLength(240, ErrorMessage = "O comentário deve ter no máximo 240 caracteres")]
+  [Required(ErrorMessage = "O comentário é obrigatório", AllowEmptyStrings = true)]
   public required string Comments { get; set; }
-  [Column(TypeName = "decimal(19, 4)")]
+  [Column(TypeName = "decimal(8, 4)")]
+  [Range(1, 999_999.99, ErrorMessage = "O desconto total não deve ser menos que R$ 1,00 ou exceder R$ 999999,99")]
+  [Required(ErrorMessage = "O desconto total é obrigatório")]
   public required decimal TotalDiscount { get; init; }
+  [Required(ErrorMessage = "O pagamento é obrigatório")]
   public required Payment Payment { get; init; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   [Required(ErrorMessage = "CreatedBy é obrigatório")]
