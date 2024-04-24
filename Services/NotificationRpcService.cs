@@ -25,9 +25,7 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
   public override async Task<GetPaginatedNotificationsResponse> GetPaginatedAsync(GetPaginatedNotificationsRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} accessing multiple records ({RecordType}) with cursor {Cursor}",
       RequestTracerId,
@@ -56,7 +54,7 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
     Notifications = await Query
-      .Where(x => x.NotificationId > request.Cursor)
+      .Where(x => x.NotificationId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
 
@@ -85,9 +83,7 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
   public override async Task<GetNotificationByIdResponse> GetByIdAsync(GetNotificationByIdRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} accessing record ({RecordType}) with ID ({RecordId})",
@@ -131,9 +127,7 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
   public override async Task<CreateNotificationResponse> PostAsync(CreateNotificationRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} creating new record ({RecordType})",
@@ -143,7 +137,7 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
     );
 
     Notification Notification = _mapper.Map<Notification>(request);
-    Notification.CreatedBy = UserId;
+    Notification.CreatedBy = Ulid.Parse(UserId);
 
     // TODO
     // var Notification = new Notification
@@ -170,9 +164,7 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
   public override Task<UpdateNotificationResponse> PutAsync(UpdateNotificationRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} updating record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
@@ -212,9 +204,7 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
   public override async Task<DeleteNotificationResponse> DeleteAsync(DeleteNotificationRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
         "({TraceIdentifier}) User {UserID} deleting record ({RecordType}) with ID ({RecordId})",
         RequestTracerId,

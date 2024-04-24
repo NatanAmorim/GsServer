@@ -17,7 +17,7 @@ public class SubscriptionBilling
   public virtual Subscription Subscription { get; set; } = null!;
   [MaxLength(240, ErrorMessage = "O comentário deve ter no máximo 240 caracteres")]
   [Required(ErrorMessage = "O comentário é obrigatório", AllowEmptyStrings = true)]
-  public required string Comments { get; set; }
+  public required string Observations { get; set; }
   [Column(TypeName = "decimal(8, 4)")]
   [Range(1, 999_999.99, ErrorMessage = "A desconto total não deve ser menos que R$ 1,00 ou exceder R$ 999999,99")]
   [Required(ErrorMessage = "O desconto total é obrigatório")]
@@ -26,5 +26,5 @@ public class SubscriptionBilling
   public required Payment Payment { get; init; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   [Required(ErrorMessage = "CreatedBy é obrigatório")]
-  public int? CreatedBy { get; set; }
+  public Ulid? CreatedBy { get; set; }
 }

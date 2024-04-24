@@ -26,9 +26,7 @@ public class SubscriptionBillingRpcService : SubscriptionBillingService.Subscrip
   public override async Task<GetPaginatedSubscriptionBillingsResponse> GetPaginatedAsync(GetPaginatedSubscriptionBillingsRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} accessing multiple records ({RecordType}) with cursor {Cursor}",
       RequestTracerId,
@@ -54,7 +52,7 @@ public class SubscriptionBillingRpcService : SubscriptionBillingService.Subscrip
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
     SubscriptionBillings = await Query
-      .Where(x => x.SubscriptionBillingId > request.Cursor)
+      .Where(x => x.SubscriptionBillingId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
 
@@ -83,9 +81,7 @@ public class SubscriptionBillingRpcService : SubscriptionBillingService.Subscrip
   public override async Task<GetSubscriptionBillingByIdResponse> GetByIdAsync(GetSubscriptionBillingByIdRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} accessing record ({RecordType}) with ID ({RecordId})",
@@ -127,9 +123,7 @@ public class SubscriptionBillingRpcService : SubscriptionBillingService.Subscrip
   public override async Task<CreateSubscriptionBillingResponse> PostAsync(CreateSubscriptionBillingRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} creating new record ({RecordType})",
@@ -139,7 +133,7 @@ public class SubscriptionBillingRpcService : SubscriptionBillingService.Subscrip
     );
 
     SubscriptionBilling SubscriptionBilling = _mapper.Map<SubscriptionBilling>(request);
-    SubscriptionBilling.CreatedBy = UserId;
+    SubscriptionBilling.CreatedBy = Ulid.Parse(UserId);
 
     // TODO
     // var SubscriptionBilling = new SubscriptionBilling
@@ -186,9 +180,7 @@ public class SubscriptionBillingRpcService : SubscriptionBillingService.Subscrip
   public override Task<UpdateSubscriptionBillingResponse> PutAsync(UpdateSubscriptionBillingRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} updating record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
@@ -228,9 +220,7 @@ public class SubscriptionBillingRpcService : SubscriptionBillingService.Subscrip
   public override async Task<DeleteSubscriptionBillingResponse> DeleteAsync(DeleteSubscriptionBillingRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
         "({TraceIdentifier}) User {UserID} deleting record ({RecordType}) with ID ({RecordId})",
         RequestTracerId,

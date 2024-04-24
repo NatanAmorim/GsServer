@@ -162,9 +162,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
   public override async Task<RefreshTokenResponse> RefreshTokenAsync(RefreshTokenRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation(
       "({TraceIdentifier}) {UserId} minting a new JWT",
@@ -190,7 +188,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
         x => x.Token.Equals(request.RefreshToken)
       );
 
-    if (RefreshToken is null || RefreshToken.UserId != UserId || RefreshToken.ExpiresIn < DateTime.UtcNow || RefreshToken.IsValid == false)
+    if (RefreshToken is null || RefreshToken.UserId.ToString() != UserId || RefreshToken.ExpiresIn < DateTime.UtcNow || RefreshToken.IsValid == false)
     {
       _logger.LogWarning(
         "({TraceIdentifier}) Failed to mint a new JWT, Refresh Token {RefreshToken} Invalid or Expired",
@@ -223,9 +221,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
   public override async Task<ChangePasswordResponse> ChangePasswordAsync(ChangePasswordRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation(
       "({TraceIdentifier}) changing password, UserId {UserId}",

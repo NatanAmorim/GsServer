@@ -14,6 +14,12 @@ Todas as alterações notáveis ​​neste projeto serão documentadas neste ar
 O formato é baseado em [Keep a Changelog (PT-BR)](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere a [Versionamento Semântico (PT-BR)](https://semver.org/lang/pt-BR/).
 
+## 1.0.0-RC-5 (Apr 24, 2024)
+
+- Rename All "Comments" properties to "Observations".
+- Update Automapper to support Ulid.
+- Update protobufs from `0adaf3a56` to `15b4f0054`.
+
 ## 1.0.0-RC-4 (Apr 24, 2024)
 
 - Add `Ulid` package from Cysharp, also added value converter.

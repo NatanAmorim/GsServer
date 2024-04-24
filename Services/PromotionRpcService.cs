@@ -25,9 +25,7 @@ public class PromotionRpcService : PromotionService.PromotionServiceBase
   public override async Task<GetPaginatedPromotionsResponse> GetPaginatedAsync(GetPaginatedPromotionsRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} accessing multiple records ({RecordType}) with cursor {Cursor}",
       RequestTracerId,
@@ -68,7 +66,7 @@ public class PromotionRpcService : PromotionService.PromotionServiceBase
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
     Promotions = await Query
-      .Where(x => x.PromotionId > request.Cursor)
+      .Where(x => x.PromotionId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
 
@@ -97,9 +95,7 @@ public class PromotionRpcService : PromotionService.PromotionServiceBase
   public override async Task<GetPromotionByIdResponse> GetByIdAsync(GetPromotionByIdRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} accessing record ({RecordType}) with ID ({RecordId})",
@@ -156,9 +152,7 @@ public class PromotionRpcService : PromotionService.PromotionServiceBase
   public override async Task<CreatePromotionResponse> PostAsync(CreatePromotionRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} creating new record ({RecordType})",
@@ -168,7 +162,7 @@ public class PromotionRpcService : PromotionService.PromotionServiceBase
     );
 
     Promotion Promotion = _mapper.Map<Promotion>(request);
-    Promotion.CreatedBy = UserId;
+    Promotion.CreatedBy = Ulid.Parse(UserId);
 
     // TODO
     // var Promotion = new Promotion
@@ -206,9 +200,7 @@ public class PromotionRpcService : PromotionService.PromotionServiceBase
   public override Task<UpdatePromotionResponse> PutAsync(UpdatePromotionRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} updating record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
@@ -248,9 +240,7 @@ public class PromotionRpcService : PromotionService.PromotionServiceBase
   public override async Task<DeletePromotionResponse> DeleteAsync(DeletePromotionRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
         "({TraceIdentifier}) User {UserID} deleting record ({RecordType}) with ID ({RecordId})",
         RequestTracerId,

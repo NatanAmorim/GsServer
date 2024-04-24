@@ -26,9 +26,7 @@ public class PaymentRpcService : PaymentService.PaymentServiceBase
   public override async Task<GetPaginatedPaymentsResponse> GetPaginatedAsync(GetPaginatedPaymentsRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} accessing multiple records ({RecordType}) with cursor {Cursor}",
       RequestTracerId,
@@ -73,7 +71,7 @@ public class PaymentRpcService : PaymentService.PaymentServiceBase
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
     Payments = await Query
-      .Where(x => x.PaymentId > request.Cursor)
+      .Where(x => x.PaymentId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
 
@@ -102,9 +100,7 @@ public class PaymentRpcService : PaymentService.PaymentServiceBase
   public override async Task<GetPaymentByIdResponse> GetByIdAsync(GetPaymentByIdRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} accessing record ({RecordType}) with ID ({RecordId})",
@@ -165,9 +161,7 @@ public class PaymentRpcService : PaymentService.PaymentServiceBase
   public override async Task<CreatePaymentResponse> PostAsync(CreatePaymentRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} creating new record ({RecordType})",
@@ -177,7 +171,7 @@ public class PaymentRpcService : PaymentService.PaymentServiceBase
     );
 
     Payment Payment = _mapper.Map<Payment>(request);
-    Payment.CreatedBy = UserId;
+    Payment.CreatedBy = Ulid.Parse(UserId);
 
     // TODO
     // var Payment = new Payment
@@ -217,9 +211,7 @@ public class PaymentRpcService : PaymentService.PaymentServiceBase
   public override Task<UpdatePaymentResponse> PutAsync(UpdatePaymentRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} updating record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
@@ -259,9 +251,7 @@ public class PaymentRpcService : PaymentService.PaymentServiceBase
   public override async Task<DeletePaymentResponse> DeleteAsync(DeletePaymentRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
         "({TraceIdentifier}) User {UserID} deleting record ({RecordType}) with ID ({RecordId})",
         RequestTracerId,

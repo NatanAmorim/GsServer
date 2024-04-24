@@ -25,9 +25,7 @@ public class ReturnRpcService : ReturnService.ReturnServiceBase
   public override async Task<GetPaginatedReturnsResponse> GetPaginatedAsync(GetPaginatedReturnsRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} accessing multiple records ({RecordType}) with cursor {Cursor}",
       RequestTracerId,
@@ -63,7 +61,7 @@ public class ReturnRpcService : ReturnService.ReturnServiceBase
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
     Returns = await Query
-      .Where(x => x.ReturnId > request.Cursor)
+      .Where(x => x.ReturnId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
 
@@ -92,9 +90,7 @@ public class ReturnRpcService : ReturnService.ReturnServiceBase
   public override async Task<GetReturnByIdResponse> GetByIdAsync(GetReturnByIdRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} accessing record ({RecordType}) with ID ({RecordId})",
@@ -146,9 +142,7 @@ public class ReturnRpcService : ReturnService.ReturnServiceBase
   public override async Task<CreateReturnResponse> PostAsync(CreateReturnRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} creating new record ({RecordType})",
@@ -158,7 +152,7 @@ public class ReturnRpcService : ReturnService.ReturnServiceBase
     );
 
     Return Return = _mapper.Map<Return>(request);
-    Return.CreatedBy = UserId;
+    Return.CreatedBy = Ulid.Parse(UserId);
 
     // TODO
     // var Return = new Return
@@ -190,9 +184,7 @@ public class ReturnRpcService : ReturnService.ReturnServiceBase
   public override Task<UpdateReturnResponse> PutAsync(UpdateReturnRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} updating record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
@@ -232,9 +224,7 @@ public class ReturnRpcService : ReturnService.ReturnServiceBase
   public override async Task<DeleteReturnResponse> DeleteAsync(DeleteReturnRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
         "({TraceIdentifier}) User {UserID} deleting record ({RecordType}) with ID ({RecordId})",
         RequestTracerId,

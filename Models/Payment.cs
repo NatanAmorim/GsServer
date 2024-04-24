@@ -11,12 +11,12 @@ public class Payment
   /// </summary>
   [MaxLength(240, ErrorMessage = "O comentário deve ter no máximo 240 caracteres")]
   [Required(ErrorMessage = "O comentário é obrigatório", AllowEmptyStrings = true)]
-  public required string Comments { get; set; }
+  public required string Observations { get; set; }
   [Required(ErrorMessage = "As parcelas são obrigatórias")]
   public required ICollection<PaymentInstallment> Installments { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   [Required(ErrorMessage = "CreatedBy é obrigatório")]
-  public int? CreatedBy { get; set; }
+  public Ulid? CreatedBy { get; set; }
   public decimal TotalAmountOwed()
   {
     throw new NotImplementedException();

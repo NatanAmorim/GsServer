@@ -20,9 +20,7 @@ public class UserRpcService : UserService.UserServiceBase
   public override async Task<GetPaginatedUsersResponse> GetPaginatedAsync(GetPaginatedUsersRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} accessing multiple records ({RecordType}) with cursor {Cursor}",
       RequestTracerId,
@@ -30,10 +28,11 @@ public class UserRpcService : UserService.UserServiceBase
       typeof(User).Name,
       request.Cursor
     );
+
     IQueryable<GetUserByIdResponse> Query = _dbContext.Users.Select(
       User => new GetUserByIdResponse
       {
-        UserId = User.UserId,
+        UserId = User.UserId.ToString(),
         Email = User.Email,
         Role = User.Role,
       }
@@ -44,7 +43,7 @@ public class UserRpcService : UserService.UserServiceBase
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
     Users = await Query
-      .Where(x => x.UserId > request.Cursor)
+      .Where(x => x.UserId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
 
@@ -95,7 +94,7 @@ public class UserRpcService : UserService.UserServiceBase
     );
     return new GetUserByIdResponse
     {
-      UserId = User.UserId,
+      UserId = User.UserId.ToString(),
       Email = User.Email,
       Role = User.Role,
     };
@@ -103,9 +102,7 @@ public class UserRpcService : UserService.UserServiceBase
 
   public override async Task<UpdateUserResponse> PutAsync(UpdateUserRequest request, ServerCallContext context)
   {
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation("Updating User with ID {Id}", UserId);
     User? User = await _dbContext.Users.FindAsync(UserId);

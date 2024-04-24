@@ -53,7 +53,7 @@
 //     /// If cursor is bigger than the size of the collection you will get the following error
 //     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
 //     Disciplines = await Query
-//       .Where(x => x.DisciplinePk > request.Cursor)
+//       .Where(x => x.DisciplinePk.CompareTo(Ulid.Parse(request.Cursor)) > 0)
 //       .Take(20)
 //       .ToListAsync();
 

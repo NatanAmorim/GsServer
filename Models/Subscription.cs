@@ -34,5 +34,5 @@ public class Subscription
   public bool IsActive { get; set; } = true;
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   [Required(ErrorMessage = "CreatedBy é obrigatório")]
-  public int? CreatedBy { get; set; }
+  public Ulid? CreatedBy { get; set; }
 }

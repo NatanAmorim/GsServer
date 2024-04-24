@@ -25,9 +25,7 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
   public override async Task<GetPaginatedAttendancesResponse> GetPaginatedAsync(GetPaginatedAttendancesRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} accessing multiple records ({RecordType}) with cursor {Cursor}",
       RequestTracerId,
@@ -62,7 +60,7 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
     Attendances = await Query
-      .Where(x => x.AttendanceId > request.Cursor)
+      .Where(x => x.AttendanceId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
 
@@ -91,9 +89,7 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
   public override async Task<GetAttendanceByIdResponse> GetByIdAsync(GetAttendanceByIdRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} accessing record ({RecordType}) with ID ({RecordId})",
@@ -162,9 +158,7 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
   public override async Task<CreateAttendanceResponse> PostAsync(CreateAttendanceRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} creating new record ({RecordType})",
@@ -174,7 +168,7 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
     );
 
     Attendance Attendance = _mapper.Map<Attendance>(request);
-    Attendance.CreatedBy = UserId;
+    Attendance.CreatedBy = Ulid.Parse(UserId);
 
     // TODO
     // var Attendance = new Attendance
@@ -197,7 +191,7 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
     //   CreatedBy = UserId,
     // };
 
-    Attendance.CreatedBy = UserId;
+    Attendance.CreatedBy = Ulid.Parse(UserId);
     await _dbContext.AddAsync(Attendance);
     await _dbContext.SaveChangesAsync();
 
@@ -214,9 +208,7 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
   public override Task<UpdateAttendanceResponse> PutAsync(UpdateAttendanceRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} updating record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
@@ -256,9 +248,7 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
   public override async Task<DeleteAttendanceResponse> DeleteAsync(DeleteAttendanceRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} deleting record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,

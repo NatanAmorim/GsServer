@@ -25,9 +25,7 @@ public class SubscriptionRpcService : SubscriptionService.SubscriptionServiceBas
   public override async Task<GetPaginatedSubscriptionsResponse> GetPaginatedAsync(GetPaginatedSubscriptionsRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} accessing multiple records ({RecordType}) with cursor {Cursor}",
       RequestTracerId,
@@ -62,7 +60,7 @@ public class SubscriptionRpcService : SubscriptionService.SubscriptionServiceBas
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
     Subscriptions = await Query
-      .Where(x => x.SubscriptionId > request.Cursor)
+      .Where(x => x.SubscriptionId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
 
@@ -91,9 +89,7 @@ public class SubscriptionRpcService : SubscriptionService.SubscriptionServiceBas
   public override async Task<GetSubscriptionByIdResponse> GetByIdAsync(GetSubscriptionByIdRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} accessing record ({RecordType}) with ID ({RecordId})",
@@ -144,9 +140,7 @@ public class SubscriptionRpcService : SubscriptionService.SubscriptionServiceBas
   public override async Task<CreateSubscriptionResponse> PostAsync(CreateSubscriptionRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} creating new record ({RecordType})",
@@ -156,7 +150,7 @@ public class SubscriptionRpcService : SubscriptionService.SubscriptionServiceBas
     );
 
     Subscription Subscription = _mapper.Map<Subscription>(request);
-    Subscription.CreatedBy = UserId;
+    Subscription.CreatedBy = Ulid.Parse(UserId);
 
     // TODO
     // var Subscription = new Subscription
@@ -189,9 +183,7 @@ public class SubscriptionRpcService : SubscriptionService.SubscriptionServiceBas
   public override Task<UpdateSubscriptionResponse> PutAsync(UpdateSubscriptionRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} updating record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
@@ -231,9 +223,7 @@ public class SubscriptionRpcService : SubscriptionService.SubscriptionServiceBas
   public override async Task<DeleteSubscriptionResponse> DeleteAsync(DeleteSubscriptionRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
         "({TraceIdentifier}) User {UserID} deleting record ({RecordType}) with ID ({RecordId})",
         RequestTracerId,

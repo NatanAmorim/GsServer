@@ -25,9 +25,7 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
   public override async Task<GetPaginatedCustomersResponse> GetPaginatedAsync(GetPaginatedCustomersRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} accessing multiple records ({RecordType}) with cursor {Cursor}",
       RequestTracerId,
@@ -72,7 +70,7 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
     Customers = await Query
-      .Where(x => x.CustomerId > request.Cursor)
+      .Where(x => x.CustomerId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
 
@@ -101,9 +99,7 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
   public override async Task<GetCustomerByIdResponse> GetByIdAsync(GetCustomerByIdRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} accessing record ({RecordType}) with ID ({RecordId})",
@@ -163,9 +159,7 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
   public override async Task<CreateCustomerResponse> PostAsync(CreateCustomerRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} creating new record ({RecordType})",
@@ -175,7 +169,7 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
     );
 
     Customer Customer = _mapper.Map<Customer>(request);
-    Customer.CreatedBy = UserId;
+    Customer.CreatedBy = Ulid.Parse(UserId);
 
     // TODO
     // var Customer = new Customer
@@ -222,9 +216,7 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
   public override Task<UpdateCustomerResponse> PutAsync(UpdateCustomerRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} updating record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
@@ -264,9 +256,7 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
   public override async Task<DeleteCustomerResponse> DeleteAsync(DeleteCustomerRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
         "({TraceIdentifier}) User {UserID} deleting record ({RecordType}) with ID ({RecordId})",
         RequestTracerId,

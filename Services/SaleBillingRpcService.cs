@@ -25,9 +25,7 @@ public class SaleBillingRpcService : SaleBillingService.SaleBillingServiceBase
   public override async Task<GetPaginatedSaleBillingsResponse> GetPaginatedAsync(GetPaginatedSaleBillingsRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} accessing multiple records ({RecordType}) with cursor {Cursor}",
       RequestTracerId,
@@ -53,7 +51,7 @@ public class SaleBillingRpcService : SaleBillingService.SaleBillingServiceBase
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
     SaleBillings = await Query
-      .Where(x => x.SaleBillingId > request.Cursor)
+      .Where(x => x.SaleBillingId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
 
@@ -82,9 +80,7 @@ public class SaleBillingRpcService : SaleBillingService.SaleBillingServiceBase
   public override async Task<GetSaleBillingByIdResponse> GetByIdAsync(GetSaleBillingByIdRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} accessing record ({RecordType}) with ID ({RecordId})",
@@ -125,9 +121,7 @@ public class SaleBillingRpcService : SaleBillingService.SaleBillingServiceBase
   public override async Task<CreateSaleBillingResponse> PostAsync(CreateSaleBillingRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} creating new record ({RecordType})",
@@ -137,7 +131,7 @@ public class SaleBillingRpcService : SaleBillingService.SaleBillingServiceBase
     );
 
     SaleBilling SaleBilling = _mapper.Map<SaleBilling>(request);
-    SaleBilling.CreatedBy = UserId;
+    SaleBilling.CreatedBy = Ulid.Parse(UserId);
 
     // TODO
     // var SaleBilling = new SaleBilling
@@ -165,9 +159,7 @@ public class SaleBillingRpcService : SaleBillingService.SaleBillingServiceBase
   public override Task<UpdateSaleBillingResponse> PutAsync(UpdateSaleBillingRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} updating record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
@@ -207,9 +199,7 @@ public class SaleBillingRpcService : SaleBillingService.SaleBillingServiceBase
   public override async Task<DeleteSaleBillingResponse> DeleteAsync(DeleteSaleBillingRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
         "({TraceIdentifier}) User {UserID} deleting record ({RecordType}) with ID ({RecordId})",
         RequestTracerId,

@@ -12,5 +12,5 @@ public class Order
   public required OrderStatus Status { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   [Required(ErrorMessage = "CreatedBy é obrigatório")]
-  public int? CreatedBy { get; set; }
+  public Ulid? CreatedBy { get; set; }
 }

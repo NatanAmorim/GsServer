@@ -25,9 +25,7 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
   public override async Task<GetPaginatedInstructorsResponse> GetPaginatedAsync(GetPaginatedInstructorsRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} accessing multiple records ({RecordType}) with cursor {Cursor}",
       RequestTracerId,
@@ -61,7 +59,7 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
     Instructors = await Query
-      .Where(x => x.InstructorId > request.Cursor)
+      .Where(x => x.InstructorId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
 
@@ -90,9 +88,7 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
   public override async Task<GetInstructorByIdResponse> GetByIdAsync(GetInstructorByIdRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} accessing record ({RecordType}) with ID ({RecordId})",
@@ -141,9 +137,7 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
   public override async Task<CreateInstructorResponse> PostAsync(CreateInstructorRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} creating new record ({RecordType})",
@@ -153,7 +147,7 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
     );
 
     Instructor Instructor = _mapper.Map<Instructor>(request);
-    Instructor.CreatedBy = UserId;
+    Instructor.CreatedBy = Ulid.Parse(UserId);
 
     // TODO
     // var Instructor = new Instructor
@@ -186,9 +180,7 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
   public override Task<UpdateInstructorResponse> PutAsync(UpdateInstructorRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
       "({TraceIdentifier}) User {UserID} updating record ({RecordType}) with ID ({RecordId})",
       RequestTracerId,
@@ -228,9 +220,7 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
   public override async Task<DeleteInstructorResponse> DeleteAsync(DeleteInstructorRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
-    int UserId = int.Parse(
-      context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!
-    );
+    string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
         "({TraceIdentifier}) User {UserID} deleting record ({RecordType}) with ID ({RecordId})",
         RequestTracerId,
