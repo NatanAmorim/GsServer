@@ -6,13 +6,14 @@ namespace GsServer.Models;
 [Index(nameof(PayDay), nameof(IsActive))]
 public class Subscription
 {
-  public int SubscriptionId { get; init; }
+  [Key]
+  public Ulid SubscriptionId { get; init; } = Ulid.NewUlid();
   [ForeignKey(nameof(DisciplineId))]
-  public required int DisciplineId { get; init; }
+  public required Ulid DisciplineId { get; init; }
   public virtual Discipline Discipline { get; set; } = null!;
   [Required(ErrorMessage = "O cliente é obrigatório")]
   [ForeignKey(nameof(CustomerId))]
-  public required int CustomerId { get; init; }
+  public required Ulid CustomerId { get; init; }
   public virtual Customer Customer { get; set; } = null!;
   [Range(1, 28, ErrorMessage = "O dia de pagamento deve ser entre 1 e 28")]
   [Required(ErrorMessage = "O dia de pagamento é obrigatório")]

@@ -6,9 +6,10 @@ namespace GsServer.Models;
 [Index(nameof(Date), IsUnique = false)]
 public class Attendance
 {
-  public int AttendanceId { get; init; }
+  [Key]
+  public Ulid AttendanceId { get; init; } = Ulid.NewUlid();
   [ForeignKey(nameof(DisciplineId))]
-  public required int DisciplineId { get; init; }
+  public required Ulid DisciplineId { get; init; }
   public virtual Discipline Discipline { get; init; } = null!;
   [Required(ErrorMessage = "A data é obrigatória")]
   public required DateOnly Date { get; set; }

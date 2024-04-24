@@ -4,7 +4,8 @@ namespace GsServer.Models;
 
 public class Payment
 {
-  public int PaymentId { get; init; }
+  [Key]
+  public Ulid PaymentId { get; init; } = Ulid.NewUlid();
   /// <summary>
   /// Comments is for things like installment price changed because of returned item.
   /// </summary>

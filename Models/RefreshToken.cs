@@ -6,9 +6,10 @@ namespace GsServer.Models;
 [Index(nameof(Token), nameof(IsValid), nameof(CreatedAt), AllDescending = true)] // Composite Index
 public class RefreshToken
 {
-  public int RefreshTokenId { get; init; }
+  [Key]
+  public Ulid RefreshTokenId { get; init; } = Ulid.NewUlid();
   [ForeignKey(nameof(UserId))]
-  public required int UserId { get; init; }
+  public required Ulid UserId { get; init; }
   public virtual User User { get; set; } = null!;
   [MinLength(12, ErrorMessage = "O nome deve ter no mínimo 12 caracteres")]
   [Required(ErrorMessage = "O token é obrigatório", AllowEmptyStrings = false)]

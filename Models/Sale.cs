@@ -5,9 +5,10 @@ namespace GsServer.Models;
 
 public class Sale
 {
-  public int SaleId { get; init; }
+  [Key]
+  public Ulid SaleId { get; init; } = Ulid.NewUlid();
   [ForeignKey(nameof(CustomerId))]
-  public int? CustomerId { get; set; }
+  public Ulid? CustomerId { get; set; }
   public virtual Customer Customer { get; set; } = null!;
   /// <summary>
   /// For details about returns, discounts and alike

@@ -10,9 +10,10 @@ namespace GsServer.Models;
 /// </summary>
 public class SubscriptionBilling
 {
-  public int SubscriptionBillingId { get; init; }
+  [Key]
+  public Ulid SubscriptionBillingId { get; init; } = Ulid.NewUlid();
   [ForeignKey(nameof(SubscriptionId))]
-  public required int SubscriptionId { get; init; }
+  public required Ulid SubscriptionId { get; init; }
   public virtual Subscription Subscription { get; set; } = null!;
   [MaxLength(240, ErrorMessage = "O comentário deve ter no máximo 240 caracteres")]
   [Required(ErrorMessage = "O comentário é obrigatório", AllowEmptyStrings = true)]

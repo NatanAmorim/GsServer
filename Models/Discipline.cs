@@ -6,7 +6,8 @@ namespace GsServer.Models;
 [Index(nameof(StartTime), nameof(EndTime), nameof(IsActive), IsUnique = false)]
 public class Discipline
 {
-  public int DisciplineId { get; init; }
+  [Key]
+  public Ulid DisciplineId { get; init; } = Ulid.NewUlid();
   [MinLength(4, ErrorMessage = "O nome deve ter no mínimo 4 caracteres")]
   [MaxLength(16, ErrorMessage = "O nome deve ter no máximo 16 caracteres")]
   [Required(ErrorMessage = "Obrigatório preencher o nome", AllowEmptyStrings = false)]
@@ -16,7 +17,7 @@ public class Discipline
   [Required(ErrorMessage = "O preço da mensalidade é obrigatório")]
   public required decimal TuitionPrice { get; set; }
   [ForeignKey(nameof(InstructorId))]
-  public required int InstructorId { get; set; }
+  public required Ulid InstructorId { get; set; }
   public virtual Instructor Instructor { get; set; } = null!;
   [Required(ErrorMessage = "O horário de início é obrigatório")]
   public required TimeOnly StartTime { get; set; }

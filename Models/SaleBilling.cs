@@ -10,9 +10,10 @@ namespace GsServer.Models;
 /// </summary>
 public class SaleBilling
 {
-  public int SaleBillingId { get; init; }
+  [Key]
+  public Ulid SaleBillingId { get; init; } = Ulid.NewUlid();
   [ForeignKey(nameof(SaleId))]
-  public required int SaleId { get; set; }
+  public required Ulid SaleId { get; set; }
   public virtual Sale Sale { get; set; } = null!;
   [MaxLength(240, ErrorMessage = "O comentário deve ter no máximo 240 caracteres")]
   [Required(ErrorMessage = "O comentário é obrigatório", AllowEmptyStrings = true)]

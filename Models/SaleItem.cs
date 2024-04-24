@@ -6,9 +6,10 @@ namespace GsServer.Models;
 [Owned]
 public class SaleItem
 {
-  public int SaleItemId { get; init; }
+  [Key]
+  public Ulid SaleItemId { get; init; } = Ulid.NewUlid();
   [ForeignKey(nameof(ProductVariantId))]
-  public required int ProductVariantId { get; set; }
+  public required Ulid ProductVariantId { get; set; }
   public virtual ProductVariant ProductVariant { get; set; } = null!;
   [Column(TypeName = "decimal(8, 4)")]
   [Range(0, 999_999.99, ErrorMessage = "O preço unitário não deve ser menos que R$ 0,00 ou exceder R$ 999999,99")]

@@ -7,7 +7,8 @@ namespace GsServer.Models;
 [Index(nameof(Cpf), IsUnique = true)]
 public class Person
 {
-  public int PersonId { get; init; }
+  [Key]
+  public Ulid PersonId { get; init; } = Ulid.NewUlid();
   [MinLength(5, ErrorMessage = "O nome completo deve ter no mínimo 5 caracteres")]
   [MaxLength(55, ErrorMessage = "O nome completo deve ter no máximo 55 caracteres")]
   [Required(ErrorMessage = "Obrigatório preencher o nome completo", AllowEmptyStrings = false)]

@@ -13,9 +13,10 @@ Implementation Considerations:
 [Index(nameof(IsActive), IsUnique = false)]
 public class Promotion // Represents special offers or discounts.
 {
-  public int PromotionId { get; init; }
+  [Key]
+  public Ulid PromotionId { get; init; } = Ulid.NewUlid();
   [ForeignKey(nameof(CustomerId))]
-  public int CustomerId { get; init; }
+  public Ulid CustomerId { get; init; }
   public virtual Customer Customer { get; set; } = null!;
   /// <summary>
   /// Name of the offer (e.g., "Summer Sale", "Introductory Discount", "Free Trials", "Referral Bonuses").

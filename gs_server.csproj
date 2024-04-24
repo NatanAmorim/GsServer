@@ -29,40 +29,12 @@
     <PackageReference Include="Serilog.Sinks.AwsCloudWatch" Version="4.2.19" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.0" />
+    <PackageReference Include="Ulid" Version="1.3.3" />
   </ItemGroup>
 
   <ItemGroup>
     <Protobuf GrpcServices="Server" Include="./gs_protobufs/protos/custom_types/*.proto" />
     <Protobuf GrpcServices="Server" Include="./gs_protobufs/protos/*.proto" />
-
-    <!-- <Protobuf GrpcServices="Server" ProtoRoot="./gs_protobufs/protos/" Include="custom_types/*.proto" />
-    <Protobuf GrpcServices="Server" ProtoRoot="./gs_protobufs/protos/" Include="*.proto" /> -->
-
-    <!-- <Protobuf GrpcServices="Server" Include="../gs_protobufs/protos/*.proto" /> -->
-    <!-- <Protobuf GrpcServices="Server" Include="../gs_protobufs/protos/custom_types/*.proto" /> -->
-
-    <!-- <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\custom_types\calendar_date.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\custom_types\day_of_week.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\custom_types\decimal_value.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\custom_types\person.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\custom_types\time_of_day.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\attendance.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\auth.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\background_job.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\customer.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\discipline.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\instructor.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\notification.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\order.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\payment.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\product.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\promotion.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\return.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\sale_billing.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\sale.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\subscription_billing.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\subscription.proto" />
-    <Protobuf GrpcServices="Server" Include="gs_protobufs\protos\user.proto" /> -->
   </ItemGroup>
 
 </Project>

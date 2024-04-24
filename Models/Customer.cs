@@ -5,9 +5,10 @@ namespace GsServer.Models;
 
 public class Customer
 {
-  public int CustomerId { get; init; }
+  [Key]
+  public Ulid CustomerId { get; init; } = Ulid.NewUlid();
   [ForeignKey(nameof(UserId))]
-  public int UserId { get; set; }
+  public Ulid UserId { get; set; }
   public virtual User User { get; set; } = null!;
   [Required(ErrorMessage = "A Pessoa é obrigatória")]
   public required Person Person { get; set; }

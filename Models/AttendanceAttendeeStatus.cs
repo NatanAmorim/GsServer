@@ -5,11 +5,12 @@ namespace GsServer.Models;
 
 public class AttendanceAttendeeStatus
 {
-  public int AttendanceAttendeeStatusId { get; init; }
+  [Key]
+  public Ulid AttendanceAttendeeStatusId { get; init; } = Ulid.NewUlid();
   [ForeignKey(nameof(AttendanceId))]
-  public int AttendanceId { get; init; }
+  public Ulid AttendanceId { get; init; }
   [ForeignKey(nameof(PersonId))]
-  public required int PersonId { get; init; }
+  public required Ulid PersonId { get; init; }
   public virtual Person Person { get; init; } = null!;
   [Required(ErrorMessage = "O status presente/ausente é obrigatório")]
   public required bool IsPresent { get; init; }

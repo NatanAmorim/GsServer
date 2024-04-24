@@ -18,25 +18,15 @@ public class DatabaseContext(
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
-    modelBuilder.UseSerialColumns();
-    // modelBuilder.ApplyConfiguration(new AttendanceConfiguration());
-    // modelBuilder.ApplyConfiguration(new BackgroundJobConfiguration());
-    // modelBuilder.ApplyConfiguration(new CustomerConfiguration());
-    // modelBuilder.ApplyConfiguration(new DisciplineConfiguration());
-    // modelBuilder.ApplyConfiguration(new InstructorConfiguration());
-    // modelBuilder.ApplyConfiguration(new NotificationConfiguration());
-    // modelBuilder.ApplyConfiguration(new OrderConfiguration());
-    // modelBuilder.ApplyConfiguration(new PaymentConfiguration());
-    // modelBuilder.ApplyConfiguration(new PersonConfiguration());
-    // modelBuilder.ApplyConfiguration(new ProductConfiguration());
-    // modelBuilder.ApplyConfiguration(new PromotionConfiguration());
-    // modelBuilder.ApplyConfiguration(new RefreshTokenConfiguration());
-    // modelBuilder.ApplyConfiguration(new ReturnConfiguration());
-    // modelBuilder.ApplyConfiguration(new SaleConfiguration());
-    // modelBuilder.ApplyConfiguration(new SaleBillingConfiguration());
-    // modelBuilder.ApplyConfiguration(new SubscriptionConfiguration());
-    // modelBuilder.ApplyConfiguration(new SubscriptionBillingConfiguration());
-    // modelBuilder.ApplyConfiguration(new UserConfiguration());
+    modelBuilder.UseIdentityColumns();
+  }
+
+  protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+  {
+    configurationBuilder
+      .Properties<Ulid>()
+      .HaveConversion<UlidToStringConverter>()
+      .HaveConversion<UlidToBytesConverter>();
   }
 
   public DbSet<Attendance> Attendances => Set<Attendance>();
@@ -47,7 +37,7 @@ public class DatabaseContext(
   public DbSet<Notification> Notifications => Set<Notification>();
   public DbSet<Order> Orders => Set<Order>();
   public DbSet<Payment> Payments => Set<Payment>();
-  public DbSet<Person> Persons => Set<Person>(); // Yes, it could also be called "People"
+  public DbSet<Person> People => Set<Person>();
   public DbSet<Product> Products => Set<Product>();
   public DbSet<Promotion> Promotions => Set<Promotion>();
   public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();

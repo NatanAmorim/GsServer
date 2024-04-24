@@ -8,9 +8,10 @@ namespace GsServer.Models;
 [Index(nameof(IsUnread), IsUnique = false)]
 public class Notification
 {
-  public int NotificationId { get; init; }
+  [Key]
+  public Ulid NotificationId { get; init; } = Ulid.NewUlid();
   [ForeignKey(nameof(UserId))]
-  public int UserId { get; init; }
+  public Ulid UserId { get; init; }
   public virtual User User { get; set; } = null!;
   [MinLength(4, ErrorMessage = "O título deve ter no mínimo 4 caracteres")]
   [MaxLength(16, ErrorMessage = "O título deve ter no máximo 16 caracteres")]

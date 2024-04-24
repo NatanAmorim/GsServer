@@ -5,7 +5,8 @@ namespace GsServer.Models;
 
 public class ProductVariant
 {
-  public int ProductVariantId { get; init; }
+  [Key]
+  public Ulid ProductVariantId { get; init; } = Ulid.NewUlid();
   [Required(ErrorMessage = "Obrigatório preencher a cor", AllowEmptyStrings = false)]
   public required string Color { get; set; }
   [Required(ErrorMessage = "Obrigatório preencher a cor", AllowEmptyStrings = false)]

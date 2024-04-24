@@ -4,7 +4,8 @@ namespace GsServer.Models;
 
 public class Order
 {
-  public int OrderId { get; init; }
+  [Key]
+  public Ulid OrderId { get; init; } = Ulid.NewUlid();
   [Required(ErrorMessage = "A venda é obrigatória")]
   public required Sale Sale { get; set; }
   [Required(ErrorMessage = "O status é obrigatório")]

@@ -5,9 +5,10 @@ namespace GsServer.Models;
 
 public class ProductVariantInventory
 {
-  public int ProductVariantInventoryId { get; init; }
+  [Key]
+  public Ulid ProductVariantInventoryId { get; init; } = Ulid.NewUlid();
   [ForeignKey(nameof(ProductVariantId))]
-  public int ProductVariantId { get; set; }
+  public Ulid ProductVariantId { get; set; }
   public virtual ProductVariant ProductVariant { get; set; } = null!;
   [Required(ErrorMessage = "A quantidade disponível é obrigatória")]
   public required int QuantityAvailable { get; set; }

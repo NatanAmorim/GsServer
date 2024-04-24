@@ -14,6 +14,14 @@ Todas as alterações notáveis ​​neste projeto serão documentadas neste ar
 O formato é baseado em [Keep a Changelog (PT-BR)](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere a [Versionamento Semântico (PT-BR)](https://semver.org/lang/pt-BR/).
 
+## 1.0.0-RC-4 (Apr 24, 2024)
+
+- Add `Ulid` package from Cysharp, also added value converter.
+- Change every Model Id to ULID.
+- Change Default Id on Postgres from `Serial` to `Identity`.
+- Rename Folder `CustomTypes` to `ValuesConverter`.
+- Rename Table "Persons" to "People".
+
 ## 1.0.0-RC-3 (Apr 23, 2024)
 
 - Change some data validation.

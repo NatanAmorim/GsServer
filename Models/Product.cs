@@ -4,7 +4,8 @@ namespace GsServer.Models;
 
 public class Product
 {
-  public int ProductId { get; init; }
+  [Key]
+  public Ulid ProductId { get; init; } = Ulid.NewUlid();
   [MinLength(4, ErrorMessage = "O nome deve ter no mínimo 4 caracteres")]
   [MaxLength(32, ErrorMessage = "O nome deve ter no máximo 32 caracteres")]
   [Required(ErrorMessage = "Obrigatório preencher o nome", AllowEmptyStrings = false)]

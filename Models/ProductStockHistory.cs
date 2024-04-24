@@ -4,7 +4,8 @@ namespace GsServer.Models;
 
 public class ProductStockHistory
 {
-  public int ProductStockHistoryId { get; init; }
+  [Key]
+  public Ulid ProductStockHistoryId { get; init; } = Ulid.NewUlid();
   [Required(ErrorMessage = "A quantidade alterada é obrigatória")]
   public required int AmountChanged { get; set; }
   /// <summary>
