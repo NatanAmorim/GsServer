@@ -15,7 +15,7 @@ public class Payment
   [Required(ErrorMessage = "As parcelas são obrigatórias")]
   public required ICollection<PaymentInstallment> Installments { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
-  [Required(ErrorMessage = "CreatedBy é obrigatório")]
+  [Required]
   public Ulid? CreatedBy { get; set; }
   public decimal TotalAmountOwed()
   {

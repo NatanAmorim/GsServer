@@ -14,6 +14,6 @@ public class Return
   [Required(ErrorMessage = "Os itens retornados são obrigatórios")]
   public required ICollection<ReturnItem> ItemsReturned { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
-  [Required(ErrorMessage = "CreatedBy é obrigatório")]
+  [Required]
   public Ulid? CreatedBy { get; set; }
 }

@@ -21,6 +21,6 @@ public class Product
   [Required(ErrorMessage = "As variantes do produto são obrigatórias")]
   public required ICollection<ProductVariant> Variants { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
-  [Required(ErrorMessage = "CreatedBy é obrigatório")]
+  [Required]
   public Ulid? CreatedBy { get; set; }
 }

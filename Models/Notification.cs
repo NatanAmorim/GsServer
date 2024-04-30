@@ -24,6 +24,6 @@ public class Notification
   public bool IsUnread { get; set; } = true;
   public bool IsRead() => !IsUnread;
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
-  [Required(ErrorMessage = "CreatedBy é obrigatório")]
+  [Required]
   public Ulid? CreatedBy { get; set; }
 }

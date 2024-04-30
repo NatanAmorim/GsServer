@@ -70,7 +70,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
     string JwtToken = GenerateJwtToken(User);
     string RefreshToken = GenerateRefreshToken();
 
-    RefreshToken refreshTokenEntity = new()
+    RefreshToken RefreshTokenEntity = new()
     {
       UserId = User.UserId,
       Token = RefreshToken
@@ -79,7 +79,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
     // RefreshToken is saved as stateful in the database, since it allows to
     // check if the RefreshToken is still valid and check if it belongs to the
     // User that wants to mint a new JWT.
-    _dbContext.RefreshTokens.Add(refreshTokenEntity);
+    _dbContext.RefreshTokens.Add(RefreshTokenEntity);
 
     // Save the changes to the database
     await _dbContext.SaveChangesAsync();
@@ -281,46 +281,46 @@ public class AuthRpcService : AuthService.AuthServiceBase
       out byte[] generatedPasswordSalt
     )
   {
-    using HMACSHA512 hmac = new();
-    generatedPasswordSalt = hmac.Key;
-    generatedPasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+    using HMACSHA512 Hmac = new();
+    generatedPasswordSalt = Hmac.Key;
+    generatedPasswordHash = Hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
   }
 
   private static bool VerifyPassword(string password, byte[] passwordHash, byte[] passwordSalt)
   {
-    using HMACSHA512 hmac = new(passwordSalt);
-    byte[] computeHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+    using HMACSHA512 Hmac = new(passwordSalt);
+    byte[] computeHash = Hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
     return computeHash.SequenceEqual(passwordHash);
   }
   private string GenerateJwtToken(
         User User
       )
   {
-    List<Claim> claims =
+    List<Claim> Claims =
     [
         new Claim(ClaimTypes.NameIdentifier, User.UserId!.ToString()),
         new Claim(ClaimTypes.Email, User.Email)
     ];
 
-    SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(
+    SymmetricSecurityKey Key = new(Encoding.UTF8.GetBytes(
         _configuration.GetSection("Authentication:Schemes:Bearer:Secret").Value!
       )
     );
 
-    SigningCredentials signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+    SigningCredentials signingCredentials = new(Key, SecurityAlgorithms.HmacSha512Signature);
 
     string issuer = _configuration.GetSection("Authentication:Schemes:Bearer:Issuer").Value!;
 
-    JwtSecurityToken token = new JwtSecurityToken(
-      claims: claims,
+    JwtSecurityToken Token = new(
+      claims: Claims,
       expires: DateTime.Now.AddMinutes(15),
       signingCredentials: signingCredentials,
       issuer: issuer
     );
 
-    string jwt = new JwtSecurityTokenHandler().WriteToken(token);
+    string Jwt = new JwtSecurityTokenHandler().WriteToken(Token);
 
-    return jwt;
+    return Jwt;
   }
 
   private static string GenerateRefreshToken()

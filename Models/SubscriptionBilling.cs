@@ -25,6 +25,6 @@ public class SubscriptionBilling
   [Required(ErrorMessage = "O pagamento é obrigatório")]
   public required Payment Payment { get; init; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
-  [Required(ErrorMessage = "CreatedBy é obrigatório")]
+  [Required]
   public Ulid? CreatedBy { get; set; }
 }

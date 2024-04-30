@@ -37,6 +37,6 @@ public class Person
   // [Required(ErrorMessage = "O CIN é obrigatório")]
   // public required string Cin { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
-  [Required(ErrorMessage = "CreatedBy é obrigatório")]
+  [Required]
   public Ulid? CreatedBy { get; set; }
 }

@@ -27,6 +27,6 @@ public class Discipline
   public required ICollection<DayOfWeek> ClassDays { get; set; }
   public bool IsActive { get; set; } = true;
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
-  [Required(ErrorMessage = "CreatedBy é obrigatório")]
+  [Required]
   public Ulid? CreatedBy { get; set; }
 }

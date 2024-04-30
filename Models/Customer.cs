@@ -22,6 +22,6 @@ public class Customer
   [Required(ErrorMessage = "As informações adicionais são obrigatórias", AllowEmptyStrings = true)]
   public required string AdditionalInformation { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
-  [Required(ErrorMessage = "CreatedBy é obrigatório")]
+  [Required]
   public Ulid? CreatedBy { get; set; }
 }

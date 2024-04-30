@@ -11,8 +11,9 @@ public class RefreshToken
   [ForeignKey(nameof(UserId))]
   public required Ulid UserId { get; init; }
   public virtual User User { get; set; } = null!;
-  [MinLength(12, ErrorMessage = "O nome deve ter no mínimo 12 caracteres")]
-  [Required(ErrorMessage = "O token é obrigatório", AllowEmptyStrings = false)]
+  [MinLength(64)]
+  [MaxLength(256)]
+  [Required(AllowEmptyStrings = false)]
   public required string Token { get; set; }
   public DateTime ExpiresIn { get; set; } = DateTime.UtcNow.AddDays(28);
   public bool IsExpired() => DateTime.UtcNow > ExpiresIn;

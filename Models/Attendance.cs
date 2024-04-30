@@ -19,6 +19,6 @@ public class Attendance
   [Required(ErrorMessage = "As observações são obrigatórias", AllowEmptyStrings = true)]
   public string Observations { get; set; } = string.Empty;
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
-  [Required(ErrorMessage = "CreatedBy é obrigatório")]
+  [Required]
   public Ulid? CreatedBy { get; set; }
 }

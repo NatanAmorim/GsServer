@@ -42,6 +42,6 @@ public class Promotion // Represents special offers or discounts.
   public required DateOnly EndDate { get; set; }
   public bool IsActive { get; set; } = true;
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
-  [Required(ErrorMessage = "CreatedBy é obrigatório")]
+  [Required]
   public Ulid? CreatedBy { get; set; }
 }

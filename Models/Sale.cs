@@ -19,6 +19,6 @@ public class Sale
   [Required(ErrorMessage = "Os itens são obrigatórios")]
   public required ICollection<SaleItem> ItemsSold { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
-  [Required(ErrorMessage = "CreatedBy é obrigatório")]
+  [Required]
   public Ulid? CreatedBy { get; set; }
 }
