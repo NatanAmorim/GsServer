@@ -38,24 +38,6 @@ public class ReturnRpcService : ReturnService.ReturnServiceBase
       Return => _mapper.Map<GetReturnByIdResponse>(Return)
     );
 
-    // TODO
-    // IQueryable<GetReturnByIdResponse> Query = _dbContext.Returns.Select(
-    //   Return => new GetReturnByIdResponse
-    //   {
-    //     TotalAmountRefunded = Return.TotalAmountRefunded,
-    //     ItemsReturned =
-    //     {
-    //       Return.ItemsReturned.Select(
-    //         ItemReturned => new ReturnItem
-    //         {
-    //           ProductVariantFk = ItemReturned.ProductVariantFk,
-    //           QuantityReturned = ItemReturned.QuantityReturned,
-    //         }
-    //       ).ToList(),
-    //     }
-    //   }
-    // );
-
     List<GetReturnByIdResponse> Returns = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
@@ -121,22 +103,6 @@ public class ReturnRpcService : ReturnService.ReturnServiceBase
     );
 
     return _mapper.Map<GetReturnByIdResponse>(Return);
-
-    // TODO
-    // return new GetReturnByIdResponse
-    // {
-    //   TotalAmountRefunded = Return.TotalAmountRefunded,
-    //   ItemsReturned =
-    //   {
-    //     Return.ItemsReturned.Select(
-    //       ItemReturned => new ReturnItem
-    //       {
-    //         ProductVariantFk = ItemReturned.ProductVariantFk,
-    //         QuantityReturned = ItemReturned.QuantityReturned,
-    //       }
-    //     ).ToList(),
-    //   }
-    // };
   }
 
   public override async Task<CreateReturnResponse> PostAsync(CreateReturnRequest request, ServerCallContext context)
@@ -153,20 +119,6 @@ public class ReturnRpcService : ReturnService.ReturnServiceBase
 
     Return Return = _mapper.Map<Return>(request);
     Return.CreatedBy = Ulid.Parse(UserId);
-
-    // TODO
-    // var Return = new Return
-    // {
-    //   TotalAmountRefunded = request.TotalAmountRefunded,
-    //   ItemsReturned = request.ItemsReturned.Select(
-    //       ItemReturned => new ReturnItem
-    //       {
-    //         ProductVariantFk = ItemReturned.ProductVariantFk,
-    //         QuantityReturned = ItemReturned.QuantityReturned,
-    //       }
-    //     ).ToList(),
-    //   CreatedBy = UserId,
-    // };
 
     await _dbContext.AddAsync(Return);
     await _dbContext.SaveChangesAsync();
@@ -202,9 +154,6 @@ public class ReturnRpcService : ReturnService.ReturnServiceBase
     throw new NotImplementedException();
 
     // TODO
-    // if (request.Id <= 0)
-    //   throw new RpcException(new Status(StatusCode.InvalidArgument, "You must supply a valid id"));
-
     // ReturnModel? Return = await _dbContext.Returns.FirstOrDefaultAsync(x => x.Id == request.Id);
     // if (Return is null)
     // {

@@ -37,41 +37,6 @@ public class ProductRpcService : ProductService.ProductServiceBase
       Product => _mapper.Map<GetProductByIdResponse>(Product)
     );
 
-    // TODO
-    // response.Products.AddRange(
-    //   Products.Select(
-    //     Product => new GetProductByIdResponse
-    //     {
-    //       Name = Product.Name,
-    //       Description = Product.Description,
-    //       PicturePath = Product.PicturePath,
-    //       ProductBrandFk = Product.ProductBrand,
-    //       ProductCategoryFk = Product.ProductCategory,
-    //       Variants =
-    //       {
-    //         Product.Variants.Select(
-    //           Variant => new Protobufs.ProductVariant
-    //           {
-    //             ProductVariantPk = Variant.ProductVariantPk,
-    //             Color = Variant.Color,
-    //             Size = Variant.Size,
-    //             BarCode = Variant.BarCode,
-    //             Sku = Variant.Sku,
-    //             UnitPrice = Variant.UnitPrice,
-    //             Inventory = new ProductVariantInventory
-    //             {
-    //               ProductVariantInventoryPk = Variant.Inventory.ProductVariantInventoryPk,
-    //               ProductVariantFk = Variant.Inventory.ProductVariantFk,
-    //               QuantityAvailable = Variant.Inventory.QuantityAvailable,
-    //               MinimumStockAmount = Variant.Inventory.MinimumStockAmount,
-    //             }
-    //           }
-    //         ).ToList(),
-    //       },
-    //     }
-    //   ).ToList()
-    // );
-
     List<GetProductByIdResponse> Products = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
@@ -125,37 +90,6 @@ public class ProductRpcService : ProductService.ProductServiceBase
     );
 
     return _mapper.Map<GetProductByIdResponse>(Product);
-
-    // TODO
-    // return new GetProductByIdResponse
-    // {
-    //   Name = Product.Name,
-    //   Description = Product.Description,
-    //   PicturePath = Product.PicturePath,
-    //   ProductBrandFk = Product.ProductBrand,
-    //   ProductCategoryFk = Product.ProductCategory,
-    //   Variants =
-    //   {
-    //     Product.Variants.Select(
-    //       Variant => new ProductVariant
-    //       {
-    //         ProductVariantPk = Variant.ProductVariantPk,
-    //         Color = Variant.Color,
-    //         Size = Variant.Size,
-    //         BarCode = Variant.BarCode,
-    //         Sku = Variant.Sku,
-    //         UnitPrice = Variant.UnitPrice,
-    //         Inventory = new Protobufs.ProductVariantInventory
-    //         {
-    //           ProductVariantInventoryPk = Variant.Inventory.ProductVariantInventoryPk,
-    //           ProductVariantFk = Variant.Inventory.ProductVariantFk,
-    //           QuantityAvailable = Variant.Inventory.QuantityAvailable,
-    //           MinimumStockAmount = Variant.Inventory.MinimumStockAmount,
-    //         }
-    //       }
-    //     ),
-    //   },
-    // };
   }
 
   public override async Task<CreateProductResponse> PostAsync(CreateProductRequest request, ServerCallContext context)
@@ -174,34 +108,6 @@ public class ProductRpcService : ProductService.ProductServiceBase
     string? PicturePath = null;
 
     Product Product = _mapper.Map<Product>(request);
-
-    // var Product = new Product
-    // {
-    //   Name = request.Name,
-    //   Description = request.Description,
-    //   PicturePath = PicturePath,
-    //   ProductBrand = request.ProductBrand,
-    //   ProductCategory = request.ProductCategory,
-    //   Variants = request.Variants.Select(
-    //       Variant => new Models.ProductVariant
-    //       {
-    //         ProductVariantPk = Variant.ProductVariantPk,
-    //         Color = Variant.Color,
-    //         Size = Variant.Size,
-    //         BarCode = Variant.BarCode,
-    //         Sku = Variant.Sku,
-    //         UnitPrice = Variant.UnitPrice,
-    //         Inventory = new ProductVariantInventory
-    //         {
-    //           ProductVariantInventoryPk = Variant.Inventory.ProductVariantInventoryPk,
-    //           ProductVariantFk = Variant.Inventory.ProductVariantFk,
-    //           QuantityAvailable = Variant.Inventory.QuantityAvailable,
-    //           MinimumStockAmount = Variant.Inventory.MinimumStockAmount,
-    //         }
-    //       }
-    //   ).ToList(),
-    //   CreatedBy = UserId,
-    // };
 
     await _dbContext.AddAsync(Product);
     await _dbContext.SaveChangesAsync();
@@ -237,9 +143,6 @@ public class ProductRpcService : ProductService.ProductServiceBase
     throw new NotImplementedException();
 
     // TODO
-    // if (request.Id <= 0)
-    //   throw new RpcException(new Status(StatusCode.InvalidArgument, "You must supply a valid id"));
-
     // ProductModel? Product = await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == request.Id);
     // if (Product is null)
     // {

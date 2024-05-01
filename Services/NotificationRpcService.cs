@@ -38,17 +38,6 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
       Notification => _mapper.Map<GetNotificationByIdResponse>(Notification)
     );
 
-    // Todo
-    // IQueryable<GetNotificationByIdResponse> Query = _dbContext.Notifications.Select(
-    //   Notification => new GetNotificationByIdResponse
-    //   {
-    //     NotificationId = Notification.NotificationId,
-    //     Title = Notification.Title,
-    //     Message = Notification.Message,
-    //     IsUnread = Notification.IsUnread,
-    //   }
-    // );
-
     List<GetNotificationByIdResponse> Notifications = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
@@ -114,14 +103,6 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
     );
 
     return _mapper.Map<GetNotificationByIdResponse>(Notification);
-    // TODO
-    // return new GetNotificationByIdResponse
-    // {
-    //   NotificationId = Notification.NotificationId,
-    //   Title = Notification.Title,
-    //   Message = Notification.Message,
-    //   IsUnread = Notification.IsUnread,
-    // };
   }
 
   public override async Task<CreateNotificationResponse> PostAsync(CreateNotificationRequest request, ServerCallContext context)
@@ -138,15 +119,6 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
 
     Notification Notification = _mapper.Map<Notification>(request);
     Notification.CreatedBy = Ulid.Parse(UserId);
-
-    // TODO
-    // var Notification = new Notification
-    // {
-    //   UserFk = request.UserFk,
-    //   Title = request.Title,
-    //   Message = request.Message,
-    //   CreatedBy = UserId,
-    // };
 
     await _dbContext.AddAsync(Notification);
     await _dbContext.SaveChangesAsync();
@@ -182,9 +154,6 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
     throw new NotImplementedException();
 
     // TODO
-    // if (request.Id <= 0)
-    //   throw new RpcException(new Status(StatusCode.InvalidArgument, "You must supply a valid id"));
-
     // NotificationModel? Notification = await _dbContext.Notifications.FirstOrDefaultAsync(x => x.Id == request.Id);
     // if (Notification is null)
     // {

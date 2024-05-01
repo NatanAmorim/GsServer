@@ -38,23 +38,6 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
       Attendance => _mapper.Map<GetAttendanceByIdResponse>(Attendance)
     );
 
-    // TODO
-    // IQueryable<GetAttendanceByIdResponse> Query = _dbContext.Attendances.Select(
-    //   Attendance => new GetAttendanceByIdResponse
-    //   {
-    //     AttendanceId = Attendance.AttendanceId,
-    //     Discipline = Attendance.DisciplineFk,
-    //     Date = new()
-    //     {
-    //       Day = Attendance.Date.Day,
-    //       Month = Attendance.Date.Month,
-    //       Year = Attendance.Date.Year
-    //     },
-    //     StudentsPresent = { Attendance.StudentsPresentFks },
-    //     StudentsAbsent = { Attendance.StudentsAbsentFks },
-    //   }
-    // );
-
     List<GetAttendanceByIdResponse> Attendances = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
@@ -120,39 +103,6 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
     );
 
     return _mapper.Map<GetAttendanceByIdResponse>(Attendance);
-
-    // return new GetAttendanceByIdResponse
-    // {
-    //   AttendanceId = Attendance.AttendanceId,
-    //   Discipline = Attendance.Discipline,
-    //   Discipline = new()
-    //   {
-    //     DisciplinePk = Attendance.Discipline.DisciplinePk,
-    //     Name = Attendance.Discipline.Name,
-    //     TuitionPrice = Attendance.Discipline.TuitionPrice,
-    //     StartTime = Attendance.Discipline.StartTime,
-    //     EndTime = Attendance.Discipline.EndTime,
-    //     ClassDays = Attendance.Discipline.ClassDays,
-    //     IsActive = Attendance.Discipline.IsActive,
-    //   },
-    //   Date = new()
-    //   {
-    //     Day = Attendance.Date.Day,
-    //     Month = Attendance.Date.Month,
-    //     Year = Attendance.Date.Year
-    //   },
-    //   AttendeesStatuses = {
-    //     Attendance.AttendeesStatuses.Select(
-    //       AttendeeStatus => new Protobufs.AttendanceAttendeeStatus
-    //       {
-    //         AttendanceAttendeeStatusPk = AttendeeStatus.AttendanceAttendeeStatusPk,
-    //         PersonFk = AttendeeStatus.PersonFk,
-    //         IsPresent = AttendeeStatus.IsPresent,
-    //       }
-    //     ).ToList(),
-    //   },
-    //   Observations = Attendance.Observations,
-    // };
   }
 
   public override async Task<CreateAttendanceResponse> PostAsync(CreateAttendanceRequest request, ServerCallContext context)
@@ -226,9 +176,6 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
     throw new NotImplementedException();
 
     // TODO
-    // if (request.Id <= 0)
-    //   throw new RpcException(new Status(StatusCode.InvalidArgument, "You must supply a valid id"));
-
     // AttendanceModel? Attendance = await _dbContext.Attendances.FirstOrDefaultAsync(x => x.Id == request.Id);
     // if (Attendance is null)
     // {

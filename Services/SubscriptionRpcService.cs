@@ -38,23 +38,6 @@ public class SubscriptionRpcService : SubscriptionService.SubscriptionServiceBas
       Subscription => _mapper.Map<GetSubscriptionByIdResponse>(Subscription)
     );
 
-    // TODO
-    // IQueryable<GetSubscriptionByIdResponse> Query = _dbContext.Subscriptions.Select(
-    //   Subscription => new GetSubscriptionByIdResponse
-    //   {
-    //     Discipline = Subscription.DisciplineFk,
-    //     Customer = Subscription.CustomerFk,
-    //     PayDay = Subscription.PayDay,
-    //     StartDate = new()
-    //     {
-    //       Year = Subscription.StartDate.Year,
-    //       Month = Subscription.StartDate.Month,
-    //       Day = Subscription.StartDate.Day
-    //     },
-    //     Price = Subscription.Price,
-    //   }
-    // );
-
     List<GetSubscriptionByIdResponse> Subscriptions = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
@@ -120,21 +103,6 @@ public class SubscriptionRpcService : SubscriptionService.SubscriptionServiceBas
     );
 
     return _mapper.Map<GetSubscriptionByIdResponse>(Subscription);
-
-    // TODO
-    // return new GetSubscriptionByIdResponse
-    // {
-    //   Discipline = Subscription.DisciplineFk,
-    //   Customer = Subscription.CustomerFk,
-    //   PayDay = Subscription.PayDay,
-    //   StartDate = new()
-    //   {
-    //     Year = Subscription.StartDate.Year,
-    //     Month = Subscription.StartDate.Month,
-    //     Day = Subscription.StartDate.Day
-    //   },
-    //   Price = Subscription.Price,
-    // };
   }
 
   public override async Task<CreateSubscriptionResponse> PostAsync(CreateSubscriptionRequest request, ServerCallContext context)
@@ -151,21 +119,6 @@ public class SubscriptionRpcService : SubscriptionService.SubscriptionServiceBas
 
     Subscription Subscription = _mapper.Map<Subscription>(request);
     Subscription.CreatedBy = Ulid.Parse(UserId);
-
-    // TODO
-    // var Subscription = new Subscription
-    // {
-    //   DisciplineFk = request.DisciplineFk,
-    //   CustomerFk = request.CustomerFk,
-    //   PayDay = request.PayDay,
-    //   StartDate = new(
-    //     request.StartDate.Year,
-    //     request.StartDate.Month,
-    //     request.StartDate.Day
-    //   ),
-    //   Price = request.Price,
-    //   CreatedBy = UserId,
-    // };
 
     await _dbContext.AddAsync(Subscription);
     await _dbContext.SaveChangesAsync();
@@ -201,8 +154,6 @@ public class SubscriptionRpcService : SubscriptionService.SubscriptionServiceBas
     throw new NotImplementedException();
 
     // TODO
-    // if (request.Id <= 0)
-    //   throw new RpcException(new Status(StatusCode.InvalidArgument, "You must supply a valid id"));
 
     // SubscriptionModel? Subscription = await _dbContext.Subscriptions.FirstOrDefaultAsync(x => x.Id == request.Id);
     // if (Subscription is null)

@@ -154,9 +154,6 @@ public class OrderRpcService : OrderService.OrderServiceBase
     throw new NotImplementedException();
 
     // TODO
-    // if (request.Id <= 0)
-    //   throw new RpcException(new Status(StatusCode.InvalidArgument, "You must supply a valid id"));
-
     // OrderModel? Order = await _dbContext.Orders.FirstOrDefaultAsync(x => x.Id == request.Id);
     // if (Order is null)
     // {

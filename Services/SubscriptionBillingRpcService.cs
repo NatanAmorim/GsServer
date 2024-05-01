@@ -39,14 +39,6 @@ public class SubscriptionBillingRpcService : SubscriptionBillingService.Subscrip
       SubscriptionBilling => _mapper.Map<GetSubscriptionBillingByIdResponse>(SubscriptionBilling)
     );
 
-    // TODO
-    // IQueryable<GetSubscriptionBillingByIdResponse> Query = _dbContext.SubscriptionBillings.Select(
-    //   SubscriptionBilling => new GetSubscriptionBillingByIdResponse
-    //   {
-    //     TODO
-    //   }
-    // );
-
     List<GetSubscriptionBillingByIdResponse> SubscriptionBillings = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
@@ -112,12 +104,6 @@ public class SubscriptionBillingRpcService : SubscriptionBillingService.Subscrip
     );
 
     return _mapper.Map<GetSubscriptionBillingByIdResponse>(SubscriptionBilling);
-
-    // TODO
-    // return new GetSubscriptionBillingByIdResponse
-    // {
-    //   todo
-    // };
   }
 
   public override async Task<CreateSubscriptionBillingResponse> PostAsync(CreateSubscriptionBillingRequest request, ServerCallContext context)
@@ -134,35 +120,6 @@ public class SubscriptionBillingRpcService : SubscriptionBillingService.Subscrip
 
     SubscriptionBilling SubscriptionBilling = _mapper.Map<SubscriptionBilling>(request);
     SubscriptionBilling.CreatedBy = Ulid.Parse(UserId);
-
-    // TODO
-    // var SubscriptionBilling = new SubscriptionBilling
-    // {
-    //   SubscriptionFk = request.SubscriptionFk,
-    //   Comments = request.Comments,
-    //   TotalDiscount = request.TotalDiscount,
-    //   Payment = new Payment
-    //   {
-    //     Comments = request.Payment.Comments,
-    //     Installments = request.Payment.Installments.Select(
-    //       Installment => new Models.PaymentInstallment
-    //       {
-    //         PaymentInstallmentPk = Installment.PaymentInstallmentPk,
-    //         PaymentFk = Installment.PaymentFk,
-    //         InstallmentNumber = Installment.PaymentFk,
-    //         InstallmentAmount = Installment.InstallmentAmount,
-    //         PaymentMethod = Installment.PaymentMethod,
-    //         DueDate = new(
-    //             Installment.DueDate.Year,
-    //             Installment.DueDate.Month,
-    //             Installment.DueDate.Day
-    //           ),
-    //       }
-    //     ).ToList(),
-    //     CreatedBy = UserId,
-    //   },
-    //   CreatedBy = UserId,
-    // };
 
     await _dbContext.AddAsync(SubscriptionBilling);
     await _dbContext.SaveChangesAsync();
@@ -198,8 +155,6 @@ public class SubscriptionBillingRpcService : SubscriptionBillingService.Subscrip
     throw new NotImplementedException();
 
     // TODO
-    // if (request.Id <= 0)
-    //   throw new RpcException(new Status(StatusCode.InvalidArgument, "You must supply a valid id"));
 
     // SubscriptionBillingModel? SubscriptionBilling = await _dbContext.SubscriptionBillings.FirstOrDefaultAsync(x => x.Id == request.Id);
     // if (SubscriptionBilling is null)

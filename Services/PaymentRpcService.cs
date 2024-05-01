@@ -39,33 +39,6 @@ public class PaymentRpcService : PaymentService.PaymentServiceBase
       Payment => _mapper.Map<GetPaymentByIdResponse>(Payment)
     );
 
-    // TODO
-    // IQueryable<GetPaymentByIdResponse> Query = _dbContext.Payments.Select(
-    //   Payment => new GetPaymentByIdResponse
-    //   {
-    //     PaymentId = Payment.PaymentId,
-    //     Comments = Payment.Comments,
-    //     Installments = {
-    //           Payment.Installments.Select(
-    //             Installment => new Protobufs.PaymentInstallment
-    //             {
-    //               PaymentInstallmentPk = Installment.PaymentInstallmentPk,
-    //               PaymentFk = Installment.PaymentFk,
-    //               InstallmentNumber = Installment.PaymentFk,
-    //               InstallmentAmount = Installment.InstallmentAmount,
-    //               PaymentMethod = Installment.PaymentMethod,
-    //               DueDate = new ()
-    //               {
-    //                 Year = Installment.DueDate.Year,
-    //                 Month = Installment.DueDate.Month,
-    //                 Day = Installment.DueDate.Day,
-    //               },
-    //             }
-    //           ).ToList(),
-    //     },
-    //   }
-    // );
-
     List<GetPaymentByIdResponse> Payments = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
@@ -131,31 +104,6 @@ public class PaymentRpcService : PaymentService.PaymentServiceBase
     );
 
     return _mapper.Map<GetPaymentByIdResponse>(Payment);
-
-    // TODO
-    // return new GetPaymentByIdResponse
-    // {
-    //   PaymentId = Payment.PaymentId,
-    //   Comments = Payment.Comments,
-    //   Installments = {
-    //     Payment.Installments.Select(
-    //       Installment => new Protobufs.PaymentInstallment
-    //       {
-    //         PaymentInstallmentPk = Installment.PaymentInstallmentPk,
-    //         PaymentFk = Installment.PaymentFk,
-    //         InstallmentNumber = Installment.PaymentFk,
-    //         InstallmentAmount = Installment.InstallmentAmount,
-    //         PaymentMethod = Installment.PaymentMethod,
-    //         DueDate = new ()
-    //         {
-    //           Year = Installment.DueDate.Year,
-    //           Month = Installment.DueDate.Month,
-    //           Day = Installment.DueDate.Day,
-    //         },
-    //       }
-    //     ).ToList(),
-    //   },
-    // };
   }
 
   public override async Task<CreatePaymentResponse> PostAsync(CreatePaymentRequest request, ServerCallContext context)
@@ -172,28 +120,6 @@ public class PaymentRpcService : PaymentService.PaymentServiceBase
 
     Payment Payment = _mapper.Map<Payment>(request);
     Payment.CreatedBy = Ulid.Parse(UserId);
-
-    // TODO
-    // var Payment = new Payment
-    // {
-    //   Comments = request.Comments,
-    //   Installments = request.Installments.Select(
-    //     Installment => new Models.PaymentInstallment
-    //     {
-    //       PaymentInstallmentPk = Installment.PaymentInstallmentPk,
-    //       PaymentFk = Installment.PaymentFk,
-    //       InstallmentNumber = Installment.PaymentFk,
-    //       InstallmentAmount = Installment.InstallmentAmount,
-    //       PaymentMethod = Installment.PaymentMethod,
-    //       DueDate = new(
-    //         Installment.DueDate.Year,
-    //         Installment.DueDate.Month,
-    //         Installment.DueDate.Day
-    //       ),
-    //     }
-    //   ).ToList(),
-    //   CreatedBy = UserId,
-    // };
 
     await _dbContext.AddAsync(Payment);
     await _dbContext.SaveChangesAsync();
@@ -229,9 +155,6 @@ public class PaymentRpcService : PaymentService.PaymentServiceBase
     throw new NotImplementedException();
 
     // TODO
-    // if (request.Id <= 0)
-    //   throw new RpcException(new Status(StatusCode.InvalidArgument, "You must supply a valid id"));
-
     // PaymentModel? Payment = await _dbContext.Payments.FirstOrDefaultAsync(x => x.Id == request.Id);
     // if (Payment is null)
     // {

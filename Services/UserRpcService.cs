@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using AutoMapper;
 using Grpc.Core;
 using GsServer.Models;
 using GsServer.Protobufs;
@@ -11,10 +12,16 @@ public class UserRpcService : UserService.UserServiceBase
 {
   private readonly DatabaseContext _dbContext;
   private readonly ILogger<UserRpcService> _logger;
-  public UserRpcService(ILogger<UserRpcService> logger, DatabaseContext dbContext)
+  private readonly IMapper _mapper;
+  public UserRpcService(
+     ILogger<UserRpcService> logger,
+      DatabaseContext dbContext,
+      IMapper mapper
+    )
   {
     _logger = logger;
     _dbContext = dbContext;
+    _mapper = mapper;
   }
 
   public override async Task<GetPaginatedUsersResponse> GetPaginatedAsync(GetPaginatedUsersRequest request, ServerCallContext context)
@@ -30,12 +37,7 @@ public class UserRpcService : UserService.UserServiceBase
     );
 
     IQueryable<GetUserByIdResponse> Query = _dbContext.Users.Select(
-      User => new GetUserByIdResponse
-      {
-        UserId = User.UserId.ToString(),
-        Email = User.Email,
-        Role = User.Role,
-      }
+      User => _mapper.Map<GetUserByIdResponse>(User)
     );
 
     List<GetUserByIdResponse> Users = [];
@@ -92,12 +94,8 @@ public class UserRpcService : UserService.UserServiceBase
       "User with ID {Id} found successfully",
       request.UserId
     );
-    return new GetUserByIdResponse
-    {
-      UserId = User.UserId.ToString(),
-      Email = User.Email,
-      Role = User.Role,
-    };
+
+    return _mapper.Map<GetUserByIdResponse>(User);
   }
 
   public override async Task<UpdateUserResponse> PutAsync(UpdateUserRequest request, ServerCallContext context)

@@ -38,22 +38,6 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       Instructor => _mapper.Map<GetInstructorByIdResponse>(Instructor)
     );
 
-    // TODO
-    // IQueryable<GetInstructorByIdResponse> Query = _dbContext.Instructors.Select(
-    //   Instructor => new GetInstructorByIdResponse
-    //   {
-    //     InstructorId = Instructor.InstructorId,
-    //     Person = new Person
-    //     {
-    //       Name = Instructor.Person.Name,
-    //       MobilePhoneNumber = Instructor.Person.MobilePhoneNumber,
-    //       BirthDate = Instructor.Person.BirthDate,
-    //       Cpf = Instructor.Person.Cpf,
-    //       Cin = Instructor.Person.Cin,
-    //     },
-    //   }
-    // );
-
     List<GetInstructorByIdResponse> Instructors = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
@@ -119,19 +103,6 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
     );
 
     return _mapper.Map<GetInstructorByIdResponse>(Instructor);
-    // TODO
-    // return new GetInstructorByIdResponse
-    // {
-    //   InstructorId = Instructor.InstructorId,
-    //   Person = new Person
-    //   {
-    //     Name = Instructor.Person.Name,
-    //     MobilePhoneNumber = Instructor.Person.MobilePhoneNumber,
-    //     BirthDate = Instructor.Person.BirthDate,
-    //     Cpf = Instructor.Person.Cpf,
-    //     Cin = Instructor.Person.Cin,
-    //   },
-    // };
   }
 
   public override async Task<CreateInstructorResponse> PostAsync(CreateInstructorRequest request, ServerCallContext context)
@@ -198,9 +169,6 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
     throw new NotImplementedException();
 
     // TODO
-    // if (request.Id <= 0)
-    //   throw new RpcException(new Status(StatusCode.InvalidArgument, "You must supply a valid id"));
-
     // InstructorModel? Instructor = await _dbContext.Instructors.FirstOrDefaultAsync(x => x.Id == request.Id);
     // if (Instructor is null)
     // {

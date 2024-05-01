@@ -30,7 +30,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
     _logger.LogInformation(
       "({TraceIdentifier}) Login attempt, searching for User {UserId}",
       RequestTracerId,
-      0 // TODO get something here, maybe phone like (18) XXXXX-3114
+      0 // TODO
     );
 
     User? User =

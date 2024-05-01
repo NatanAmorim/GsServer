@@ -225,9 +225,6 @@
 //     throw new NotImplementedException();
 
 //     // TODO
-//     // if (request.Id <= 0)
-//     //   throw new RpcException(new Status(StatusCode.InvalidArgument, "You must supply a valid id"));
-
 //     // Discipline? Discipline = await _dbContext.Disciplines.FirstOrDefaultAsync(x => x.Id == request.Id);
 //     // if (Discipline is null)
 //     // {

@@ -38,33 +38,6 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
       Customer => _mapper.Map<GetCustomerByIdResponse>(Customer)
     );
 
-    // TODO
-    // IQueryable < GetCustomerByIdResponse > Query = _dbContext.Customers.Select(
-    //   Customer => new GetCustomerByIdResponse
-    //   {
-    //     CustomerId = Customer.CustomerId,
-    //     Person = new()
-    //     {
-    //       Name = Customer.Person.Name,
-    //       MobilePhoneNumber = Customer.Person.MobilePhoneNumber,
-    //       BirthDate = Customer.Person.BirthDate,
-    //       Cpf = Customer.Person.Cpf,
-    //       // Cin = Customer.Person.Cin,
-    //     },
-    //     Dependents = {
-    //        Customer.Dependents.Select(
-    //           Dependent => new Protobufs.Person
-    //           {
-    //             Name = Dependent.Name,
-    //             BirthDate = Dependent.BirthDate,
-    //           }
-    //        ).ToList(),
-    //     },
-    //     BillingAddress = Customer.BillingAddress,
-    //     AdditionalInformation = Customer.AdditionalInformation,
-    //   }
-    // );
-
     List<GetCustomerByIdResponse> Customers = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
@@ -130,30 +103,7 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
     );
 
     return _mapper.Map<GetCustomerByIdResponse>(Customer);
-    // TODO
-    // return new GetCustomerByIdResponse
-    // {
-    //   CustomerId = Customer.CustomerId,
-    //   Person = new()
-    //   {
-    //     Name = Customer.Person.Name,
-    //     MobilePhoneNumber = Customer.Person.MobilePhoneNumber,
-    //     BirthDate = Customer.Person.BirthDate,
-    //     Cpf = Customer.Person.Cpf,
-    //     // Cin = Customer.Person.Cin,
-    //   },
-    //   Dependents = {
-    //        Customer.Dependents.Select(
-    //           Dependent => new Protobufs.Person
-    //           {
-    //             Name = Dependent.Name,
-    //             BirthDate = Dependent.BirthDate,
-    //           }
-    //        ).ToList(),
-    //     },
-    //   BillingAddress = Customer.BillingAddress,
-    //   AdditionalInformation = Customer.AdditionalInformation,
-    // };
+
   }
 
   public override async Task<CreateCustomerResponse> PostAsync(CreateCustomerRequest request, ServerCallContext context)
@@ -234,9 +184,6 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
     throw new NotImplementedException();
 
     // TODO
-    // if (request.Id <= 0)
-    //   throw new RpcException(new Status(StatusCode.InvalidArgument, "You must supply a valid id"));
-
     // CustomerModel? Customer = await _dbContext.Customers.FirstOrDefaultAsync(x => x.Id == request.Id);
     // if (Customer is null)
     // {

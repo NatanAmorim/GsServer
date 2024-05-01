@@ -38,14 +38,6 @@ public class SaleRpcService : SaleService.SaleServiceBase
       Sale => _mapper.Map<GetSaleByIdResponse>(Sale)
     );
 
-    // TODO
-    // IQueryable<GetSaleByIdResponse> Query = _dbContext.Sales.Select(
-    //   Sale => new GetSaleByIdResponse
-    //   {
-    //     TODO
-    //   }
-    // );
-
     List<GetSaleByIdResponse> Sales = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
@@ -111,12 +103,6 @@ public class SaleRpcService : SaleService.SaleServiceBase
     );
 
     return _mapper.Map<GetSaleByIdResponse>(Sale);
-
-    // TODO
-    // return new GetSaleByIdResponse
-    // {
-    //   TODO
-    // };
   }
 
   public override async Task<CreateSaleResponse> PostAsync(CreateSaleRequest request, ServerCallContext context)
@@ -133,21 +119,6 @@ public class SaleRpcService : SaleService.SaleServiceBase
 
     Sale Sale = _mapper.Map<Sale>(request);
     Sale.CreatedBy = Ulid.Parse(UserId);
-
-    // TODO
-    // var Sale = new Sale
-    // {
-    //   CustomerFk = request.CustomerFk,
-    //   Comments = request.Comments,
-    //   ItemsSold = request.ItemsSold.Select(
-    //     ItemSold => new Models.SaleItem
-    //     {
-    //       ProductVariantFk = ItemSold.ProductVariantFk,
-    //       QuantitySold = ItemSold.QuantitySold,
-    //     }
-    //   ).ToList(),
-    //   CreatedBy = UserId,
-    // };
 
     await _dbContext.AddAsync(Sale);
     await _dbContext.SaveChangesAsync();
@@ -183,8 +154,6 @@ public class SaleRpcService : SaleService.SaleServiceBase
     throw new NotImplementedException();
 
     // TODO
-    // if (request.Id <= 0)
-    //   throw new RpcException(new Status(StatusCode.InvalidArgument, "You must supply a valid id"));
 
     // SaleModel? Sale = await _dbContext.Sales.FirstOrDefaultAsync(x => x.Id == request.Id);
     // if (Sale is null)

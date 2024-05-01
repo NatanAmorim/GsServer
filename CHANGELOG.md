@@ -14,10 +14,17 @@ Todas as alterações notáveis ​​neste projeto serão documentadas neste ar
 O formato é baseado em [Keep a Changelog (PT-BR)](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere a [Versionamento Semântico (PT-BR)](https://semver.org/lang/pt-BR/).
 
+## 1.0.2-RC-5 (May 01, 2024)
+
+- "SubscriptionInvoiceBackgroundJob" now is tracked in the DB.
+- User now has "IsActive" to know if email is confirmed valid and allow it to login.
+- Some User properties changes for the customer App.
+- Cleaned some unused test code.
+
 ## 1.0.1-RC-5 (Apr 30, 2024)
 
 - Remove unnecessary error messages when they won't reach the end user.
-- Add a varchar limit for RefreshToken.
+- Add a variable character limit for RefreshToken.
 
 ## 1.0.0-RC-5 (Apr 24, 2024)
 

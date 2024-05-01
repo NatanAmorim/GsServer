@@ -38,29 +38,6 @@ public class PromotionRpcService : PromotionService.PromotionServiceBase
       Promotion => _mapper.Map<GetPromotionByIdResponse>(Promotion)
     );
 
-    // TODO
-    // IQueryable<GetPromotionByIdResponse> Query = _dbContext.Promotions.Select(
-    //   Promotion => new GetPromotionByIdResponse
-    //   {
-    //     Customer = Promotion.CustomerFk,
-    //     Name = Promotion.Name,
-    //     Description = Promotion.Description,
-    //     DiscountType = Promotion.DiscountType,
-    //     StartDate = new()
-    //     {
-    //       Year = Promotion.StartDate.Year,
-    //       Month = Promotion.StartDate.Month,
-    //       Day = Promotion.StartDate.Day,
-    //     },
-    //     EndDate = new()
-    //     {
-    //       Year = Promotion.EndDate.Year,
-    //       Month = Promotion.EndDate.Month,
-    //       Day = Promotion.EndDate.Day,
-    //     },
-    //   }
-    // );
-
     List<GetPromotionByIdResponse> Promotions = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
@@ -126,27 +103,6 @@ public class PromotionRpcService : PromotionService.PromotionServiceBase
     );
 
     return _mapper.Map<GetPromotionByIdResponse>(Promotion);
-
-    // TODO
-    // return new GetPromotionByIdResponse
-    // {
-    //   Customer = Promotion.CustomerFk,
-    //   Name = Promotion.Name,
-    //   Description = Promotion.Description,
-    //   DiscountType = Promotion.DiscountType,
-    //   StartDate = new()
-    //   {
-    //     Year = Promotion.StartDate.Year,
-    //     Month = Promotion.StartDate.Month,
-    //     Day = Promotion.StartDate.Day,
-    //   },
-    //   EndDate = new()
-    //   {
-    //     Year = Promotion.EndDate.Year,
-    //     Month = Promotion.EndDate.Month,
-    //     Day = Promotion.EndDate.Day,
-    //   },
-    // };
   }
 
   public override async Task<CreatePromotionResponse> PostAsync(CreatePromotionRequest request, ServerCallContext context)
@@ -163,26 +119,6 @@ public class PromotionRpcService : PromotionService.PromotionServiceBase
 
     Promotion Promotion = _mapper.Map<Promotion>(request);
     Promotion.CreatedBy = Ulid.Parse(UserId);
-
-    // TODO
-    // var Promotion = new Promotion
-    // {
-    //   CustomerFk = request.CustomerFk,
-    //   Name = request.Name,
-    //   Description = request.Description,
-    //   DiscountType = request.DiscountType,
-    //   StartDate = new(
-    //     request.StartDate.Year,
-    //     request.StartDate.Month,
-    //     request.StartDate.Day
-    //   ),
-    //   EndDate = new(
-    //     request.EndDate.Year,
-    //     request.EndDate.Month,
-    //     request.EndDate.Day
-    //   ),
-    //   CreatedBy = UserId,
-    // };
 
     await _dbContext.AddAsync(Promotion);
     await _dbContext.SaveChangesAsync();
@@ -218,9 +154,6 @@ public class PromotionRpcService : PromotionService.PromotionServiceBase
     throw new NotImplementedException();
 
     // TODO
-    // if (request.Id <= 0)
-    //   throw new RpcException(new Status(StatusCode.InvalidArgument, "You must supply a valid id"));
-
     // PromotionModel? Promotion = await _dbContext.Promotions.FirstOrDefaultAsync(x => x.Id == request.Id);
     // if (Promotion is null)
     // {

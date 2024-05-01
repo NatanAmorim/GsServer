@@ -38,14 +38,6 @@ public class SaleBillingRpcService : SaleBillingService.SaleBillingServiceBase
       SaleBilling => _mapper.Map<GetSaleBillingByIdResponse>(SaleBilling)
     );
 
-    // TODO
-    // IQueryable<GetSaleBillingByIdResponse> Query = _dbContext.SaleBillings.Select(
-    //   SaleBilling => new GetSaleBillingByIdResponse
-    //   {
-    //     TODO
-    //   }
-    // );
-
     List<GetSaleBillingByIdResponse> SaleBillings = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
@@ -111,11 +103,6 @@ public class SaleBillingRpcService : SaleBillingService.SaleBillingServiceBase
     );
 
     return _mapper.Map<GetSaleBillingByIdResponse>(SaleBilling);
-    // TODO
-    // return new GetSaleBillingByIdResponse
-    // {
-    //    TODO
-    // };
   }
 
   public override async Task<CreateSaleBillingResponse> PostAsync(CreateSaleBillingRequest request, ServerCallContext context)
@@ -132,16 +119,6 @@ public class SaleBillingRpcService : SaleBillingService.SaleBillingServiceBase
 
     SaleBilling SaleBilling = _mapper.Map<SaleBilling>(request);
     SaleBilling.CreatedBy = Ulid.Parse(UserId);
-
-    // TODO
-    // var SaleBilling = new SaleBilling
-    // {
-    //   SaleFk = request.SaleFk,
-    //   Comments = request.Comments,
-    //   TotalDiscount = request.TotalDiscount,
-    //   Payment = request.Payment,
-    //   CreatedBy = UserId,
-    // };
 
     await _dbContext.AddAsync(SaleBilling);
     await _dbContext.SaveChangesAsync();
@@ -177,9 +154,6 @@ public class SaleBillingRpcService : SaleBillingService.SaleBillingServiceBase
     throw new NotImplementedException();
 
     // TODO
-    // if (request.Id <= 0)
-    //   throw new RpcException(new Status(StatusCode.InvalidArgument, "You must supply a valid id"));
-
     // SaleBillingModel? SaleBilling = await _dbContext.SaleBillings.FirstOrDefaultAsync(x => x.Id == request.Id);
     // if (SaleBilling is null)
     // {
