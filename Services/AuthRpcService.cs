@@ -28,9 +28,8 @@ public class AuthRpcService : AuthService.AuthServiceBase
 
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     _logger.LogInformation(
-      "({TraceIdentifier}) Login attempt, searching for User {UserId}",
-      RequestTracerId,
-      0 // TODO
+      "({TraceIdentifier}) Login attempt, searching for User",
+      RequestTracerId
     );
 
     User? User =

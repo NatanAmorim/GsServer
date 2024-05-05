@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using AutoMapper;
 using Grpc.Core;
 using GsServer.Models;
 using GsServer.Protobufs;
@@ -10,16 +9,13 @@ public class SubscriptionRpcService : SubscriptionService.SubscriptionServiceBas
 {
   private readonly DatabaseContext _dbContext;
   private readonly ILogger<SubscriptionRpcService> _logger;
-  private readonly IMapper _mapper;
   public SubscriptionRpcService(
       ILogger<SubscriptionRpcService> logger,
-      DatabaseContext dbContext,
-      IMapper mapper
+      DatabaseContext dbContext
     )
   {
     _logger = logger;
     _dbContext = dbContext;
-    _mapper = mapper;
   }
 
   public override async Task<GetPaginatedSubscriptionsResponse> GetPaginatedAsync(GetPaginatedSubscriptionsRequest request, ServerCallContext context)
@@ -35,14 +31,12 @@ public class SubscriptionRpcService : SubscriptionService.SubscriptionServiceBas
     );
 
     IQueryable<GetSubscriptionByIdResponse> Query = _dbContext.Subscriptions.Select(
-      Subscription => _mapper.Map<GetSubscriptionByIdResponse>(Subscription)
+      Subscription => Subscription.ToGetById()
     );
-
-    List<GetSubscriptionByIdResponse> Subscriptions = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    Subscriptions = await Query
+    List<GetSubscriptionByIdResponse> Subscriptions = await Query
       .Where(x => x.SubscriptionId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
@@ -102,7 +96,7 @@ public class SubscriptionRpcService : SubscriptionService.SubscriptionServiceBas
       typeof(Subscription).Name
     );
 
-    return _mapper.Map<GetSubscriptionByIdResponse>(Subscription);
+    return Subscription.ToGetById();
   }
 
   public override async Task<CreateSubscriptionResponse> PostAsync(CreateSubscriptionRequest request, ServerCallContext context)
@@ -117,8 +111,7 @@ public class SubscriptionRpcService : SubscriptionService.SubscriptionServiceBas
       typeof(Subscription).Name
     );
 
-    Subscription Subscription = _mapper.Map<Subscription>(request);
-    Subscription.CreatedBy = Ulid.Parse(UserId);
+    Subscription Subscription = Subscription.FromProtoRequest(request, Ulid.Parse(UserId));
 
     await _dbContext.AddAsync(Subscription);
     await _dbContext.SaveChangesAsync();

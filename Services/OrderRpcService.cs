@@ -33,11 +33,9 @@ public class OrderRpcService : OrderService.OrderServiceBase
       }
     );
 
-    List<GetOrderByIdResponse> Orders = [];
-
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    Orders = await Query
+    List<GetOrderByIdResponse> Orders = await Query
       .Where(x => x.OrderId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
@@ -103,7 +101,9 @@ public class OrderRpcService : OrderService.OrderServiceBase
     };
   }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
   public override async Task<CreateOrderResponse> PostAsync(CreateOrderRequest request, ServerCallContext context)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -117,8 +117,6 @@ public class OrderRpcService : OrderService.OrderServiceBase
 
     // TODO
     // var Order = new OrderModel
-    // {
-    // };
 
     // await _dbContext.AddAsync(Order);
     // await _dbContext.SaveChangesAsync();

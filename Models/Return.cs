@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using GsServer.Protobufs;
 
 namespace GsServer.Models;
 
@@ -15,5 +16,38 @@ public class Return
   public required ICollection<ReturnItem> ItemsReturned { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   [Required]
-  public Ulid? CreatedBy { get; set; }
+  public required Ulid CreatedBy { get; set; }
+
+  public static Return FromProtoRequest(CreateReturnRequest request, Ulid createdBy)
+    => new()
+    {
+      TotalAmountRefunded = request.TotalAmountRefunded,
+      ItemsReturned = request.ItemsReturned.Select(
+            ItemReturned => new ReturnItem
+            {
+              ProductVariantId = Ulid.Parse(ItemReturned.ProductVariantId),
+              UnitPrice = ItemReturned.UnitPrice,
+              QuantityReturned = ItemReturned.QuantityReturned,
+            }
+          ).ToList(),
+      CreatedBy = createdBy,
+    };
+
+  public GetReturnByIdResponse ToGetById()
+    => new()
+    {
+      ReturnId = ReturnId.ToString(),
+      TotalAmountRefunded = TotalAmountRefunded,
+      ItemsReturned =
+      {
+        ItemsReturned.Select(
+          ItemReturned => new Protobufs.ReturnItem
+          {
+            ProductVariantId = ItemReturned.ProductVariantId.ToString(),
+            UnitPrice = ItemReturned.UnitPrice,
+            QuantityReturned = ItemReturned.QuantityReturned,
+          }
+        ).ToList(),
+      }
+    };
 }

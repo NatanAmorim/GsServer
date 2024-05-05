@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using AutoMapper;
 using Grpc.Core;
 using GsServer.Models;
 using GsServer.Protobufs;
@@ -12,16 +11,13 @@ public class UserRpcService : UserService.UserServiceBase
 {
   private readonly DatabaseContext _dbContext;
   private readonly ILogger<UserRpcService> _logger;
-  private readonly IMapper _mapper;
   public UserRpcService(
      ILogger<UserRpcService> logger,
-      DatabaseContext dbContext,
-      IMapper mapper
+      DatabaseContext dbContext
     )
   {
     _logger = logger;
     _dbContext = dbContext;
-    _mapper = mapper;
   }
 
   public override async Task<GetPaginatedUsersResponse> GetPaginatedAsync(GetPaginatedUsersRequest request, ServerCallContext context)
@@ -37,14 +33,12 @@ public class UserRpcService : UserService.UserServiceBase
     );
 
     IQueryable<GetUserByIdResponse> Query = _dbContext.Users.Select(
-      User => _mapper.Map<GetUserByIdResponse>(User)
+      User => User.ToGetById()
     );
-
-    List<GetUserByIdResponse> Users = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    Users = await Query
+    List<GetUserByIdResponse> Users = await Query
       .Where(x => x.UserId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
@@ -95,7 +89,7 @@ public class UserRpcService : UserService.UserServiceBase
       request.UserId
     );
 
-    return _mapper.Map<GetUserByIdResponse>(User);
+    return User.ToGetById();
   }
 
   public override async Task<UpdateUserResponse> PutAsync(UpdateUserRequest request, ServerCallContext context)

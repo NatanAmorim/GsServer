@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using AutoMapper;
 using Grpc.Core;
 using GsServer.Models;
 using GsServer.Protobufs;
@@ -10,16 +9,13 @@ public class SaleBillingRpcService : SaleBillingService.SaleBillingServiceBase
 {
   private readonly DatabaseContext _dbContext;
   private readonly ILogger<SaleBillingRpcService> _logger;
-  private readonly IMapper _mapper;
   public SaleBillingRpcService(
       ILogger<SaleBillingRpcService> logger,
-      DatabaseContext dbContext,
-      IMapper mapper
+      DatabaseContext dbContext
     )
   {
     _logger = logger;
     _dbContext = dbContext;
-    _mapper = mapper;
   }
 
   public override async Task<GetPaginatedSaleBillingsResponse> GetPaginatedAsync(GetPaginatedSaleBillingsRequest request, ServerCallContext context)
@@ -35,14 +31,12 @@ public class SaleBillingRpcService : SaleBillingService.SaleBillingServiceBase
     );
 
     IQueryable<GetSaleBillingByIdResponse> Query = _dbContext.SaleBillings.Select(
-      SaleBilling => _mapper.Map<GetSaleBillingByIdResponse>(SaleBilling)
+      SaleBilling => SaleBilling.ToGetById()
     );
-
-    List<GetSaleBillingByIdResponse> SaleBillings = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    SaleBillings = await Query
+    List<GetSaleBillingByIdResponse> SaleBillings = await Query
       .Where(x => x.SaleBillingId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
@@ -102,7 +96,7 @@ public class SaleBillingRpcService : SaleBillingService.SaleBillingServiceBase
       typeof(SaleBilling).Name
     );
 
-    return _mapper.Map<GetSaleBillingByIdResponse>(SaleBilling);
+    return SaleBilling.ToGetById();
   }
 
   public override async Task<CreateSaleBillingResponse> PostAsync(CreateSaleBillingRequest request, ServerCallContext context)
@@ -117,8 +111,7 @@ public class SaleBillingRpcService : SaleBillingService.SaleBillingServiceBase
       typeof(SaleBilling).Name
     );
 
-    SaleBilling SaleBilling = _mapper.Map<SaleBilling>(request);
-    SaleBilling.CreatedBy = Ulid.Parse(UserId);
+    SaleBilling SaleBilling = SaleBilling.FromProtoRequest(request, Ulid.Parse(UserId));
 
     await _dbContext.AddAsync(SaleBilling);
     await _dbContext.SaveChangesAsync();

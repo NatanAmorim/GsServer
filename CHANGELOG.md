@@ -14,6 +14,14 @@ Todas as alterações notáveis ​​neste projeto serão documentadas neste ar
 O formato é baseado em [Keep a Changelog (PT-BR)](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere a [Versionamento Semântico (PT-BR)](https://semver.org/lang/pt-BR/).
 
+## 1.0.0-RC-6 (May 05, 2024)
+
+- Remove "AutoMapper".
+- Remove "BackgroundJobStatus" from DB (logs are enough to keep track).
+- Update protobufs from `15b4f0054` to `3d4788411`.
+- Update all Models and add "FromProtoRequest" and "ToGetById" on most of them.
+- Update all Services To use "FromProtoRequest" and "ToGetById" instead of AutoMapper.
+
 ## 1.0.2-RC-5 (May 01, 2024)
 
 - "SubscriptionInvoiceBackgroundJob" now is tracked in the DB.

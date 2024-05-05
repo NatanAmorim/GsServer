@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using GsServer.Protobufs;
 
 namespace GsServer.Models;
 
@@ -26,5 +27,24 @@ public class SaleBilling
   public required Payment Payment { get; init; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   [Required]
-  public Ulid? CreatedBy { get; set; }
+  public required Ulid CreatedBy { get; set; }
+
+  public static SaleBilling FromProtoRequest(CreateSaleBillingRequest request, Ulid createdBy)
+    => new()
+    {
+      SaleId = Ulid.Parse(request.SaleId),
+      Observations = request.Observations,
+      TotalDiscount = request.TotalDiscount,
+      Payment = Payment.FromProtoRequest(request.Payment, createdBy),
+      CreatedBy = createdBy,
+    };
+
+  public GetSaleBillingByIdResponse ToGetById()
+    => new()
+    {
+      SaleBillingId = SaleBillingId.ToString(),
+      Observations = Observations,
+      TotalDiscount = TotalDiscount,
+      Payment = Payment.ToGetById(),
+    };
 }

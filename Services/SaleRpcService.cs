@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using AutoMapper;
 using Grpc.Core;
 using GsServer.Models;
 using GsServer.Protobufs;
@@ -10,16 +9,13 @@ public class SaleRpcService : SaleService.SaleServiceBase
 {
   private readonly DatabaseContext _dbContext;
   private readonly ILogger<SaleRpcService> _logger;
-  private readonly IMapper _mapper;
   public SaleRpcService(
       ILogger<SaleRpcService> logger,
-      DatabaseContext dbContext,
-      IMapper mapper
+      DatabaseContext dbContext
     )
   {
     _logger = logger;
     _dbContext = dbContext;
-    _mapper = mapper;
   }
 
   public override async Task<GetPaginatedSalesResponse> GetPaginatedAsync(GetPaginatedSalesRequest request, ServerCallContext context)
@@ -35,14 +31,12 @@ public class SaleRpcService : SaleService.SaleServiceBase
     );
 
     IQueryable<GetSaleByIdResponse> Query = _dbContext.Sales.Select(
-      Sale => _mapper.Map<GetSaleByIdResponse>(Sale)
+      Sale => Sale.ToGetById()
     );
-
-    List<GetSaleByIdResponse> Sales = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    Sales = await Query
+    List<GetSaleByIdResponse> Sales = await Query
       .Where(x => x.SaleId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
@@ -102,7 +96,7 @@ public class SaleRpcService : SaleService.SaleServiceBase
       typeof(Sale).Name
     );
 
-    return _mapper.Map<GetSaleByIdResponse>(Sale);
+    return Sale.ToGetById();
   }
 
   public override async Task<CreateSaleResponse> PostAsync(CreateSaleRequest request, ServerCallContext context)
@@ -117,8 +111,7 @@ public class SaleRpcService : SaleService.SaleServiceBase
       typeof(Sale).Name
     );
 
-    Sale Sale = _mapper.Map<Sale>(request);
-    Sale.CreatedBy = Ulid.Parse(UserId);
+    Sale Sale = Sale.FromProtoRequest(request, Ulid.Parse(UserId));
 
     await _dbContext.AddAsync(Sale);
     await _dbContext.SaveChangesAsync();

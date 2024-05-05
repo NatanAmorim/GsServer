@@ -10,12 +10,10 @@ namespace GsServer.BackgroundServices;
 /// </summary>
 public class SubscriptionInvoiceBackgroundJob
 (
-    ILogger<SubscriptionInvoiceBackgroundJob> logger,
-    DatabaseContext dbContext
+    ILogger<SubscriptionInvoiceBackgroundJob> logger
 ) : BackgroundService
 {
     private readonly ILogger<SubscriptionInvoiceBackgroundJob> _logger = logger;
-    private readonly DatabaseContext _dbContext = dbContext;
 
     /// <summary>
     /// Generates invoices in the background, runs daily at 12 AM UTC time.
@@ -37,12 +35,7 @@ public class SubscriptionInvoiceBackgroundJob
                 // 9 AM BRT (Brasília Time), UTC/GMT -3 hours.
                 await Task.Delay((int)Math.Ceiling(MillisecondsUntilTwelveAmUtc()), stoppingToken);
 
-                BackgroundJobStatus BackgroundJobStatus = new()
-                {
-                    Name = typeof(SubscriptionInvoiceBackgroundJob).Name,
-                };
-                await _dbContext.AddAsync(BackgroundJobStatus, stoppingToken);
-                await _dbContext.SaveChangesAsync(stoppingToken);
+
                 _logger.LogInformation(
                     "Executing Background Service: {BackgroundServiceName}, generating invoices",
                     typeof(SubscriptionInvoiceBackgroundJob).Name
@@ -59,10 +52,6 @@ public class SubscriptionInvoiceBackgroundJob
                     "Executing Background Service: {BackgroundServiceName} work completed",
                     typeof(SubscriptionInvoiceBackgroundJob).Name
                 );
-                _dbContext.BackgroundJobs.Attach(BackgroundJobStatus);
-                BackgroundJobStatus.HasFinished = true;
-                BackgroundJobStatus.FinishedAt = DateTime.UtcNow;
-                await _dbContext.SaveChangesAsync(stoppingToken);
             }
             catch (Exception Exception)
             {

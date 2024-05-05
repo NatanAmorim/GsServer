@@ -24,7 +24,8 @@ builder.Services.AddDbContext<DatabaseContext>();
 builder.Services.AddAuthorization();
 builder.Services.AddGrpc();
 builder.Services.AddGrpcReflection();
-builder.Services.AddHostedService<SubscriptionInvoiceBackgroundJob>();
+// TODO fix
+// builder.Services.AddHostedService<SubscriptionInvoiceBackgroundJob>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
   .AddJwtBearer(options =>
@@ -55,8 +56,6 @@ string AwsSecretAccessKey = builder.Configuration.GetSection("AWS:S3:AwsSecretAc
 // AWS CloudWatch client
 // AmazonCloudWatchLogsClient client = new(AwsAccessKeyId, AwsSecretAccessKey);
 
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
-
 builder.Host.UseSerilog(
   (context, configuration) =>
   {
@@ -80,7 +79,7 @@ app.MapGrpcService<AttendanceRpcService>();
 app.MapGrpcService<AuthRpcService>();
 app.MapGrpcService<AwsS3Service>();
 app.MapGrpcService<CustomerRpcService>();
-// app.MapGrpcService<DisciplineRpcService>();
+app.MapGrpcService<DisciplineRpcService>();
 app.MapGrpcService<InstructorRpcService>();
 app.MapGrpcService<NotificationRpcService>();
 app.MapGrpcService<OrderRpcService>();

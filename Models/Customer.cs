@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using GsServer.Protobufs;
 
 namespace GsServer.Models;
 
@@ -23,5 +24,45 @@ public class Customer
   public required string AdditionalInformation { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   [Required]
-  public Ulid? CreatedBy { get; set; }
+  public required Ulid CreatedBy { get; set; }
+
+  public static Customer FromProtoRequest(CreateCustomerRequest request, Ulid createdBy)
+    => new()
+    {
+      Person = Person.FromProtoRequest(request.Person, createdBy),
+      Dependents =
+        request.Dependents.Select(
+          Dependent => new Models.Person
+          {
+            FullName = Dependent.Name,
+            BirthDate = Dependent.BirthDate,
+            MobilePhoneNumber = Dependent.MobilePhoneNumber,
+            Cpf = Dependent.Cpf,
+            CreatedBy = createdBy,
+          }
+        ).ToList(),
+      BillingAddress = request.BillingAddress,
+      AdditionalInformation = request.AdditionalInformation,
+      CreatedBy = createdBy,
+    };
+
+  public GetCustomerByIdResponse ToGetById()
+    => new()
+    {
+      CustomerId = CustomerId.ToString(),
+      Person = Person.ToPersonById(),
+      Dependents = {
+        Dependents.Select(
+          Dependent => new Protobufs.Person
+          {
+            Name = Dependent.FullName,
+            MobilePhoneNumber = Dependent.MobilePhoneNumber,
+            BirthDate = Dependent.BirthDate,
+            Cpf = Dependent.Cpf,
+          }
+        ).ToList(),
+      },
+      BillingAddress = BillingAddress,
+      AdditionalInformation = AdditionalInformation,
+    };
 }

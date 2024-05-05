@@ -12,5 +12,19 @@ public class Order
   public required OrderStatus Status { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   [Required]
-  public Ulid? CreatedBy { get; set; }
+  public required Ulid CreatedBy { get; set; }
+
+  /// TODO
+  // public static Order FromProtoRequest(CreateOrderRequest request, Ulid createdBy)
+  //   => new Order()
+  // {
+  //   PREENCHER
+  // };
+
+  /// TODO
+  // public GetOrderByIdResponse ToGetById()
+  //   => new GetOrderByIdResponse
+  // {
+  //   PREENCHER
+  // };
 }

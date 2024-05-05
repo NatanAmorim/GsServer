@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using AutoMapper;
 using Grpc.Core;
 using GsServer.Models;
 using GsServer.Protobufs;
@@ -10,16 +9,13 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
 {
   private readonly DatabaseContext _dbContext;
   private readonly ILogger<CustomerRpcService> _logger;
-  private readonly IMapper _mapper;
   public CustomerRpcService(
       ILogger<CustomerRpcService> logger,
-      DatabaseContext dbContext,
-      IMapper mapper
+      DatabaseContext dbContext
     )
   {
     _logger = logger;
     _dbContext = dbContext;
-    _mapper = mapper;
   }
 
   public override async Task<GetPaginatedCustomersResponse> GetPaginatedAsync(GetPaginatedCustomersRequest request, ServerCallContext context)
@@ -35,14 +31,13 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
     );
 
     IQueryable<GetCustomerByIdResponse> Query = _dbContext.Customers.Select(
-      Customer => _mapper.Map<GetCustomerByIdResponse>(Customer)
+      Customer => Customer.ToGetById()
     );
 
-    List<GetCustomerByIdResponse> Customers = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    Customers = await Query
+    List<GetCustomerByIdResponse> Customers = await Query
       .Where(x => x.CustomerId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
@@ -102,7 +97,7 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
       typeof(Customer).Name
     );
 
-    return _mapper.Map<GetCustomerByIdResponse>(Customer);
+    return Customer.ToGetById();
 
   }
 
@@ -118,37 +113,7 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
       typeof(Customer).Name
     );
 
-    Customer Customer = _mapper.Map<Customer>(request);
-    Customer.CreatedBy = Ulid.Parse(UserId);
-
-    // TODO
-    // var Customer = new Customer
-    // {
-    //   Person = new()
-    //   {
-    //     Name = request.Person.Name,
-    //     MobilePhoneNumber = request.Person.MobilePhoneNumber,
-    //     BirthDate = request.Person.BirthDate,
-    //     Cpf = request.Person.Cpf,
-    //     Cin = request.Person.Cin,
-    //     CreatedBy = UserId,
-    //   },
-    //   Dependents =
-    //     request.Dependents.Select(
-    //       Dependent => new Models.Person
-    //       {
-    //         Name = Dependent.Name,
-    //         BirthDate = Dependent.BirthDate,
-    //         MobilePhoneNumber = Dependent.MobilePhoneNumber,
-    //         Cpf = Dependent.Cpf,
-    //         // Cin = Dependent.Cin,
-    //         CreatedBy = UserId,
-    //       }
-    //     ).ToList(),
-    //   BillingAddress = request.BillingAddress,
-    //   AdditionalInformation = request.AdditionalInformation,
-    //   CreatedBy = UserId,
-    // };
+    Customer Customer = Customer.FromProtoRequest(request, Ulid.Parse(UserId));
 
     await _dbContext.AddAsync(Customer);
     await _dbContext.SaveChangesAsync();

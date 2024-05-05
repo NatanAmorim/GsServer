@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using GsServer.Protobufs;
 
 namespace GsServer.Models;
 
@@ -16,7 +17,7 @@ public class Payment
   public required ICollection<PaymentInstallment> Installments { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   [Required]
-  public Ulid? CreatedBy { get; set; }
+  public required Ulid CreatedBy { get; set; }
   public decimal TotalAmountOwed()
   {
     throw new NotImplementedException();
@@ -25,6 +26,46 @@ public class Payment
   {
     throw new NotImplementedException();
   }
+
+  public static Payment FromProtoRequest(CreatePaymentRequest request, Ulid createdBy)
+    => new()
+    {
+      Observations = request.Observations,
+      Installments = request.Installments.Select(
+        Installment => new PaymentInstallment
+        {
+          PaymentInstallmentId = Ulid.Parse(Installment.PaymentInstallmentId),
+          InstallmentNumber = Installment.InstallmentNumber,
+          InstallmentAmount = Installment.InstallmentAmount,
+          PaymentMethod = Installment.PaymentMethod,
+          DueDate = new(
+            Installment.DueDate.Year,
+            Installment.DueDate.Month,
+            Installment.DueDate.Day
+          ),
+        }
+      ).ToList(),
+      CreatedBy = createdBy,
+    };
+
+  public GetPaymentByIdResponse ToGetById()
+    => new()
+    {
+      PaymentId = PaymentId.ToString(),
+      Observations = Observations,
+      Installments = {
+        Installments.Select(
+          Installment => new Protobufs.PaymentInstallment
+          {
+            PaymentInstallmentId = Installment.PaymentInstallmentId.ToString(),
+            InstallmentNumber = Installment.InstallmentNumber,
+            InstallmentAmount = Installment.InstallmentAmount,
+            PaymentMethod = Installment.PaymentMethod,
+            DueDate = Installment.DueDate,
+          }
+        ).ToList(),
+      },
+    };
 }
 
 // TODO Implement promotional offers (discounts, trials, upgrades).

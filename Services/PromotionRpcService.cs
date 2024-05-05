@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using AutoMapper;
 using Grpc.Core;
 using GsServer.Models;
 using GsServer.Protobufs;
@@ -10,16 +9,13 @@ public class PromotionRpcService : PromotionService.PromotionServiceBase
 {
   private readonly DatabaseContext _dbContext;
   private readonly ILogger<PromotionRpcService> _logger;
-  private readonly IMapper _mapper;
   public PromotionRpcService(
       ILogger<PromotionRpcService> logger,
-      DatabaseContext dbContext,
-      IMapper mapper
+      DatabaseContext dbContext
     )
   {
     _logger = logger;
     _dbContext = dbContext;
-    _mapper = mapper;
   }
 
   public override async Task<GetPaginatedPromotionsResponse> GetPaginatedAsync(GetPaginatedPromotionsRequest request, ServerCallContext context)
@@ -35,14 +31,12 @@ public class PromotionRpcService : PromotionService.PromotionServiceBase
     );
 
     IQueryable<GetPromotionByIdResponse> Query = _dbContext.Promotions.Select(
-      Promotion => _mapper.Map<GetPromotionByIdResponse>(Promotion)
+      Promotion => Promotion.ToGetById()
     );
-
-    List<GetPromotionByIdResponse> Promotions = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    Promotions = await Query
+    List<GetPromotionByIdResponse> Promotions = await Query
       .Where(x => x.PromotionId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
@@ -102,7 +96,7 @@ public class PromotionRpcService : PromotionService.PromotionServiceBase
       typeof(Promotion).Name
     );
 
-    return _mapper.Map<GetPromotionByIdResponse>(Promotion);
+    return Promotion.ToGetById();
   }
 
   public override async Task<CreatePromotionResponse> PostAsync(CreatePromotionRequest request, ServerCallContext context)
@@ -117,8 +111,7 @@ public class PromotionRpcService : PromotionService.PromotionServiceBase
       typeof(Promotion).Name
     );
 
-    Promotion Promotion = _mapper.Map<Promotion>(request);
-    Promotion.CreatedBy = Ulid.Parse(UserId);
+    Promotion Promotion = Promotion.FromProtoRequest(request, Ulid.Parse(UserId));
 
     await _dbContext.AddAsync(Promotion);
     await _dbContext.SaveChangesAsync();

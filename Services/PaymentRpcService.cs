@@ -1,9 +1,7 @@
 using System.Security.Claims;
-using AutoMapper;
 using Grpc.Core;
 using GsServer.Models;
 using GsServer.Protobufs;
-using Microsoft.VisualBasic;
 
 namespace GsServer.Services;
 
@@ -11,16 +9,13 @@ public class PaymentRpcService : PaymentService.PaymentServiceBase
 {
   private readonly DatabaseContext _dbContext;
   private readonly ILogger<PaymentRpcService> _logger;
-  private readonly IMapper _mapper;
   public PaymentRpcService(
       ILogger<PaymentRpcService> logger,
-      DatabaseContext dbContext,
-      IMapper mapper
+      DatabaseContext dbContext
     )
   {
     _logger = logger;
     _dbContext = dbContext;
-    _mapper = mapper;
   }
 
   public override async Task<GetPaginatedPaymentsResponse> GetPaginatedAsync(GetPaginatedPaymentsRequest request, ServerCallContext context)
@@ -36,14 +31,12 @@ public class PaymentRpcService : PaymentService.PaymentServiceBase
     );
 
     IQueryable<GetPaymentByIdResponse> Query = _dbContext.Payments.Select(
-      Payment => _mapper.Map<GetPaymentByIdResponse>(Payment)
+      Payment => Payment.ToGetById()
     );
-
-    List<GetPaymentByIdResponse> Payments = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    Payments = await Query
+    List<GetPaymentByIdResponse> Payments = await Query
       .Where(x => x.PaymentId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
@@ -103,7 +96,7 @@ public class PaymentRpcService : PaymentService.PaymentServiceBase
       typeof(Payment).Name
     );
 
-    return _mapper.Map<GetPaymentByIdResponse>(Payment);
+    return Payment.ToGetById();
   }
 
   public override async Task<CreatePaymentResponse> PostAsync(CreatePaymentRequest request, ServerCallContext context)
@@ -118,8 +111,7 @@ public class PaymentRpcService : PaymentService.PaymentServiceBase
       typeof(Payment).Name
     );
 
-    Payment Payment = _mapper.Map<Payment>(request);
-    Payment.CreatedBy = Ulid.Parse(UserId);
+    Payment Payment = Payment.FromProtoRequest(request, Ulid.Parse(UserId));
 
     await _dbContext.AddAsync(Payment);
     await _dbContext.SaveChangesAsync();

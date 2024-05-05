@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using GsServer.Protobufs;
 
 namespace GsServer.Models;
 
@@ -25,5 +26,23 @@ public class Notification
   public bool IsRead() => !IsUnread;
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   [Required]
-  public Ulid? CreatedBy { get; set; }
+  public required Ulid CreatedBy { get; set; }
+
+  public static Notification FromProtoRequest(CreateNotificationRequest request, Ulid createdBy)
+    => new()
+    {
+      UserId = Ulid.Parse(request.UserId),
+      Title = request.Title,
+      Message = request.Message,
+      CreatedBy = createdBy,
+    };
+
+  public GetNotificationByIdResponse ToGetById()
+    => new()
+    {
+      NotificationId = NotificationId.ToString(),
+      Title = Title,
+      Message = Message,
+      IsUnread = IsUnread,
+    };
 }

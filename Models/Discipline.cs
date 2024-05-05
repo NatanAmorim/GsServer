@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using GsServer.Protobufs;
 
 namespace GsServer.Models;
 
@@ -24,9 +25,43 @@ public class Discipline
   [Required(ErrorMessage = "O horário de início é obrigatório")]
   public required TimeOnly EndTime { get; set; }
   [Required(ErrorMessage = "Os dias de aula são obrigatórios")]
-  public required ICollection<DayOfWeek> ClassDays { get; set; }
+  public required ICollection<System.DayOfWeek> ClassDays { get; set; }
   public bool IsActive { get; set; } = true;
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   [Required]
-  public Ulid? CreatedBy { get; set; }
+  public required Ulid CreatedBy { get; set; }
+
+  public System.DayOfWeek Fml() => System.DayOfWeek.Friday;
+
+  public static Discipline FromProtoRequest(CreateDisciplineRequest request, Ulid createdBy)
+    => new()
+    {
+      Name = request.Name,
+      TuitionPrice = request.TuitionPrice,
+      InstructorId = Ulid.Parse(request.InstructorId),
+      StartTime = request.StartTime,
+      EndTime = request.EndTime,
+      ClassDays =
+        request.ClassDays.Select(
+          Day => (System.DayOfWeek)Day
+        ).ToList(),
+      CreatedBy = createdBy,
+    };
+
+  public GetDisciplineByIdResponse ToGetById()
+    => new()
+    {
+      DisciplineId = DisciplineId.ToString(),
+      Name = Name,
+      TuitionPrice = TuitionPrice,
+      InstructorId = InstructorId.ToString(),
+      StartTime = StartTime,
+      EndTime = EndTime,
+      ClassDays = {
+        ClassDays.Select(
+          Day => (Protobufs.DayOfWeek)Day
+        ).ToList(),
+      },
+      IsActive = IsActive,
+    };
 }

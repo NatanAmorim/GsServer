@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using AutoMapper;
 using Grpc.Core;
 using GsServer.Models;
 using GsServer.Protobufs;
@@ -10,16 +9,13 @@ public class ProductRpcService : ProductService.ProductServiceBase
 {
   private readonly DatabaseContext _dbContext;
   private readonly ILogger<ProductRpcService> _logger;
-  private readonly IMapper _mapper;
   public ProductRpcService(
     ILogger<ProductRpcService> logger,
-    DatabaseContext dbContext,
-    IMapper mapper
+    DatabaseContext dbContext
   )
   {
     _logger = logger;
     _dbContext = dbContext;
-    _mapper = mapper;
   }
 
   public override async Task<GetAllProductsResponse> GetAllAsync(GetAllProductsRequest request, ServerCallContext context)
@@ -34,14 +30,12 @@ public class ProductRpcService : ProductService.ProductServiceBase
     );
 
     IQueryable<GetProductByIdResponse> Query = _dbContext.Products.Select(
-      Product => _mapper.Map<GetProductByIdResponse>(Product)
+      Product => Product.ToGetById()
     );
-
-    List<GetProductByIdResponse> Products = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    Products = await Query
+    List<GetProductByIdResponse> Products = await Query
       .ToListAsync();
 
     GetAllProductsResponse response = new();
@@ -89,7 +83,7 @@ public class ProductRpcService : ProductService.ProductServiceBase
       typeof(Product).Name
     );
 
-    return _mapper.Map<GetProductByIdResponse>(Product);
+    return Product.ToGetById();
   }
 
   public override async Task<CreateProductResponse> PostAsync(CreateProductRequest request, ServerCallContext context)
@@ -107,7 +101,7 @@ public class ProductRpcService : ProductService.ProductServiceBase
     // TODO upload binary from request.PicturePath to aws s3 bucket and get PicturePath back
     string? PicturePath = null;
 
-    Product Product = _mapper.Map<Product>(request);
+    Product Product = Product.FromProtoRequest(request, PicturePath, Ulid.Parse(UserId));
 
     await _dbContext.AddAsync(Product);
     await _dbContext.SaveChangesAsync();

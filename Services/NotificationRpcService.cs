@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using AutoMapper;
 using Grpc.Core;
 using GsServer.Models;
 using GsServer.Protobufs;
@@ -10,16 +9,13 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
 {
   private readonly DatabaseContext _dbContext;
   private readonly ILogger<NotificationRpcService> _logger;
-  private readonly IMapper _mapper;
   public NotificationRpcService(
       ILogger<NotificationRpcService> logger,
-      DatabaseContext dbContext,
-      IMapper mapper
+      DatabaseContext dbContext
     )
   {
     _logger = logger;
     _dbContext = dbContext;
-    _mapper = mapper;
   }
 
   public override async Task<GetPaginatedNotificationsResponse> GetPaginatedAsync(GetPaginatedNotificationsRequest request, ServerCallContext context)
@@ -35,14 +31,12 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
     );
 
     IQueryable<GetNotificationByIdResponse> Query = _dbContext.Notifications.Select(
-      Notification => _mapper.Map<GetNotificationByIdResponse>(Notification)
+      Notification => Notification.ToGetById()
     );
-
-    List<GetNotificationByIdResponse> Notifications = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    Notifications = await Query
+    List<GetNotificationByIdResponse> Notifications = await Query
       .Where(x => x.NotificationId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
@@ -102,7 +96,7 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
       typeof(Notification).Name
     );
 
-    return _mapper.Map<GetNotificationByIdResponse>(Notification);
+    return Notification.ToGetById();
   }
 
   public override async Task<CreateNotificationResponse> PostAsync(CreateNotificationRequest request, ServerCallContext context)
@@ -117,8 +111,7 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
       typeof(Notification).Name
     );
 
-    Notification Notification = _mapper.Map<Notification>(request);
-    Notification.CreatedBy = Ulid.Parse(UserId);
+    Notification Notification = Notification.FromProtoRequest(request, Ulid.Parse(UserId));
 
     await _dbContext.AddAsync(Notification);
     await _dbContext.SaveChangesAsync();

@@ -30,7 +30,6 @@ public class DatabaseContext(
   }
 
   public DbSet<Attendance> Attendances => Set<Attendance>();
-  public DbSet<BackgroundJobStatus> BackgroundJobs => Set<BackgroundJobStatus>();
   public DbSet<Customer> Customers => Set<Customer>();
   public DbSet<Discipline> Disciplines => Set<Discipline>();
   public DbSet<Instructor> Instructors => Set<Instructor>();

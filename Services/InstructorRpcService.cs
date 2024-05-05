@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using AutoMapper;
 using Grpc.Core;
 using GsServer.Models;
 using GsServer.Protobufs;
@@ -10,16 +9,13 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
 {
   private readonly DatabaseContext _dbContext;
   private readonly ILogger<InstructorRpcService> _logger;
-  private readonly IMapper _mapper;
   public InstructorRpcService(
       ILogger<InstructorRpcService> logger,
-      DatabaseContext dbContext,
-      IMapper mapper
+      DatabaseContext dbContext
     )
   {
     _logger = logger;
     _dbContext = dbContext;
-    _mapper = mapper;
   }
 
   public override async Task<GetPaginatedInstructorsResponse> GetPaginatedAsync(GetPaginatedInstructorsRequest request, ServerCallContext context)
@@ -35,14 +31,12 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
     );
 
     IQueryable<GetInstructorByIdResponse> Query = _dbContext.Instructors.Select(
-      Instructor => _mapper.Map<GetInstructorByIdResponse>(Instructor)
+      Instructor => Instructor.ToGetById()
     );
-
-    List<GetInstructorByIdResponse> Instructors = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    Instructors = await Query
+    List<GetInstructorByIdResponse> Instructors = await Query
       .Where(x => x.InstructorId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
@@ -102,7 +96,7 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       typeof(Instructor).Name
     );
 
-    return _mapper.Map<GetInstructorByIdResponse>(Instructor);
+    return Instructor.ToGetById();
   }
 
   public override async Task<CreateInstructorResponse> PostAsync(CreateInstructorRequest request, ServerCallContext context)
@@ -117,23 +111,7 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       typeof(Instructor).Name
     );
 
-    Instructor Instructor = _mapper.Map<Instructor>(request);
-    Instructor.CreatedBy = Ulid.Parse(UserId);
-
-    // TODO
-    // var Instructor = new Instructor
-    // {
-    //   Person = new Person
-    //   {
-    //     Name = request.Person.Name,
-    //     MobilePhoneNumber = request.Person.MobilePhoneNumber,
-    //     BirthDate = request.Person.BirthDate,
-    //     Cpf = request.Person.Cpf,
-    //     Cin = request.Person.Cin,
-    //     CreatedBy = UserId,
-    //   },
-    //   CreatedBy = UserId,
-    // };
+    Instructor Instructor = Instructor.FromProtoRequest(request, Ulid.Parse(UserId));
 
     await _dbContext.AddAsync(Instructor);
     await _dbContext.SaveChangesAsync();

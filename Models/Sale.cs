@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using GsServer.Protobufs;
 
 namespace GsServer.Models;
 
@@ -20,5 +21,37 @@ public class Sale
   public required ICollection<SaleItem> ItemsSold { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   [Required]
-  public Ulid? CreatedBy { get; set; }
+  public required Ulid CreatedBy { get; set; }
+
+  public static Sale FromProtoRequest(CreateSaleRequest request, Ulid createdBy)
+    => new()
+    {
+      CustomerId = Ulid.Parse(request.CustomerId),
+      Observations = request.Observations,
+      ItemsSold = request.ItemsSold.Select(
+        ItemSold => new Models.SaleItem
+        {
+          ProductVariantId = Ulid.Parse(ItemSold.ProductVariantId),
+          UnitPrice = ItemSold.UnitPrice,
+          QuantitySold = ItemSold.QuantitySold,
+        }
+      ).ToList(),
+      CreatedBy = createdBy,
+    };
+
+  public GetSaleByIdResponse ToGetById()
+    => new()
+    {
+      Observations = Observations,
+      ItemsSold = {
+        ItemsSold.Select(
+          ItemSold => new Protobufs.SaleItem
+          {
+            ProductVariantId = ItemSold.ProductVariantId.ToString(),
+            UnitPrice = ItemSold.UnitPrice,
+            QuantitySold = ItemSold.QuantitySold,
+          }
+        ).ToList(),
+      }
+    };
 }

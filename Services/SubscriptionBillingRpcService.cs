@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using AutoMapper;
 using Grpc.Core;
 using GsServer.Models;
 using GsServer.Protobufs;
@@ -10,17 +9,13 @@ public class SubscriptionBillingRpcService : SubscriptionBillingService.Subscrip
 {
   private readonly DatabaseContext _dbContext;
   private readonly ILogger<SubscriptionBillingRpcService> _logger;
-  private readonly IMapper _mapper;
   public SubscriptionBillingRpcService(
       ILogger<SubscriptionBillingRpcService> logger,
-      DatabaseContext dbContext,
-      IMapper mapper
-
+      DatabaseContext dbContext
     )
   {
     _logger = logger;
     _dbContext = dbContext;
-    _mapper = mapper;
   }
 
   public override async Task<GetPaginatedSubscriptionBillingsResponse> GetPaginatedAsync(GetPaginatedSubscriptionBillingsRequest request, ServerCallContext context)
@@ -36,14 +31,12 @@ public class SubscriptionBillingRpcService : SubscriptionBillingService.Subscrip
     );
 
     IQueryable<GetSubscriptionBillingByIdResponse> Query = _dbContext.SubscriptionBillings.Select(
-      SubscriptionBilling => _mapper.Map<GetSubscriptionBillingByIdResponse>(SubscriptionBilling)
+      SubscriptionBilling => SubscriptionBilling.ToGetById()
     );
-
-    List<GetSubscriptionBillingByIdResponse> SubscriptionBillings = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    SubscriptionBillings = await Query
+    List<GetSubscriptionBillingByIdResponse> SubscriptionBillings = await Query
       .Where(x => x.SubscriptionBillingId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
@@ -103,7 +96,7 @@ public class SubscriptionBillingRpcService : SubscriptionBillingService.Subscrip
       typeof(SubscriptionBilling).Name
     );
 
-    return _mapper.Map<GetSubscriptionBillingByIdResponse>(SubscriptionBilling);
+    return SubscriptionBilling.ToGetById();
   }
 
   public override async Task<CreateSubscriptionBillingResponse> PostAsync(CreateSubscriptionBillingRequest request, ServerCallContext context)
@@ -118,8 +111,7 @@ public class SubscriptionBillingRpcService : SubscriptionBillingService.Subscrip
       typeof(SubscriptionBilling).Name
     );
 
-    SubscriptionBilling SubscriptionBilling = _mapper.Map<SubscriptionBilling>(request);
-    SubscriptionBilling.CreatedBy = Ulid.Parse(UserId);
+    SubscriptionBilling SubscriptionBilling = SubscriptionBilling.FromProtoRequest(request, Ulid.Parse(UserId));
 
     await _dbContext.AddAsync(SubscriptionBilling);
     await _dbContext.SaveChangesAsync();

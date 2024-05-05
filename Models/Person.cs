@@ -38,5 +38,25 @@ public class Person
   // public required string Cin { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   [Required]
-  public Ulid? CreatedBy { get; set; }
+  public required Ulid CreatedBy { get; set; }
+
+  public static Person FromProtoRequest(Protobufs.Person request, Ulid createdBy)
+    => new()
+    {
+      FullName = request.Name,
+      MobilePhoneNumber = request.MobilePhoneNumber,
+      BirthDate = request.BirthDate,
+      Cpf = request.Cpf,
+      CreatedBy = createdBy,
+    };
+
+  public Protobufs.Person ToPersonById()
+    => new()
+    {
+      PersonId = PersonId.ToString(),
+      Name = FullName,
+      MobilePhoneNumber = MobilePhoneNumber,
+      BirthDate = BirthDate,
+      Cpf = Cpf,
+    };
 }

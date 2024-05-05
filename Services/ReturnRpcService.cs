@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using AutoMapper;
 using Grpc.Core;
 using GsServer.Models;
 using GsServer.Protobufs;
@@ -10,16 +9,13 @@ public class ReturnRpcService : ReturnService.ReturnServiceBase
 {
   private readonly DatabaseContext _dbContext;
   private readonly ILogger<ReturnRpcService> _logger;
-  private readonly IMapper _mapper;
   public ReturnRpcService(
       ILogger<ReturnRpcService> logger,
-      DatabaseContext dbContext,
-      IMapper mapper
+      DatabaseContext dbContext
     )
   {
     _logger = logger;
     _dbContext = dbContext;
-    _mapper = mapper;
   }
 
   public override async Task<GetPaginatedReturnsResponse> GetPaginatedAsync(GetPaginatedReturnsRequest request, ServerCallContext context)
@@ -35,14 +31,12 @@ public class ReturnRpcService : ReturnService.ReturnServiceBase
     );
 
     IQueryable<GetReturnByIdResponse> Query = _dbContext.Returns.Select(
-      Return => _mapper.Map<GetReturnByIdResponse>(Return)
+      Return => Return.ToGetById()
     );
-
-    List<GetReturnByIdResponse> Returns = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    Returns = await Query
+    List<GetReturnByIdResponse> Returns = await Query
       .Where(x => x.ReturnId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
@@ -102,7 +96,7 @@ public class ReturnRpcService : ReturnService.ReturnServiceBase
       typeof(Return).Name
     );
 
-    return _mapper.Map<GetReturnByIdResponse>(Return);
+    return Return.ToGetById();
   }
 
   public override async Task<CreateReturnResponse> PostAsync(CreateReturnRequest request, ServerCallContext context)
@@ -117,8 +111,7 @@ public class ReturnRpcService : ReturnService.ReturnServiceBase
       typeof(Return).Name
     );
 
-    Return Return = _mapper.Map<Return>(request);
-    Return.CreatedBy = Ulid.Parse(UserId);
+    Return Return = Return.FromProtoRequest(request, Ulid.Parse(UserId));
 
     await _dbContext.AddAsync(Return);
     await _dbContext.SaveChangesAsync();

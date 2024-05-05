@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using GsServer.Protobufs;
 
 namespace GsServer.Models;
 
@@ -43,5 +44,27 @@ public class Promotion // Represents special offers or discounts.
   public bool IsActive { get; set; } = true;
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   [Required]
-  public Ulid? CreatedBy { get; set; }
+  public required Ulid CreatedBy { get; set; }
+
+  public static Promotion FromProtoRequest(CreatePromotionRequest request, Ulid createdBy)
+    => new()
+    {
+      Name = request.Name,
+      Description = request.Description,
+      DiscountType = request.DiscountType,
+      StartDate = request.StartDate,
+      EndDate = request.EndDate,
+      CreatedBy = createdBy,
+    };
+
+  public GetPromotionByIdResponse ToGetById()
+    => new()
+    {
+      Customer = Customer.ToGetById(),
+      Name = Name,
+      Description = Description,
+      DiscountType = DiscountType,
+      StartDate = StartDate,
+      EndDate = EndDate,
+    };
 }

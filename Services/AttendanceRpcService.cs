@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using AutoMapper;
 using Grpc.Core;
 using GsServer.Models;
 using GsServer.Protobufs;
@@ -10,16 +9,13 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
 {
   private readonly ILogger<AttendanceRpcService> _logger;
   private readonly DatabaseContext _dbContext;
-  private readonly IMapper _mapper;
   public AttendanceRpcService(
       ILogger<AttendanceRpcService> logger,
-      DatabaseContext dbContext,
-      IMapper mapper
+      DatabaseContext dbContext
     )
   {
     _logger = logger;
     _dbContext = dbContext;
-    _mapper = mapper;
   }
 
   public override async Task<GetPaginatedAttendancesResponse> GetPaginatedAsync(GetPaginatedAttendancesRequest request, ServerCallContext context)
@@ -35,14 +31,12 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
     );
 
     IQueryable<GetAttendanceByIdResponse> Query = _dbContext.Attendances.Select(
-      Attendance => _mapper.Map<GetAttendanceByIdResponse>(Attendance)
+      Attendance => Attendance.ToGetById()
     );
-
-    List<GetAttendanceByIdResponse> Attendances = [];
 
     /// If cursor is bigger than the size of the collection you will get the following error
     /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    Attendances = await Query
+    List<GetAttendanceByIdResponse> Attendances = await Query
       .Where(x => x.AttendanceId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
@@ -102,7 +96,7 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
       typeof(Attendance).Name
     );
 
-    return _mapper.Map<GetAttendanceByIdResponse>(Attendance);
+    return Attendance.ToGetById();
   }
 
   public override async Task<CreateAttendanceResponse> PostAsync(CreateAttendanceRequest request, ServerCallContext context)
@@ -117,31 +111,8 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
       typeof(Attendance).Name
     );
 
-    Attendance Attendance = _mapper.Map<Attendance>(request);
-    Attendance.CreatedBy = Ulid.Parse(UserId);
+    Attendance Attendance = Attendance.FromProtoRequest(request, Ulid.Parse(UserId));
 
-    // TODO
-    // var Attendance = new Attendance
-    // {
-    //   DisciplineFk = request.DisciplineFk,
-    //   Date = new(
-    //     request.Date.Year,
-    //     request.Date.Month,
-    //     request.Date.Day
-    //   ),
-    //   AttendeesStatuses = request.AttendeesStatuses.Select(
-    //       Installment => new Models.AttendanceAttendeeStatus
-    //       {
-    //         AttendanceAttendeeStatusPk = Installment.AttendanceAttendeeStatusPk,
-    //         PersonFk = Installment.PersonFk,
-    //         IsPresent = Installment.IsPresent,
-    //       }
-    //     ).ToList(),
-    //   Observations = request.Observations,
-    //   CreatedBy = UserId,
-    // };
-
-    Attendance.CreatedBy = Ulid.Parse(UserId);
     await _dbContext.AddAsync(Attendance);
     await _dbContext.SaveChangesAsync();
 
