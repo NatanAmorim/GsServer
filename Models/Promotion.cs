@@ -22,14 +22,14 @@ public class Promotion // Represents special offers or discounts.
   /// <summary>
   /// Name of the offer (e.g., "Summer Sale", "Introductory Discount", "Free Trials", "Referral Bonuses").
   /// </summary>
-  [Required(ErrorMessage = "Obrigatório preencher o nome", AllowEmptyStrings = false)]
+  [Required(ErrorMessage = "Campo de preenchimento obrigatório", AllowEmptyStrings = false)]
   public required string Name { get; set; }
-  [Required(ErrorMessage = "A descrição é obrigatória", AllowEmptyStrings = true)]
+  [Required(AllowEmptyStrings = true)]
   public required string Description { get; set; }
   /// <summary>
   /// Type of discount offered (e.g., "percentage", "fixed amount").
   /// </summary>
-  [Required(ErrorMessage = "Obrigatório preencher o tipo de desconto", AllowEmptyStrings = false)]
+  [Required(ErrorMessage = "Campo de preenchimento obrigatório", AllowEmptyStrings = false)]
   public required string DiscountType { get; set; }
   /// <summary>
   /// Date the offer becomes active.

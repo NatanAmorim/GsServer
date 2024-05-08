@@ -17,10 +17,10 @@ public class Customer
   public required ICollection<Person> Dependents { get; set; }
   [MinLength(4, ErrorMessage = "O Endereço deve ter no mínimo 4 caracteres")]
   [MaxLength(64, ErrorMessage = "O Endereço deve ter no máximo 64 caracteres")]
-  [Required(ErrorMessage = "Obrigatório preencher o endereço", AllowEmptyStrings = false)]
+  [Required(ErrorMessage = "Campo de preenchimento obrigatório", AllowEmptyStrings = false)]
   public required string BillingAddress { get; set; }
   [MaxLength(240, ErrorMessage = "As Informações adicionais devem ter no máximo 240 caracteres")]
-  [Required(ErrorMessage = "As informações adicionais são obrigatórias", AllowEmptyStrings = true)]
+  [Required(AllowEmptyStrings = true)]
   public required string AdditionalInformation { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   [Required]

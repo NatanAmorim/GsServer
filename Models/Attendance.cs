@@ -17,7 +17,7 @@ public class Attendance
   [Required(ErrorMessage = "Os status dos participantes são obrigatórios")]
   public required ICollection<AttendanceAttendeeStatus> AttendeesStatuses { get; set; }
   [MaxLength(240, ErrorMessage = "As observações devem ter no máximo 240 caracteres")]
-  [Required(ErrorMessage = "As observações são obrigatórias", AllowEmptyStrings = true)]
+  [Required(AllowEmptyStrings = true)]
   public string Observations { get; set; } = string.Empty;
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
   [Required]

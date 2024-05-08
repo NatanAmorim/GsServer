@@ -11,7 +11,7 @@ public class Discipline
   public Ulid DisciplineId { get; init; } = Ulid.NewUlid();
   [MinLength(4, ErrorMessage = "O nome deve ter no mínimo 4 caracteres")]
   [MaxLength(16, ErrorMessage = "O nome deve ter no máximo 16 caracteres")]
-  [Required(ErrorMessage = "Obrigatório preencher o nome", AllowEmptyStrings = false)]
+  [Required(ErrorMessage = "Campo de preenchimento obrigatório", AllowEmptyStrings = false)]
   public required string Name { get; set; }
   [Column(TypeName = "decimal(8, 4)")]
   [Range(1, 999_999.99, ErrorMessage = "O preço da mensalidade não deve ser menos que R$ 1,00 ou exceder R$ 999999,99")]

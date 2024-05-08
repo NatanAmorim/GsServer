@@ -34,7 +34,7 @@ public class PaymentInstallment
   public decimal InstallmentAmount { get; set; }
   [MinLength(2, ErrorMessage = "O método de pagamento deve ter no mínimo 2 caracteres")]
   [MaxLength(16, ErrorMessage = "O método de pagamento deve ter no máximo 16 caracteres")]
-  [Required(ErrorMessage = "Obrigatório preencher o método de pagamento", AllowEmptyStrings = false)]
+  [Required(ErrorMessage = "Campo de preenchimento obrigatório", AllowEmptyStrings = false)]
   public required string PaymentMethod { get; set; } // (e.g., "money", "credit card", "debit card", ...).
   public DateOnly DueDate { get; set; } // Optional property for due date
 }

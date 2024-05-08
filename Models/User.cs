@@ -10,8 +10,8 @@ public class User
   public Ulid UserId { get; init; } = Ulid.NewUlid();
   [Required(AllowEmptyStrings = false)]
   public string Role { get; set; } = "customer";
-  // [EmailAddress(ErrorMessage = "E-mail inválido")] // TODO add validation after tests
-  [Required(ErrorMessage = "Obrigatório preencher o e-mail", AllowEmptyStrings = false)]
+  // [EmailAddress(ErrorMessage = "Por favor insira um endereço de e-mail válido")] // TODO add back validation after tests
+  [Required(ErrorMessage = "Campo de preenchimento obrigatório", AllowEmptyStrings = false)]
   public required string Email { get; set; }
   [Required]
   public required byte[] PasswordHash { get; set; }

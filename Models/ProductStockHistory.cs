@@ -11,6 +11,6 @@ public class ProductStockHistory
   /// <summary>
   /// (e.g., Returned, sold, restocked,...)
   /// </summary>
-  [Required(ErrorMessage = "Obrigatório preencher a descrição da mudança", AllowEmptyStrings = false)]
+  [Required(ErrorMessage = "Campo de preenchimento obrigatório", AllowEmptyStrings = false)]
   public required string ChangeDescription { get; set; }
 }

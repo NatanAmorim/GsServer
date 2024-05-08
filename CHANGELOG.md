@@ -14,6 +14,10 @@ Todas as alterações notáveis ​​neste projeto serão documentadas neste ar
 O formato é baseado em [Keep a Changelog (PT-BR)](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere a [Versionamento Semântico (PT-BR)](https://semver.org/lang/pt-BR/).
 
+## 1.0.1-RC-6 (May 08, 2024)
+
+- Better "ErrorMessage" in some validations.
+
 ## 1.0.0-RC-6 (May 05, 2024)
 
 - Remove "AutoMapper".

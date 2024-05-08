@@ -11,16 +11,16 @@ public class Person
   public Ulid PersonId { get; init; } = Ulid.NewUlid();
   [MinLength(5, ErrorMessage = "O nome completo deve ter no mínimo 5 caracteres")]
   [MaxLength(55, ErrorMessage = "O nome completo deve ter no máximo 55 caracteres")]
-  [Required(ErrorMessage = "Obrigatório preencher o nome completo", AllowEmptyStrings = false)]
+  [Required(ErrorMessage = "Campo de preenchimento obrigatório", AllowEmptyStrings = false)]
   public required string FullName { get; set; }
   [MinLength(15, ErrorMessage = "O número de celular deve ter no mínimo 15 caracteres")]
   [MaxLength(16, ErrorMessage = "O número de celular deve ter no máximo 16 caracteres")]
-  [Required(ErrorMessage = "Obrigatório preencher o número de celular", AllowEmptyStrings = false)]
+  [Required(ErrorMessage = "Campo de preenchimento obrigatório", AllowEmptyStrings = false)]
   public required string MobilePhoneNumber { get; set; }
   [Column(TypeName = "char(10)")]
   [MinLength(10, ErrorMessage = "A data de nascimento deve ter 10 caracteres")]
   [MaxLength(10, ErrorMessage = "A data de nascimento deve ter 10 caracteres")]
-  [Required(ErrorMessage = "A data de nascimento é obrigatória", AllowEmptyStrings = true)]
+  [Required(AllowEmptyStrings = true)]
   public required string BirthDate { get; set; }
   /// <summary>
   /// Cadastro de Pessoas Físicas (CPF)
@@ -28,7 +28,7 @@ public class Person
   [Column(TypeName = "char(14)")]
   [MinLength(14, ErrorMessage = "O CPF deve ter 14 caracteres")]
   [MaxLength(14, ErrorMessage = "O CPF deve ter 14 caracteres")]
-  [Required(ErrorMessage = "O CPF é obrigatório", AllowEmptyStrings = true)]
+  [Required(AllowEmptyStrings = true)]
   public required string Cpf { get; set; }
   // TODO
   /// <summary>

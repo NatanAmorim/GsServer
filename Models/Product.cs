@@ -10,7 +10,7 @@ public class Product
   public Ulid ProductId { get; init; } = Ulid.NewUlid();
   [MinLength(4, ErrorMessage = "O nome deve ter no mínimo 4 caracteres")]
   [MaxLength(32, ErrorMessage = "O nome deve ter no máximo 32 caracteres")]
-  [Required(ErrorMessage = "Obrigatório preencher o nome", AllowEmptyStrings = false)]
+  [Required(ErrorMessage = "Campo de preenchimento obrigatório", AllowEmptyStrings = false)]
   public required string Name { get; set; }
   // Image path on a Cloud Storage (Like: Imgur, S3, Azure blob).
   // All images will be scaled to 128px(w) x 128px(h).
