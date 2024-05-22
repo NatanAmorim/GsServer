@@ -2,9 +2,11 @@ using System.Security.Claims;
 using Grpc.Core;
 using GsServer.Models;
 using GsServer.Protobufs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GsServer.Services;
 
+[Authorize]
 public class SaleBillingRpcService : SaleBillingService.SaleBillingServiceBase
 {
   private readonly DatabaseContext _dbContext;
@@ -34,12 +36,23 @@ public class SaleBillingRpcService : SaleBillingService.SaleBillingServiceBase
       SaleBilling => SaleBilling.ToGetById()
     );
 
-    /// If cursor is bigger than the size of the collection you will get the following error
-    /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    List<GetSaleBillingByIdResponse> SaleBillings = await Query
-      .Where(x => x.SaleBillingId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
-      .Take(20)
-      .ToListAsync();
+    List<GetSaleBillingByIdResponse> SaleBillings = [];
+
+    if (request.Cursor is null)
+    {
+      SaleBillings = await Query
+       .Take(20)
+       .ToListAsync();
+    }
+    else
+    {
+      /// If cursor is bigger than the size of the collection you will get the following error
+      /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
+      SaleBillings = await Query
+       .Where(x => x.SaleBillingId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
+       .Take(20)
+       .ToListAsync();
+    }
 
     GetPaginatedSaleBillingsResponse response = new();
 

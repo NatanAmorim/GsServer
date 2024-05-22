@@ -2,9 +2,11 @@ using System.Security.Claims;
 using Grpc.Core;
 using GsServer.Models;
 using GsServer.Protobufs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GsServer.Services;
 
+[Authorize]
 public class InstructorRpcService : InstructorService.InstructorServiceBase
 {
   private readonly DatabaseContext _dbContext;
@@ -34,12 +36,23 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       Instructor => Instructor.ToGetById()
     );
 
-    /// If cursor is bigger than the size of the collection you will get the following error
-    /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    List<GetInstructorByIdResponse> Instructors = await Query
-      .Where(x => x.InstructorId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
-      .Take(20)
-      .ToListAsync();
+    List<GetInstructorByIdResponse> Instructors = [];
+
+    if (request.Cursor is null)
+    {
+      Instructors = await Query
+        .Take(20)
+        .ToListAsync();
+    }
+    else
+    {
+      /// If cursor is bigger than the size of the collection you will get the following error
+      /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
+      Instructors = await Query
+       .Where(x => x.InstructorId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
+       .Take(20)
+       .ToListAsync();
+    }
 
     GetPaginatedInstructorsResponse response = new();
 

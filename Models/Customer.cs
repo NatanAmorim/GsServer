@@ -9,7 +9,7 @@ public class Customer
   [Key]
   public Ulid CustomerId { get; init; } = Ulid.NewUlid();
   [ForeignKey(nameof(UserId))]
-  public Ulid UserId { get; set; }
+  public Ulid? UserId { get; set; }
   public virtual User User { get; set; } = null!;
   [Required(ErrorMessage = "A Pessoa é obrigatória")]
   public required Person Person { get; set; }

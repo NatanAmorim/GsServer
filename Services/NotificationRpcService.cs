@@ -2,9 +2,11 @@ using System.Security.Claims;
 using Grpc.Core;
 using GsServer.Models;
 using GsServer.Protobufs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GsServer.Services;
 
+[Authorize]
 public class NotificationRpcService : NotificationService.NotificationServiceBase
 {
   private readonly DatabaseContext _dbContext;
@@ -34,12 +36,23 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
       Notification => Notification.ToGetById()
     );
 
-    /// If cursor is bigger than the size of the collection you will get the following error
-    /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    List<GetNotificationByIdResponse> Notifications = await Query
-      .Where(x => x.NotificationId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
-      .Take(20)
-      .ToListAsync();
+    List<GetNotificationByIdResponse> Notifications = [];
+
+    if (request.Cursor is null)
+    {
+      Notifications = await Query
+        .Take(20)
+        .ToListAsync();
+    }
+    else
+    {
+      /// If cursor is bigger than the size of the collection you will get the following error
+      /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
+      Notifications = await Query
+        .Where(x => x.NotificationId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
+        .Take(20)
+        .ToListAsync();
+    }
 
     GetPaginatedNotificationsResponse response = new();
 

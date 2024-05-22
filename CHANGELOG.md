@@ -14,6 +14,14 @@ Todas as alterações notáveis ​​neste projeto serão documentadas neste ar
 O formato é baseado em [Keep a Changelog (PT-BR)](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere a [Versionamento Semântico (PT-BR)](https://semver.org/lang/pt-BR/).
 
+## 1.0.2-RC-6 (May 22, 2024)
+
+- Update protobufs from `3d4788411` to `d5bc3684d`.
+- Add "Include Error Detail=True" to Postgres connection string in debug mode.
+- Add missing Authorization in services.
+- Update Person & Customer model definition.
+- Update all "GetPaginated" can have null as a cursor value in case is the first fetch.
+
 ## 1.0.1-RC-6 (May 08, 2024)
 
 - Better "ErrorMessage" in some validations.

@@ -36,12 +36,23 @@ public class UserRpcService : UserService.UserServiceBase
       User => User.ToGetById()
     );
 
-    /// If cursor is bigger than the size of the collection you will get the following error
-    /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    List<GetUserByIdResponse> Users = await Query
-      .Where(x => x.UserId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
-      .Take(20)
-      .ToListAsync();
+    List<GetUserByIdResponse> Users = [];
+
+    if (request.Cursor is null)
+    {
+      Users = await Query
+        .Take(20)
+        .ToListAsync();
+    }
+    else
+    {
+      /// If cursor is bigger than the size of the collection you will get the following error
+      /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
+      Users = await Query
+        .Where(x => x.UserId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
+        .Take(20)
+        .ToListAsync();
+    }
 
     GetPaginatedUsersResponse response = new();
 

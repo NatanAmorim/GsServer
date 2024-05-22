@@ -2,9 +2,11 @@ using System.Security.Claims;
 using Grpc.Core;
 using GsServer.Models;
 using GsServer.Protobufs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GsServer.Services;
 
+[Authorize]
 public class CustomerRpcService : CustomerService.CustomerServiceBase
 {
   private readonly DatabaseContext _dbContext;
@@ -34,13 +36,23 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
       Customer => Customer.ToGetById()
     );
 
+    List<GetCustomerByIdResponse> Customers = [];
 
-    /// If cursor is bigger than the size of the collection you will get the following error
-    /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    List<GetCustomerByIdResponse> Customers = await Query
+    if (request.Cursor is null)
+    {
+      Customers = await Query
+        .Take(20)
+        .ToListAsync();
+    }
+    else
+    {
+      /// If cursor is bigger than the size of the collection you will get the following error
+      /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
+      Customers = await Query
       .Where(x => x.CustomerId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
       .Take(20)
       .ToListAsync();
+    }
 
     GetPaginatedCustomersResponse response = new();
 
@@ -114,6 +126,7 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
     );
 
     Customer Customer = Customer.FromProtoRequest(request, Ulid.Parse(UserId));
+    // Customer Customer = Customer.FromProtoRequest(request, Ulid.Parse("01HYETH97JG5E0YTMYJDWP94GE"));
 
     await _dbContext.AddAsync(Customer);
     await _dbContext.SaveChangesAsync();

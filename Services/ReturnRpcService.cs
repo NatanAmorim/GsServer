@@ -2,9 +2,11 @@ using System.Security.Claims;
 using Grpc.Core;
 using GsServer.Models;
 using GsServer.Protobufs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GsServer.Services;
 
+[Authorize]
 public class ReturnRpcService : ReturnService.ReturnServiceBase
 {
   private readonly DatabaseContext _dbContext;
@@ -34,12 +36,23 @@ public class ReturnRpcService : ReturnService.ReturnServiceBase
       Return => Return.ToGetById()
     );
 
-    /// If cursor is bigger than the size of the collection you will get the following error
-    /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    List<GetReturnByIdResponse> Returns = await Query
-      .Where(x => x.ReturnId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
-      .Take(20)
-      .ToListAsync();
+    List<GetReturnByIdResponse> Returns = [];
+
+    if (request.Cursor is null)
+    {
+      Returns = await Query
+        .Take(20)
+        .ToListAsync();
+    }
+    else
+    {
+      /// If cursor is bigger than the size of the collection you will get the following error
+      /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
+      Returns = await Query
+        .Where(x => x.ReturnId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
+        .Take(20)
+        .ToListAsync();
+    }
 
     GetPaginatedReturnsResponse response = new();
 

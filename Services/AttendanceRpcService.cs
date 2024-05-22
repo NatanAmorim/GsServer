@@ -2,9 +2,11 @@ using System.Security.Claims;
 using Grpc.Core;
 using GsServer.Models;
 using GsServer.Protobufs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GsServer.Services;
 
+[Authorize]
 public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
 {
   private readonly ILogger<AttendanceRpcService> _logger;
@@ -34,12 +36,23 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
       Attendance => Attendance.ToGetById()
     );
 
-    /// If cursor is bigger than the size of the collection you will get the following error
-    /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    List<GetAttendanceByIdResponse> Attendances = await Query
-      .Where(x => x.AttendanceId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
-      .Take(20)
-      .ToListAsync();
+    List<GetAttendanceByIdResponse> Attendances = [];
+
+    if (request.Cursor is null)
+    {
+      Attendances = await Query
+       .Take(20)
+       .ToListAsync();
+    }
+    else
+    {
+      /// If cursor is bigger than the size of the collection you will get the following error
+      /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
+      Attendances = await Query
+        .Where(x => x.AttendanceId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
+        .Take(20)
+        .ToListAsync();
+    }
 
     GetPaginatedAttendancesResponse response = new();
 

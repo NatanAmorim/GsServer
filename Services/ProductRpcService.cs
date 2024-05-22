@@ -2,9 +2,11 @@ using System.Security.Claims;
 using Grpc.Core;
 using GsServer.Models;
 using GsServer.Protobufs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GsServer.Services;
 
+[Authorize]
 public class ProductRpcService : ProductService.ProductServiceBase
 {
   private readonly DatabaseContext _dbContext;
@@ -33,10 +35,7 @@ public class ProductRpcService : ProductService.ProductServiceBase
       Product => Product.ToGetById()
     );
 
-    /// If cursor is bigger than the size of the collection you will get the following error
-    /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-    List<GetProductByIdResponse> Products = await Query
-      .ToListAsync();
+    List<GetProductByIdResponse> Products = await Query.ToListAsync();
 
     GetAllProductsResponse response = new();
 
