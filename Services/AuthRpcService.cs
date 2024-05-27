@@ -289,6 +289,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
   {
     using HMACSHA512 Hmac = new(passwordSalt);
     byte[] computeHash = Hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+
     return computeHash.SequenceEqual(passwordHash);
   }
   private string GenerateJwtToken(

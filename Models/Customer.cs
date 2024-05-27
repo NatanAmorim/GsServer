@@ -55,6 +55,7 @@ public class Customer
         Dependents.Select(
           Dependent => new Protobufs.Person
           {
+            PersonId = Dependent.PersonId.ToString(),
             Name = Dependent.FullName,
             MobilePhoneNumber = Dependent.MobilePhoneNumber,
             BirthDate = Dependent.BirthDate,

@@ -46,6 +46,7 @@ public class ProductRpcService : ProductService.ProductServiceBase
       RequestTracerId,
       typeof(Product).Name
     );
+
     return response;
   }
 

@@ -32,47 +32,40 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
       request.Cursor
     );
 
-    IQueryable<GetCustomerByIdResponse> Query = _dbContext.Customers.Select(
-      Customer => Customer.ToGetById()
-    );
-
-    List<GetCustomerByIdResponse> Customers = [];
+    IQueryable<GetCustomerByIdResponse> Query;
 
     if (request.Cursor is null)
     {
-      Customers = await Query
-        .Take(20)
-        .ToListAsync();
+      Query = _dbContext.Customers
+        .Include(c => c.Person)
+        .Include(c => c.Dependents)
+        .Select(Customer => Customer.ToGetById());
     }
     else
     {
-      /// If cursor is bigger than the size of the collection you will get the following error
-      /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-      Customers = await Query
-      .Where(x => x.CustomerId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
-      .Take(20)
-      .ToListAsync();
+      Query = _dbContext.Customers
+        .Include(c => c.Person)
+        .Include(c => c.Dependents)
+        .Where(x => x.CustomerId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
+        .Select(Customer => Customer.ToGetById());
     }
+
+    List<GetCustomerByIdResponse> Customers =
+      await Query
+        .Take(20)
+        .ToListAsync();
 
     GetPaginatedCustomersResponse response = new();
 
     response.Customers.AddRange(Customers);
-    if (Customers.Count < 20)
-    {
-      /// Avoiding `ArgumentOutOfRangeException`, basically, don't fetch if null
-      response.NextCursor = null;
-    }
-    else
-    {
-      /// Id of the last element of the list, same value as `Users[Users.Count - 1].Id`
-      response.NextCursor = Customers[^1].CustomerId;
-    }
+    response.NextCursor = Customers.LastOrDefault()?.CustomerId;
 
     _logger.LogInformation(
       "({TraceIdentifier}) multiple records ({RecordType}) accessed successfully",
       RequestTracerId,
       typeof(Customer).Name
     );
+
     return response;
   }
 
@@ -126,7 +119,6 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
     );
 
     Customer Customer = Customer.FromProtoRequest(request, Ulid.Parse(UserId));
-    // Customer Customer = Customer.FromProtoRequest(request, Ulid.Parse("01HYETH97JG5E0YTMYJDWP94GE"));
 
     await _dbContext.AddAsync(Customer);
     await _dbContext.SaveChangesAsync();

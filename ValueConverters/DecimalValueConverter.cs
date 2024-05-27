@@ -21,6 +21,7 @@ public partial class DecimalValue
   {
     var units = decimal.ToInt64(value);
     var nanos = decimal.ToInt32((value - units) * NanoFactor);
+
     return new DecimalValue(units, nanos);
   }
 }

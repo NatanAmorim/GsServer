@@ -32,47 +32,35 @@ public class SubscriptionRpcService : SubscriptionService.SubscriptionServiceBas
       request.Cursor
     );
 
-    IQueryable<GetSubscriptionByIdResponse> Query = _dbContext.Subscriptions.Select(
-      Subscription => Subscription.ToGetById()
-    );
-
-    List<GetSubscriptionByIdResponse> Subscriptions = [];
+    IQueryable<GetSubscriptionByIdResponse> Query;
 
     if (request.Cursor is null)
     {
-      Subscriptions = await Query
-        .Take(20)
-        .ToListAsync();
+      Query = _dbContext.Subscriptions
+        .Select(Subscription => Subscription.ToGetById());
     }
     else
     {
-      /// If cursor is bigger than the size of the collection you will get the following error
-      /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-      Subscriptions = await Query
+      Query = _dbContext.Subscriptions
         .Where(x => x.SubscriptionId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
-        .Take(20)
-        .ToListAsync();
+        .Select(Subscription => Subscription.ToGetById());
     }
+
+    List<GetSubscriptionByIdResponse> Subscriptions = await Query
+      .Take(20)
+      .ToListAsync();
 
     GetPaginatedSubscriptionsResponse response = new();
 
     response.Subscriptions.AddRange(Subscriptions);
-    if (Subscriptions.Count < 20)
-    {
-      /// Avoiding `ArgumentOutOfRangeException`, basically, don't fetch if null
-      response.NextCursor = null;
-    }
-    else
-    {
-      /// Id of the last element of the list, same value as `Users[Users.Count - 1].Id`
-      response.NextCursor = Subscriptions[^1].SubscriptionId;
-    }
+    response.NextCursor = Subscriptions.LastOrDefault()?.SubscriptionId;
 
     _logger.LogInformation(
       "({TraceIdentifier}) multiple records ({RecordType}) accessed successfully",
       RequestTracerId,
       typeof(Subscription).Name
     );
+
     return response;
   }
 

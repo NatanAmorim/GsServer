@@ -32,47 +32,35 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
       request.Cursor
     );
 
-    IQueryable<GetNotificationByIdResponse> Query = _dbContext.Notifications.Select(
-      Notification => Notification.ToGetById()
-    );
-
-    List<GetNotificationByIdResponse> Notifications = [];
+    IQueryable<GetNotificationByIdResponse> Query;
 
     if (request.Cursor is null)
     {
-      Notifications = await Query
-        .Take(20)
-        .ToListAsync();
+      Query = _dbContext.Notifications
+        .Select(Notification => Notification.ToGetById());
     }
     else
     {
-      /// If cursor is bigger than the size of the collection you will get the following error
-      /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-      Notifications = await Query
+      Query = _dbContext.Notifications
         .Where(x => x.NotificationId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
-        .Take(20)
-        .ToListAsync();
+        .Select(Notification => Notification.ToGetById());
     }
+
+    List<GetNotificationByIdResponse> Notifications = await Query
+      .Take(20)
+      .ToListAsync();
 
     GetPaginatedNotificationsResponse response = new();
 
     response.Notifications.AddRange(Notifications);
-    if (Notifications.Count < 20)
-    {
-      /// Avoiding `ArgumentOutOfRangeException`, basically, don't fetch if null
-      response.NextCursor = null;
-    }
-    else
-    {
-      /// Id of the last element of the list, same value as `Users[Users.Count - 1].Id`
-      response.NextCursor = Notifications[^1].NotificationId;
-    }
+    response.NextCursor = Notifications.LastOrDefault()?.NotificationId;
 
     _logger.LogInformation(
       "({TraceIdentifier}) multiple records ({RecordType}) accessed successfully",
       RequestTracerId,
       typeof(Notification).Name
     );
+
     return response;
   }
 

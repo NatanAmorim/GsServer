@@ -28,51 +28,46 @@ public class OrderRpcService : OrderService.OrderServiceBase
       typeof(Order).Name,
       request.Cursor
     );
-    IQueryable<GetOrderByIdResponse> Query = _dbContext.Orders.Select(
-      Order => new GetOrderByIdResponse
-      {
-        // TODO
-      }
-    );
 
-    List<GetOrderByIdResponse> Orders = [];
+    IQueryable<GetOrderByIdResponse> Query;
 
     if (request.Cursor is null)
     {
-      Orders = await Query
-        .Take(20)
-        .ToListAsync();
+      Query = _dbContext.Orders
+        .Select(
+          Order => new GetOrderByIdResponse
+          {
+            // TODO
+          }
+        );
     }
     else
     {
-
-      /// If cursor is bigger than the size of the collection you will get the following error
-      /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-      Orders = await Query
-       .Where(x => x.OrderId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
-       .Take(20)
-       .ToListAsync();
+      Query = _dbContext.Orders
+        .Where(x => x.OrderId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
+        .Select(
+          Order => new GetOrderByIdResponse
+          {
+            // TODO
+          }
+        );
     }
+
+    List<GetOrderByIdResponse> Orders = await Query
+      .Take(20)
+      .ToListAsync();
 
     GetPaginatedOrdersResponse response = new();
 
     response.Orders.AddRange(Orders);
-    if (Orders.Count < 20)
-    {
-      /// Avoiding `ArgumentOutOfRangeException`, basically, don't fetch if null
-      response.NextCursor = null;
-    }
-    else
-    {
-      /// Id of the last element of the list, same value as `Users[Users.Count - 1].Id`
-      response.NextCursor = Orders[^1].OrderId;
-    }
+    response.NextCursor = Orders.LastOrDefault()?.OrderId;
 
     _logger.LogInformation(
       "({TraceIdentifier}) multiple records ({RecordType}) accessed successfully",
       RequestTracerId,
       typeof(Order).Name
     );
+
     return response;
   }
 

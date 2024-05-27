@@ -34,48 +34,35 @@ public class DisciplineRpcService : DisciplineService.DisciplineServiceBase
       request.Cursor
     );
 
-    IQueryable<GetDisciplineByIdResponse> Query = _dbContext.Disciplines.Select(
-      Discipline => Discipline.ToGetById()
-    );
-
-    List<GetDisciplineByIdResponse> Disciplines = [];
+    IQueryable<GetDisciplineByIdResponse> Query;
 
     if (request.Cursor is null)
     {
-      Disciplines = await Query
-       .Take(20)
-       .ToListAsync();
+      Query = _dbContext.Disciplines
+        .Select(Discipline => Discipline.ToGetById());
     }
     else
     {
+      Query = _dbContext.Disciplines
+        .Where(x => x.DisciplineId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
+        .Select(Discipline => Discipline.ToGetById());
+    }
 
-      /// If cursor is bigger than the size of the collection you will get the following error
-      /// ArgumentOutOfRangeException "Index was out of range. Must be non-negative and less than the size of the collection"
-      Disciplines = await Query
-       .Where(x => x.DisciplineId.CompareTo(Ulid.Parse(request.Cursor)) > 0)
+    List<GetDisciplineByIdResponse> Disciplines = await Query
        .Take(20)
        .ToListAsync();
-    }
 
     GetPaginatedDisciplinesResponse response = new();
 
     response.Disciplines.AddRange(Disciplines);
-    if (Disciplines.Count < 20)
-    {
-      /// Avoiding `ArgumentOutOfRangeException`, basically, don't fetch if null
-      response.NextCursor = null;
-    }
-    else
-    {
-      /// Id of the last element of the list, same value as `Users[Users.Count - 1].Id`
-      response.NextCursor = Disciplines[^1].DisciplineId;
-    }
+    response.NextCursor = Disciplines.LastOrDefault()?.DisciplineId;
 
     _logger.LogInformation(
       "({TraceIdentifier}) multiple records ({RecordType}) accessed successfully",
       RequestTracerId,
       typeof(Discipline).Name
     );
+
     return response;
   }
 
