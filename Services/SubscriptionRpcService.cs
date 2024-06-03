@@ -100,7 +100,7 @@ public class SubscriptionRpcService : SubscriptionService.SubscriptionServiceBas
     return Subscription.ToGetById();
   }
 
-  public override async Task<Protobufs.Void> PostAsync(CreateSubscriptionRequest request, ServerCallContext context)
+  public override async Task<VoidValue> PostAsync(CreateSubscriptionRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -124,10 +124,10 @@ public class SubscriptionRpcService : SubscriptionService.SubscriptionServiceBas
       Subscription.SubscriptionId
     );
 
-    return new Protobufs.Void();
+    return new VoidValue();
   }
 
-  public override Task<Protobufs.Void> PutAsync(UpdateSubscriptionRequest request, ServerCallContext context)
+  public override Task<VoidValue> PutAsync(UpdateSubscriptionRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -165,7 +165,7 @@ public class SubscriptionRpcService : SubscriptionService.SubscriptionServiceBas
     // return new UpdateSubscriptionResponse();
   }
 
-  public override async Task<Protobufs.Void> DeleteAsync(DeleteSubscriptionRequest request, ServerCallContext context)
+  public override async Task<VoidValue> DeleteAsync(DeleteSubscriptionRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -203,6 +203,6 @@ public class SubscriptionRpcService : SubscriptionService.SubscriptionServiceBas
           typeof(Subscription).Name
         );
 
-    return new Protobufs.Void();
+    return new VoidValue();
   }
 }

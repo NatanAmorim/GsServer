@@ -91,7 +91,7 @@ public class UserRpcService : UserService.UserServiceBase
     return User.ToGetById();
   }
 
-  public override async Task<Protobufs.Void> PutAsync(UpdateUserRequest request, ServerCallContext context)
+  public override async Task<VoidValue> PutAsync(UpdateUserRequest request, ServerCallContext context)
   {
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
@@ -122,10 +122,10 @@ public class UserRpcService : UserService.UserServiceBase
       UserId
     );
 
-    return new Protobufs.Void();
+    return new VoidValue();
   }
 
-  public override async Task<Protobufs.Void> DeleteAsync(DeleteUserRequest request, ServerCallContext context)
+  public override async Task<VoidValue> DeleteAsync(DeleteUserRequest request, ServerCallContext context)
   {
     _logger.LogInformation("Deleting User with ID {Id}", request.UserId);
     User? User = await _dbContext.Users.FindAsync(request.UserId);
@@ -149,6 +149,6 @@ public class UserRpcService : UserService.UserServiceBase
           request.UserId
         );
 
-    return new Protobufs.Void();
+    return new VoidValue();
   }
 }

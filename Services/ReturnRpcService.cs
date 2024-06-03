@@ -104,7 +104,7 @@ public class ReturnRpcService : ReturnService.ReturnServiceBase
     return Return.ToGetById();
   }
 
-  public override async Task<Protobufs.Void> PostAsync(CreateReturnRequest request, ServerCallContext context)
+  public override async Task<VoidValue> PostAsync(CreateReturnRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -128,10 +128,10 @@ public class ReturnRpcService : ReturnService.ReturnServiceBase
       Return.ReturnId
     );
 
-    return new Protobufs.Void();
+    return new VoidValue();
   }
 
-  public override Task<Protobufs.Void> PutAsync(UpdateReturnRequest request, ServerCallContext context)
+  public override Task<VoidValue> PutAsync(UpdateReturnRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -168,7 +168,7 @@ public class ReturnRpcService : ReturnService.ReturnServiceBase
     // return new UpdateReturnResponse();
   }
 
-  public override async Task<Protobufs.Void> DeleteAsync(DeleteReturnRequest request, ServerCallContext context)
+  public override async Task<VoidValue> DeleteAsync(DeleteReturnRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -206,6 +206,6 @@ public class ReturnRpcService : ReturnService.ReturnServiceBase
           typeof(Return).Name
         );
 
-    return new Protobufs.Void();
+    return new VoidValue();
   }
 }

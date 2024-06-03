@@ -100,7 +100,7 @@ public class SaleRpcService : SaleService.SaleServiceBase
     return Sale.ToGetById();
   }
 
-  public override async Task<Protobufs.Void> PostAsync(CreateSaleRequest request, ServerCallContext context)
+  public override async Task<VoidValue> PostAsync(CreateSaleRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -124,10 +124,10 @@ public class SaleRpcService : SaleService.SaleServiceBase
       Sale.SaleId
     );
 
-    return new Protobufs.Void();
+    return new VoidValue();
   }
 
-  public override Task<Protobufs.Void> PutAsync(UpdateSaleRequest request, ServerCallContext context)
+  public override Task<VoidValue> PutAsync(UpdateSaleRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -165,7 +165,7 @@ public class SaleRpcService : SaleService.SaleServiceBase
     // return new UpdateSaleResponse();
   }
 
-  public override async Task<Protobufs.Void> DeleteAsync(DeleteSaleRequest request, ServerCallContext context)
+  public override async Task<VoidValue> DeleteAsync(DeleteSaleRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -203,6 +203,6 @@ public class SaleRpcService : SaleService.SaleServiceBase
           typeof(Sale).Name
         );
 
-    return new Protobufs.Void();
+    return new VoidValue();
   }
 }

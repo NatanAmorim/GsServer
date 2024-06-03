@@ -95,7 +95,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
     };
   }
 
-  public override Task<Protobufs.Void> LogoutAsync(Protobufs.Void request, ServerCallContext context)
+  public override Task<VoidValue> LogoutAsync(VoidValue request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     _logger.LogInformation(
@@ -107,7 +107,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
   }
 
   [AllowAnonymous]
-  public override async Task<Protobufs.Void> RegisterAsync(RegisterRequest request, ServerCallContext context)
+  public override async Task<VoidValue> RegisterAsync(RegisterRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     _logger.LogInformation(
@@ -155,7 +155,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
       User.UserId
     );
 
-    return new Protobufs.Void();
+    return new VoidValue();
   }
 
   public override async Task<RefreshTokenResponse> RefreshTokenAsync(RefreshTokenRequest request, ServerCallContext context)
@@ -212,12 +212,12 @@ public class AuthRpcService : AuthService.AuthServiceBase
     };
   }
 
-  public override Task<Protobufs.Void> NewPasswordAsync(NewPasswordRequest request, ServerCallContext context)
+  public override Task<VoidValue> NewPasswordAsync(NewPasswordRequest request, ServerCallContext context)
   {
     throw new NotImplementedException();
   }
 
-  public override async Task<Protobufs.Void> ChangePasswordAsync(ChangePasswordRequest request, ServerCallContext context)
+  public override async Task<VoidValue> ChangePasswordAsync(ChangePasswordRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -271,7 +271,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
     // Save the changes to the database
     await _dbContext.SaveChangesAsync();
 
-    return new Protobufs.Void();
+    return new VoidValue();
   }
 
   private static void CreatePasswordHash(

@@ -104,7 +104,7 @@ public class DisciplineRpcService : DisciplineService.DisciplineServiceBase
     return Discipline.ToGetById();
   }
 
-  public override async Task<Protobufs.Void> PostAsync(CreateDisciplineRequest request, ServerCallContext context)
+  public override async Task<VoidValue> PostAsync(CreateDisciplineRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -128,10 +128,10 @@ public class DisciplineRpcService : DisciplineService.DisciplineServiceBase
       Discipline.DisciplineId
     );
 
-    return new Protobufs.Void();
+    return new VoidValue();
   }
 
-  public override Task<Protobufs.Void> PutAsync(UpdateDisciplineRequest request, ServerCallContext context)
+  public override Task<VoidValue> PutAsync(UpdateDisciplineRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -170,7 +170,7 @@ public class DisciplineRpcService : DisciplineService.DisciplineServiceBase
     // return new UpdateDisciplineResponse();
   }
 
-  public override async Task<Protobufs.Void> DeleteAsync(DeleteDisciplineRequest request, ServerCallContext context)
+  public override async Task<VoidValue> DeleteAsync(DeleteDisciplineRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     int UserId = int.Parse(
@@ -210,6 +210,6 @@ public class DisciplineRpcService : DisciplineService.DisciplineServiceBase
       typeof(Discipline).Name
     );
 
-    return new Protobufs.Void();
+    return new VoidValue();
   }
 }

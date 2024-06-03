@@ -14,9 +14,15 @@ Todas as alterações notáveis ​​neste projeto serão documentadas neste ar
 O formato é baseado em [Keep a Changelog (PT-BR)](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere a [Versionamento Semântico (PT-BR)](https://semver.org/lang/pt-BR/).
 
+## 1.0.1-RC-7 (Jun 03, 2024)
+
+- Rename "Void" data type to "VoidValue"
+- Update protobufs from `a5d081123` to `2f4e2cdbd`.
+
 ## 1.0.0-RC-7 (Jun 03, 2024)
 
-- Update protobufs from `d5bc3684d` to `a5d081123`, with breaking changes.
+- Protobuf now has changed some messages to use a generic Void value.
+- Update protobufs from `d5bc3684d` to `a5d081123`.
 
 ## 1.0.3-RC-6 (May 27, 2024)
 
