@@ -95,19 +95,19 @@ public class AuthRpcService : AuthService.AuthServiceBase
     };
   }
 
-  public override Task<LogoutResponse> LogoutAsync(LogoutRequest request, ServerCallContext context)
+  public override Task<Protobufs.Void> LogoutAsync(Protobufs.Void request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     _logger.LogInformation(
-      "({TraceIdentifier}) User to requested a new User. RefreshToken {RefreshToken}",
-      RequestTracerId,
-      request.RefreshToken
+      "({TraceIdentifier}) User Logout attempt",
+      RequestTracerId
     );
+
     throw new NotImplementedException();
   }
 
   [AllowAnonymous]
-  public override async Task<RegisterResponse> RegisterAsync(RegisterRequest request, ServerCallContext context)
+  public override async Task<Protobufs.Void> RegisterAsync(RegisterRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     _logger.LogInformation(
@@ -155,7 +155,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
       User.UserId
     );
 
-    return new RegisterResponse();
+    return new Protobufs.Void();
   }
 
   public override async Task<RefreshTokenResponse> RefreshTokenAsync(RefreshTokenRequest request, ServerCallContext context)
@@ -212,12 +212,12 @@ public class AuthRpcService : AuthService.AuthServiceBase
     };
   }
 
-  public override Task<NewPasswordResponse> NewPasswordAsync(NewPasswordRequest request, ServerCallContext context)
+  public override Task<Protobufs.Void> NewPasswordAsync(NewPasswordRequest request, ServerCallContext context)
   {
     throw new NotImplementedException();
   }
 
-  public override async Task<ChangePasswordResponse> ChangePasswordAsync(ChangePasswordRequest request, ServerCallContext context)
+  public override async Task<Protobufs.Void> ChangePasswordAsync(ChangePasswordRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -271,7 +271,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
     // Save the changes to the database
     await _dbContext.SaveChangesAsync();
 
-    return new ChangePasswordResponse();
+    return new Protobufs.Void();
   }
 
   private static void CreatePasswordHash(

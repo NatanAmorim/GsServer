@@ -100,7 +100,7 @@ public class PromotionRpcService : PromotionService.PromotionServiceBase
     return Promotion.ToGetById();
   }
 
-  public override async Task<CreatePromotionResponse> PostAsync(CreatePromotionRequest request, ServerCallContext context)
+  public override async Task<Protobufs.Void> PostAsync(CreatePromotionRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -124,10 +124,10 @@ public class PromotionRpcService : PromotionService.PromotionServiceBase
       Promotion.PromotionId
     );
 
-    return new CreatePromotionResponse();
+    return new Protobufs.Void();
   }
 
-  public override Task<UpdatePromotionResponse> PutAsync(UpdatePromotionRequest request, ServerCallContext context)
+  public override Task<Protobufs.Void> PutAsync(UpdatePromotionRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -164,7 +164,7 @@ public class PromotionRpcService : PromotionService.PromotionServiceBase
     // return new UpdatePromotionResponse();
   }
 
-  public override async Task<DeletePromotionResponse> DeleteAsync(DeletePromotionRequest request, ServerCallContext context)
+  public override async Task<Protobufs.Void> DeleteAsync(DeletePromotionRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -202,6 +202,6 @@ public class PromotionRpcService : PromotionService.PromotionServiceBase
           typeof(Promotion).Name
         );
 
-    return new DeletePromotionResponse();
+    return new Protobufs.Void();
   }
 }

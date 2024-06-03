@@ -100,7 +100,7 @@ public class SubscriptionBillingRpcService : SubscriptionBillingService.Subscrip
     return SubscriptionBilling.ToGetById();
   }
 
-  public override async Task<CreateSubscriptionBillingResponse> PostAsync(CreateSubscriptionBillingRequest request, ServerCallContext context)
+  public override async Task<Protobufs.Void> PostAsync(CreateSubscriptionBillingRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -124,10 +124,10 @@ public class SubscriptionBillingRpcService : SubscriptionBillingService.Subscrip
       SubscriptionBilling.SubscriptionBillingId
     );
 
-    return new CreateSubscriptionBillingResponse();
+    return new Protobufs.Void();
   }
 
-  public override Task<UpdateSubscriptionBillingResponse> PutAsync(UpdateSubscriptionBillingRequest request, ServerCallContext context)
+  public override Task<Protobufs.Void> PutAsync(UpdateSubscriptionBillingRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -165,7 +165,7 @@ public class SubscriptionBillingRpcService : SubscriptionBillingService.Subscrip
     // return new UpdateSubscriptionBillingResponse();
   }
 
-  public override async Task<DeleteSubscriptionBillingResponse> DeleteAsync(DeleteSubscriptionBillingRequest request, ServerCallContext context)
+  public override async Task<Protobufs.Void> DeleteAsync(DeleteSubscriptionBillingRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -203,6 +203,6 @@ public class SubscriptionBillingRpcService : SubscriptionBillingService.Subscrip
           typeof(SubscriptionBilling).Name
         );
 
-    return new DeleteSubscriptionBillingResponse();
+    return new Protobufs.Void();
   }
 }

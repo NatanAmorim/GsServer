@@ -20,7 +20,7 @@ public class ProductRpcService : ProductService.ProductServiceBase
     _dbContext = dbContext;
   }
 
-  public override async Task<GetAllProductsResponse> GetAllAsync(GetAllProductsRequest request, ServerCallContext context)
+  public override async Task<GetAllProductsResponse> GetAllAsync(Protobufs.Void request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -86,7 +86,7 @@ public class ProductRpcService : ProductService.ProductServiceBase
     return Product.ToGetById();
   }
 
-  public override async Task<CreateProductResponse> PostAsync(CreateProductRequest request, ServerCallContext context)
+  public override async Task<Protobufs.Void> PostAsync(CreateProductRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -113,10 +113,10 @@ public class ProductRpcService : ProductService.ProductServiceBase
       Product.ProductId
     );
 
-    return new CreateProductResponse();
+    return new Protobufs.Void();
   }
 
-  public override Task<UpdateProductResponse> PutAsync(UpdateProductRequest request, ServerCallContext context)
+  public override Task<Protobufs.Void> PutAsync(UpdateProductRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -154,7 +154,7 @@ public class ProductRpcService : ProductService.ProductServiceBase
 
   }
 
-  public override async Task<DeleteProductResponse> DeleteAsync(DeleteProductRequest request, ServerCallContext context)
+  public override async Task<Protobufs.Void> DeleteAsync(DeleteProductRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -192,28 +192,28 @@ public class ProductRpcService : ProductService.ProductServiceBase
           typeof(Product).Name
         );
 
-    return new DeleteProductResponse();
+    return new Protobufs.Void();
   }
 
-  public override Task<GetAllProductBrandsResponse> GetAllBrandsAsync(GetAllProductBrandsRequest request, ServerCallContext context)
+  public override Task<GetAllProductBrandsResponse> GetAllBrandsAsync(Protobufs.Void request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     throw new NotImplementedException();
   }
 
-  public override Task<CreateProductBrandResponse> PostBrandAsync(CreateProductBrandRequest request, ServerCallContext context)
+  public override Task<Protobufs.Void> PostBrandAsync(CreateProductBrandRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     throw new NotImplementedException();
   }
 
-  public override Task<GetAllProductCategoriesResponse> GetAllCategoriesAsync(GetAllProductCategoriesRequest request, ServerCallContext context)
+  public override Task<GetAllProductCategoriesResponse> GetAllCategoriesAsync(Protobufs.Void request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     throw new NotImplementedException();
   }
 
-  public override Task<CreateProductCategoryResponse> PostCategoryAsync(CreateProductCategoryRequest request, ServerCallContext context)
+  public override Task<Protobufs.Void> PostCategoryAsync(CreateProductCategoryRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     throw new NotImplementedException();

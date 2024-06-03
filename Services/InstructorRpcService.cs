@@ -100,7 +100,7 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
     return Instructor.ToGetById();
   }
 
-  public override async Task<CreateInstructorResponse> PostAsync(CreateInstructorRequest request, ServerCallContext context)
+  public override async Task<Protobufs.Void> PostAsync(CreateInstructorRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -124,10 +124,10 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
       Instructor.InstructorId
     );
 
-    return new CreateInstructorResponse();
+    return new Protobufs.Void();
   }
 
-  public override Task<UpdateInstructorResponse> PutAsync(UpdateInstructorRequest request, ServerCallContext context)
+  public override Task<Protobufs.Void> PutAsync(UpdateInstructorRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -164,7 +164,7 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
     // return new UpdateInstructorResponse();
   }
 
-  public override async Task<DeleteInstructorResponse> DeleteAsync(DeleteInstructorRequest request, ServerCallContext context)
+  public override async Task<Protobufs.Void> DeleteAsync(DeleteInstructorRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -202,6 +202,6 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
           typeof(Instructor).Name
         );
 
-    return new DeleteInstructorResponse();
+    return new Protobufs.Void();
   }
 }

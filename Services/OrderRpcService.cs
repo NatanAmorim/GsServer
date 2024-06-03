@@ -111,7 +111,7 @@ public class OrderRpcService : OrderService.OrderServiceBase
   }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-  public override async Task<CreateOrderResponse> PostAsync(CreateOrderRequest request, ServerCallContext context)
+  public override async Task<Protobufs.Void> PostAsync(CreateOrderRequest request, ServerCallContext context)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
@@ -137,10 +137,10 @@ public class OrderRpcService : OrderService.OrderServiceBase
     //   Order.OrderId
     // );
 
-    return new CreateOrderResponse();
+    return new Protobufs.Void();
   }
 
-  public override Task<UpdateOrderResponse> PutAsync(UpdateOrderRequest request, ServerCallContext context)
+  public override Task<Protobufs.Void> PutAsync(UpdateOrderRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -177,7 +177,7 @@ public class OrderRpcService : OrderService.OrderServiceBase
     // return new UpdateOrderResponse();
   }
 
-  public override async Task<DeleteOrderResponse> DeleteAsync(DeleteOrderRequest request, ServerCallContext context)
+  public override async Task<Protobufs.Void> DeleteAsync(DeleteOrderRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -215,6 +215,6 @@ public class OrderRpcService : OrderService.OrderServiceBase
           typeof(Order).Name
         );
 
-    return new DeleteOrderResponse();
+    return new Protobufs.Void();
   }
 }

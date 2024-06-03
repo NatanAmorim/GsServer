@@ -100,7 +100,7 @@ public class PaymentRpcService : PaymentService.PaymentServiceBase
     return Payment.ToGetById();
   }
 
-  public override async Task<CreatePaymentResponse> PostAsync(CreatePaymentRequest request, ServerCallContext context)
+  public override async Task<Protobufs.Void> PostAsync(CreatePaymentRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -124,10 +124,10 @@ public class PaymentRpcService : PaymentService.PaymentServiceBase
       Payment.PaymentId
     );
 
-    return new CreatePaymentResponse();
+    return new Protobufs.Void();
   }
 
-  public override Task<UpdatePaymentResponse> PutAsync(UpdatePaymentRequest request, ServerCallContext context)
+  public override Task<Protobufs.Void> PutAsync(UpdatePaymentRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -164,7 +164,7 @@ public class PaymentRpcService : PaymentService.PaymentServiceBase
     // return new UpdatePaymentResponse();
   }
 
-  public override async Task<DeletePaymentResponse> DeleteAsync(DeletePaymentRequest request, ServerCallContext context)
+  public override async Task<Protobufs.Void> DeleteAsync(DeletePaymentRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -202,6 +202,6 @@ public class PaymentRpcService : PaymentService.PaymentServiceBase
           typeof(Payment).Name
         );
 
-    return new DeletePaymentResponse();
+    return new Protobufs.Void();
   }
 }

@@ -100,7 +100,7 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
     return Notification.ToGetById();
   }
 
-  public override async Task<CreateNotificationResponse> PostAsync(CreateNotificationRequest request, ServerCallContext context)
+  public override async Task<Protobufs.Void> PostAsync(CreateNotificationRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -124,10 +124,10 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
       Notification.NotificationId
     );
 
-    return new CreateNotificationResponse();
+    return new Protobufs.Void();
   }
 
-  public override Task<UpdateNotificationResponse> PutAsync(UpdateNotificationRequest request, ServerCallContext context)
+  public override Task<Protobufs.Void> PutAsync(UpdateNotificationRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -164,7 +164,7 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
     // return new UpdateNotificationResponse();
   }
 
-  public override async Task<DeleteNotificationResponse> DeleteAsync(DeleteNotificationRequest request, ServerCallContext context)
+  public override async Task<Protobufs.Void> DeleteAsync(DeleteNotificationRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -202,6 +202,6 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
           typeof(Notification).Name
         );
 
-    return new DeleteNotificationResponse();
+    return new Protobufs.Void();
   }
 }

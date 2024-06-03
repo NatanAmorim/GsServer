@@ -100,7 +100,7 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
     return Attendance.ToGetById();
   }
 
-  public override async Task<CreateAttendanceResponse> PostAsync(CreateAttendanceRequest request, ServerCallContext context)
+  public override async Task<Protobufs.Void> PostAsync(CreateAttendanceRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -124,10 +124,10 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
       Attendance.AttendanceId
     );
 
-    return new CreateAttendanceResponse();
+    return new Protobufs.Void();
   }
 
-  public override Task<UpdateAttendanceResponse> PutAsync(UpdateAttendanceRequest request, ServerCallContext context)
+  public override Task<Protobufs.Void> PutAsync(UpdateAttendanceRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -164,7 +164,7 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
     // return new UpdateAttendanceResponse();
   }
 
-  public override async Task<DeleteAttendanceResponse> DeleteAsync(DeleteAttendanceRequest request, ServerCallContext context)
+  public override async Task<Protobufs.Void> DeleteAsync(DeleteAttendanceRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -202,6 +202,6 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
       typeof(Attendance).Name
     );
 
-    return new DeleteAttendanceResponse();
+    return new Protobufs.Void();
   }
 }
