@@ -14,7 +14,7 @@ public class Customer
   [Required(ErrorMessage = "A Pessoa é obrigatória")]
   public required Person Person { get; set; }
   [Required(ErrorMessage = "Os dependentes são obrigatórios")]
-  public required ICollection<Person> Dependents { get; set; }
+  public required ICollection<Dependent> Dependents { get; set; }
   [MinLength(4, ErrorMessage = "O Endereço deve ter no mínimo 4 caracteres")]
   [MaxLength(64, ErrorMessage = "O Endereço deve ter no máximo 64 caracteres")]
   [Required(ErrorMessage = "Campo de preenchimento obrigatório", AllowEmptyStrings = false)]
@@ -32,12 +32,10 @@ public class Customer
       Person = Person.FromProtoRequest(request.Person, createdBy),
       Dependents =
         request.Dependents.Select(
-          Dependent => new Models.Person
+          Dependent => new Models.Dependent
           {
             FullName = Dependent.Name,
             BirthDate = Dependent.BirthDate,
-            MobilePhoneNumber = Dependent.MobilePhoneNumber,
-            Cpf = Dependent.Cpf,
             CreatedBy = createdBy,
           }
         ).ToList(),
@@ -53,13 +51,11 @@ public class Customer
       Person = Person.ToPersonById(),
       Dependents = {
         Dependents.Select(
-          Dependent => new Protobufs.Person
+          Dependent => new Protobufs.Dependent
           {
-            PersonId = Dependent.PersonId.ToString(),
+            DependentId = Dependent.DependentId.ToString(),
             Name = Dependent.FullName,
-            MobilePhoneNumber = Dependent.MobilePhoneNumber,
             BirthDate = Dependent.BirthDate,
-            Cpf = Dependent.Cpf,
           }
         ).ToList(),
       },

@@ -80,6 +80,7 @@ app.MapGrpcService<AuthRpcService>();
 app.MapGrpcService<AwsS3Service>();
 app.MapGrpcService<CustomerRpcService>();
 app.MapGrpcService<DisciplineRpcService>();
+app.MapGrpcService<FakerRpcService>();
 app.MapGrpcService<InstructorRpcService>();
 app.MapGrpcService<NotificationRpcService>();
 app.MapGrpcService<OrderRpcService>();
@@ -87,10 +88,10 @@ app.MapGrpcService<PaymentRpcService>();
 app.MapGrpcService<ProductRpcService>();
 app.MapGrpcService<PromotionRpcService>();
 app.MapGrpcService<ReturnRpcService>();
-app.MapGrpcService<SaleBillingRpcService>();
 app.MapGrpcService<SaleRpcService>();
-app.MapGrpcService<SubscriptionBillingRpcService>();
+app.MapGrpcService<SaleBillingRpcService>();
 app.MapGrpcService<SubscriptionRpcService>();
+app.MapGrpcService<SubscriptionBillingRpcService>();
 app.MapGrpcService<UserRpcService>();
 
 if (app.Environment.IsDevelopment())

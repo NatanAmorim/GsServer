@@ -14,6 +14,14 @@ Todas as alterações notáveis ​​neste projeto serão documentadas neste ar
 O formato é baseado em [Keep a Changelog (PT-BR)](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere a [Versionamento Semântico (PT-BR)](https://semver.org/lang/pt-BR/).
 
+## 1.0.2-RC-7 (Jun 06, 2024)
+
+- Implement FakerService to generate data.
+- Add `Bogus` package to generate fake data for tests.
+- Dependents is now it's own type.
+- Update protobufs from `2f4e2cdbd` to `9ae6e9999`.
+- Person now has index on "MobilePhoneNumber" and "Cpf"
+
 ## 1.0.1-RC-7 (Jun 03, 2024)
 
 - Rename "Void" data type to "VoidValue"

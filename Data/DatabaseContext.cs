@@ -31,6 +31,7 @@ public class DatabaseContext(
 
   public DbSet<Attendance> Attendances => Set<Attendance>();
   public DbSet<Customer> Customers => Set<Customer>();
+  public DbSet<Dependent> Dependents => Set<Dependent>();
   public DbSet<Discipline> Disciplines => Set<Discipline>();
   public DbSet<Instructor> Instructors => Set<Instructor>();
   public DbSet<Notification> Notifications => Set<Notification>();

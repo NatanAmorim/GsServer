@@ -3,6 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GsServer.Models;
 
+[Index(nameof(MobilePhoneNumber), IsUnique = true)]
+[Index(nameof(Cpf), IsUnique = true)]
 public class Person
 {
   [Key]
