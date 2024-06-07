@@ -14,6 +14,11 @@ Todas as alterações notáveis ​​neste projeto serão documentadas neste ar
 O formato é baseado em [Keep a Changelog (PT-BR)](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere a [Versionamento Semântico (PT-BR)](https://semver.org/lang/pt-BR/).
 
+## 1.0.3-RC-7 (Jun 07, 2024)
+
+- Fix cursor condition on GetPaginated requests.
+- Increase Customer "BillingAddress" length to 120.
+
 ## 1.0.2-RC-7 (Jun 06, 2024)
 
 - Implement FakerService to generate data.

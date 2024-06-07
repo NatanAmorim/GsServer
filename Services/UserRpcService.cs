@@ -34,7 +34,7 @@ public class UserRpcService : UserService.UserServiceBase
 
     IQueryable<GetUserByIdResponse> Query;
 
-    if (request.Cursor is null)
+    if (request.Cursor is null || request.Cursor == string.Empty)
     {
       Query = _dbContext.Users
         .Select(User => User.ToGetById());

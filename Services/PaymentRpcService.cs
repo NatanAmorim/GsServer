@@ -34,7 +34,7 @@ public class PaymentRpcService : PaymentService.PaymentServiceBase
 
     IQueryable<GetPaymentByIdResponse> Query;
 
-    if (request.Cursor is null)
+    if (request.Cursor is null || request.Cursor == string.Empty)
     {
       Query = _dbContext.Payments
         .Select(Payment => Payment.ToGetById());

@@ -34,7 +34,7 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
 
     IQueryable<GetInstructorByIdResponse> Query;
 
-    if (request.Cursor is null)
+    if (request.Cursor is null || request.Cursor == string.Empty)
     {
       Query = _dbContext.Instructors
         .Select(Instructor => Instructor.ToGetById());

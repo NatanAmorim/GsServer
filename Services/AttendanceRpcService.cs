@@ -34,7 +34,7 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
 
     IQueryable<GetAttendanceByIdResponse> Query;
 
-    if (request.Cursor is null)
+    if (request.Cursor is null || request.Cursor == string.Empty)
     {
       Query = _dbContext.Attendances
         .Select(Attendance => Attendance.ToGetById());

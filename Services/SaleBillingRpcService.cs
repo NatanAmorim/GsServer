@@ -34,7 +34,7 @@ public class SaleBillingRpcService : SaleBillingService.SaleBillingServiceBase
 
     IQueryable<GetSaleBillingByIdResponse> Query;
 
-    if (request.Cursor is null)
+    if (request.Cursor is null || request.Cursor == string.Empty)
     {
       Query = _dbContext.SaleBillings
         .Select(SaleBilling => SaleBilling.ToGetById());

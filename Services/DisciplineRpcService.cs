@@ -36,7 +36,7 @@ public class DisciplineRpcService : DisciplineService.DisciplineServiceBase
 
     IQueryable<GetDisciplineByIdResponse> Query;
 
-    if (request.Cursor is null)
+    if (request.Cursor is null || request.Cursor == string.Empty)
     {
       Query = _dbContext.Disciplines
         .Select(Discipline => Discipline.ToGetById());

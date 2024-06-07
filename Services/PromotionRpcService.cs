@@ -34,7 +34,7 @@ public class PromotionRpcService : PromotionService.PromotionServiceBase
 
     IQueryable<GetPromotionByIdResponse> Query;
 
-    if (request.Cursor is null)
+    if (request.Cursor is null || request.Cursor == string.Empty)
     {
       Query = _dbContext.Promotions
         .Select(Promotion => Promotion.ToGetById());

@@ -16,7 +16,7 @@ public class Customer
   [Required(ErrorMessage = "Os dependentes são obrigatórios")]
   public required ICollection<Dependent> Dependents { get; set; }
   [MinLength(4, ErrorMessage = "O Endereço deve ter no mínimo 4 caracteres")]
-  [MaxLength(64, ErrorMessage = "O Endereço deve ter no máximo 64 caracteres")]
+  [MaxLength(120, ErrorMessage = "O Endereço deve ter no máximo 120 caracteres")]
   [Required(ErrorMessage = "Campo de preenchimento obrigatório", AllowEmptyStrings = false)]
   public required string BillingAddress { get; set; }
   [MaxLength(240, ErrorMessage = "As Informações adicionais devem ter no máximo 240 caracteres")]

@@ -31,7 +31,7 @@ public class OrderRpcService : OrderService.OrderServiceBase
 
     IQueryable<GetOrderByIdResponse> Query;
 
-    if (request.Cursor is null)
+    if (request.Cursor is null || request.Cursor == string.Empty)
     {
       Query = _dbContext.Orders
         .Select(

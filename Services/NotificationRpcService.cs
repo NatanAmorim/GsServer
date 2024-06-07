@@ -34,7 +34,7 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
 
     IQueryable<GetNotificationByIdResponse> Query;
 
-    if (request.Cursor is null)
+    if (request.Cursor is null || request.Cursor == string.Empty)
     {
       Query = _dbContext.Notifications
         .Select(Notification => Notification.ToGetById());

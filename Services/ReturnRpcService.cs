@@ -34,7 +34,7 @@ public class ReturnRpcService : ReturnService.ReturnServiceBase
 
     IQueryable<GetReturnByIdResponse> Query;
 
-    if (request.Cursor is null)
+    if (request.Cursor is null || request.Cursor == string.Empty)
     {
       Query = _dbContext.Returns
         .Select(

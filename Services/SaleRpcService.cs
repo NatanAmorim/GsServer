@@ -34,7 +34,7 @@ public class SaleRpcService : SaleService.SaleServiceBase
 
     IQueryable<GetSaleByIdResponse> Query;
 
-    if (request.Cursor is null)
+    if (request.Cursor is null || request.Cursor == string.Empty)
     {
       Query = _dbContext.Sales
         .Select(Sale => Sale.ToGetById());

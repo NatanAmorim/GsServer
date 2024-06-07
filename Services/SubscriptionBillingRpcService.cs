@@ -34,7 +34,7 @@ public class SubscriptionBillingRpcService : SubscriptionBillingService.Subscrip
 
     IQueryable<GetSubscriptionBillingByIdResponse> Query;
 
-    if (request.Cursor is null)
+    if (request.Cursor is null || request.Cursor == string.Empty)
     {
       Query = _dbContext.SubscriptionBillings
         .Select(SubscriptionBilling => SubscriptionBilling.ToGetById());

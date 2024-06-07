@@ -34,7 +34,7 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
 
     IQueryable<GetCustomerByIdResponse> Query;
 
-    if (request.Cursor is null)
+    if (request.Cursor is null || request.Cursor == string.Empty)
     {
       Query = _dbContext.Customers
         .Include(c => c.Person)
