@@ -25,7 +25,7 @@ There are three main types of installment payments:
 public class PaymentInstallment
 {
   [Key]
-  public Ulid PaymentInstallmentId { get; init; } = Ulid.NewUlid();
+  public required Ulid PaymentInstallmentId { get; init; }
   [Range(1, 18, ErrorMessage = "O número da parcela não pode ser mais do que 18")]
   public int InstallmentNumber { get; set; } // Sequential number, (e.g, "${installment.InstallmentNumber} of {payment.Installments.Count}" = “2 of 6”)
   [Column(TypeName = "decimal(8, 4)")]

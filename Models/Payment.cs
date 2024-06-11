@@ -6,7 +6,7 @@ namespace GsServer.Models;
 public class Payment
 {
   [Key]
-  public Ulid PaymentId { get; init; } = Ulid.NewUlid();
+  public required Ulid PaymentId { get; init; }
   /// <summary>
   /// Comments is for things like installment price changed because of returned item.
   /// </summary>
@@ -30,6 +30,7 @@ public class Payment
   public static Payment FromProtoRequest(CreatePaymentRequest request, Ulid createdBy)
     => new()
     {
+      PaymentId = Ulid.NewUlid(),
       Observations = request.Observations,
       Installments = request.Installments.Select(
         Installment => new PaymentInstallment

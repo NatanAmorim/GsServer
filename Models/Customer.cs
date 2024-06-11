@@ -7,7 +7,7 @@ namespace GsServer.Models;
 public class Customer
 {
   [Key]
-  public Ulid CustomerId { get; init; } = Ulid.NewUlid();
+  public required Ulid CustomerId { get; init; }
   [ForeignKey(nameof(UserId))]
   public Ulid? UserId { get; set; }
   public virtual User User { get; set; } = null!;
@@ -29,11 +29,13 @@ public class Customer
   public static Customer FromProtoRequest(CreateCustomerRequest request, Ulid createdBy)
     => new()
     {
+      CustomerId = Ulid.NewUlid(),
       Person = Person.FromProtoRequest(request.Person, createdBy),
       Dependents =
         request.Dependents.Select(
           Dependent => new Models.Dependent
           {
+            DependentId = Ulid.NewUlid(),
             FullName = Dependent.Name,
             BirthDate = Dependent.BirthDate,
             CreatedBy = createdBy,

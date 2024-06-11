@@ -7,7 +7,7 @@ namespace GsServer.Models;
 public class User
 {
   [Key]
-  public Ulid UserId { get; init; } = Ulid.NewUlid();
+  public required Ulid UserId { get; init; }
   [Required(AllowEmptyStrings = false)]
   public string Role { get; set; } = "customer";
   // [EmailAddress(ErrorMessage = "Por favor insira um endereço de e-mail válido")] // TODO add back validation after tests
@@ -28,6 +28,7 @@ public class User
   public static User FromProtoRequest(RegisterRequest request, byte[] passwordHash, byte[] PasswordSalt, Ulid createdBy)
     => new()
     {
+      UserId = Ulid.NewUlid(),
       Email = request.Email,
       PasswordHash = passwordHash,
       PasswordSalt = PasswordSalt,

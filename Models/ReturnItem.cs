@@ -6,7 +6,7 @@ namespace GsServer.Models;
 public class ReturnItem
 {
   [Key]
-  public Ulid ReturnItemId { get; init; } = Ulid.NewUlid();
+  public required Ulid ReturnItemId { get; init; }
   [ForeignKey(nameof(ProductVariantId))]
   public required Ulid ProductVariantId { get; set; }
   public virtual ProductVariant ProductVariant { get; set; } = null!;

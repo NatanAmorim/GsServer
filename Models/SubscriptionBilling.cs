@@ -12,7 +12,7 @@ namespace GsServer.Models;
 public class SubscriptionBilling
 {
   [Key]
-  public Ulid SubscriptionBillingId { get; init; } = Ulid.NewUlid();
+  public required Ulid SubscriptionBillingId { get; init; }
   [ForeignKey(nameof(SubscriptionId))]
   public required Ulid SubscriptionId { get; init; }
   public virtual Subscription Subscription { get; set; } = null!;
@@ -32,6 +32,7 @@ public class SubscriptionBilling
   public static SubscriptionBilling FromProtoRequest(CreateSubscriptionBillingRequest request, Ulid createdBy)
     => new()
     {
+      SubscriptionBillingId = Ulid.NewUlid(),
       SubscriptionId = Ulid.Parse(request.SubscriptionId),
       Observations = request.Observations,
       TotalDiscount = request.TotalDiscount,

@@ -12,7 +12,7 @@ namespace GsServer.Models;
 public class SaleBilling
 {
   [Key]
-  public Ulid SaleBillingId { get; init; } = Ulid.NewUlid();
+  public required Ulid SaleBillingId { get; init; }
   [ForeignKey(nameof(SaleId))]
   public required Ulid SaleId { get; set; }
   public virtual Sale Sale { get; set; } = null!;
@@ -32,6 +32,7 @@ public class SaleBilling
   public static SaleBilling FromProtoRequest(CreateSaleBillingRequest request, Ulid createdBy)
     => new()
     {
+      SaleBillingId = Ulid.NewUlid(),
       SaleId = Ulid.Parse(request.SaleId),
       Observations = request.Observations,
       TotalDiscount = request.TotalDiscount,

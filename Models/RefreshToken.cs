@@ -7,7 +7,7 @@ namespace GsServer.Models;
 public class RefreshToken
 {
   [Key]
-  public Ulid RefreshTokenId { get; init; } = Ulid.NewUlid();
+  public required Ulid RefreshTokenId { get; init; }
   [ForeignKey(nameof(UserId))]
   public required Ulid UserId { get; init; }
   public virtual User User { get; set; } = null!;

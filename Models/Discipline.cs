@@ -8,7 +8,7 @@ namespace GsServer.Models;
 public class Discipline
 {
   [Key]
-  public Ulid DisciplineId { get; init; } = Ulid.NewUlid();
+  public required Ulid DisciplineId { get; init; }
   [MinLength(4, ErrorMessage = "O nome deve ter no mínimo 4 caracteres")]
   [MaxLength(16, ErrorMessage = "O nome deve ter no máximo 16 caracteres")]
   [Required(ErrorMessage = "Campo de preenchimento obrigatório", AllowEmptyStrings = false)]
@@ -36,6 +36,7 @@ public class Discipline
   public static Discipline FromProtoRequest(CreateDisciplineRequest request, Ulid createdBy)
     => new()
     {
+      DisciplineId = Ulid.NewUlid(),
       Name = request.Name,
       TuitionPrice = request.TuitionPrice,
       InstructorId = Ulid.Parse(request.InstructorId),

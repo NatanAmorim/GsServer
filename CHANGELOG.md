@@ -14,6 +14,11 @@ Todas as alterações notáveis ​​neste projeto serão documentadas neste ar
 O formato é baseado em [Keep a Changelog (PT-BR)](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere a [Versionamento Semântico (PT-BR)](https://semver.org/lang/pt-BR/).
 
+## 1.0.4-RC-7 (Jun 11, 2024)
+
+- ID's are now required instead of having a default value to avoid some unintentional new ID problem.
+- People Names are now indexed to make queries faster
+
 ## 1.0.3-RC-7 (Jun 07, 2024)
 
 - Fix cursor condition on GetPaginated requests.

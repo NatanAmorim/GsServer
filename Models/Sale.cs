@@ -7,7 +7,7 @@ namespace GsServer.Models;
 public class Sale
 {
   [Key]
-  public Ulid SaleId { get; init; } = Ulid.NewUlid();
+  public required Ulid SaleId { get; init; }
   [ForeignKey(nameof(CustomerId))]
   public Ulid? CustomerId { get; set; }
   public virtual Customer Customer { get; set; } = null!;
@@ -26,11 +26,13 @@ public class Sale
   public static Sale FromProtoRequest(CreateSaleRequest request, Ulid createdBy)
     => new()
     {
+      SaleId = Ulid.NewUlid(),
       CustomerId = Ulid.Parse(request.CustomerId),
       Observations = request.Observations,
       ItemsSold = request.ItemsSold.Select(
         ItemSold => new Models.SaleItem
         {
+          SaleItemId = Ulid.NewUlid(),
           ProductVariantId = Ulid.Parse(ItemSold.ProductVariantId),
           UnitPrice = ItemSold.UnitPrice,
           QuantitySold = ItemSold.QuantitySold,

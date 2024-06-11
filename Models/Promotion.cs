@@ -15,7 +15,7 @@ Implementation Considerations:
 public class Promotion // Represents special offers or discounts.
 {
   [Key]
-  public Ulid PromotionId { get; init; } = Ulid.NewUlid();
+  public required Ulid PromotionId { get; init; }
   [ForeignKey(nameof(CustomerId))]
   public Ulid CustomerId { get; init; }
   public virtual Customer Customer { get; set; } = null!;
@@ -49,6 +49,7 @@ public class Promotion // Represents special offers or discounts.
   public static Promotion FromProtoRequest(CreatePromotionRequest request, Ulid createdBy)
     => new()
     {
+      PromotionId = Ulid.NewUlid(),
       Name = request.Name,
       Description = request.Description,
       DiscountType = request.DiscountType,

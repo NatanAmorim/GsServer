@@ -7,7 +7,7 @@ namespace GsServer.Models;
 public class Dependent
 {
   [Key]
-  public Ulid DependentId { get; init; } = Ulid.NewUlid();
+  public required Ulid DependentId { get; init; }
   [MinLength(5, ErrorMessage = "O nome completo deve ter no mínimo 5 caracteres")]
   [MaxLength(55, ErrorMessage = "O nome completo deve ter no máximo 55 caracteres")]
   [Required(ErrorMessage = "Campo de preenchimento obrigatório", AllowEmptyStrings = false)]
@@ -23,6 +23,7 @@ public class Dependent
   public static Dependent FromProtoRequest(Protobufs.Dependent request, Ulid createdBy)
     => new()
     {
+      DependentId = Ulid.NewUlid(),
       FullName = request.Name,
       BirthDate = request.BirthDate,
       CreatedBy = createdBy,

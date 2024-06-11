@@ -6,7 +6,7 @@ namespace GsServer.Models;
 public class ProductVariantInventory
 {
   [Key]
-  public Ulid ProductVariantInventoryId { get; init; } = Ulid.NewUlid();
+  public required Ulid ProductVariantInventoryId { get; init; }
   [ForeignKey(nameof(ProductVariantId))]
   public Ulid ProductVariantId { get; set; }
   public virtual ProductVariant ProductVariant { get; set; } = null!;

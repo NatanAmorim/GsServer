@@ -7,7 +7,7 @@ namespace GsServer.Models;
 public class Product
 {
   [Key]
-  public Ulid ProductId { get; init; } = Ulid.NewUlid();
+  public required Ulid ProductId { get; init; }
   [MinLength(4, ErrorMessage = "O nome deve ter no mínimo 4 caracteres")]
   [MaxLength(32, ErrorMessage = "O nome deve ter no máximo 32 caracteres")]
   [Required(ErrorMessage = "Campo de preenchimento obrigatório", AllowEmptyStrings = false)]
@@ -33,6 +33,7 @@ public class Product
   public static Product FromProtoRequest(CreateProductRequest request, string? picturePath, Ulid createdBy)
     => new()
     {
+      ProductId = Ulid.NewUlid(),
       Name = request.Name,
       PicturePath = picturePath,
       ProductBrandId = Ulid.Parse(request.ProductBrandId),

@@ -8,7 +8,7 @@ namespace GsServer.Models;
 public class Subscription
 {
   [Key]
-  public Ulid SubscriptionId { get; init; } = Ulid.NewUlid();
+  public required Ulid SubscriptionId { get; init; }
   [ForeignKey(nameof(DisciplineId))]
   public required Ulid DisciplineId { get; init; }
   public virtual Discipline Discipline { get; set; } = null!;
@@ -40,6 +40,7 @@ public class Subscription
   public static Subscription FromProtoRequest(CreateSubscriptionRequest request, Ulid createdBy)
     => new()
     {
+      SubscriptionId = Ulid.NewUlid(),
       DisciplineId = Ulid.Parse(request.DisciplineId),
       CustomerId = Ulid.Parse(request.CustomerId),
       PayDay = request.PayDay,

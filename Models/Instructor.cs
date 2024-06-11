@@ -6,7 +6,7 @@ namespace GsServer.Models;
 public class Instructor
 {
   [Key]
-  public Ulid InstructorId { get; init; } = Ulid.NewUlid();
+  public required Ulid InstructorId { get; init; }
   [Required(ErrorMessage = "A pessoa é obrigatória")]
   public required Person Person { get; set; }
   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
@@ -16,8 +16,10 @@ public class Instructor
   public static Instructor FromProtoRequest(CreateInstructorRequest request, Ulid createdBy)
     => new()
     {
+      InstructorId = Ulid.NewUlid(),
       Person = new Person
       {
+        PersonId = Ulid.NewUlid(),
         FullName = request.Person.Name,
         MobilePhoneNumber = request.Person.MobilePhoneNumber,
         BirthDate = request.Person.BirthDate,

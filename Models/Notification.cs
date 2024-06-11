@@ -10,7 +10,7 @@ namespace GsServer.Models;
 public class Notification
 {
   [Key]
-  public Ulid NotificationId { get; init; } = Ulid.NewUlid();
+  public required Ulid NotificationId { get; init; }
   [ForeignKey(nameof(UserId))]
   public Ulid UserId { get; init; }
   public virtual User User { get; set; } = null!;
@@ -31,6 +31,7 @@ public class Notification
   public static Notification FromProtoRequest(CreateNotificationRequest request, Ulid createdBy)
     => new()
     {
+      NotificationId = Ulid.NewUlid(),
       UserId = Ulid.Parse(request.UserId),
       Title = request.Title,
       Message = request.Message,

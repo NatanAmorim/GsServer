@@ -6,7 +6,7 @@ namespace GsServer.Models;
 public class AttendanceAttendeeStatus
 {
   [Key]
-  public Ulid AttendanceAttendeeStatusId { get; init; } = Ulid.NewUlid();
+  public required Ulid AttendanceAttendeeStatusId { get; init; }
   [ForeignKey(nameof(AttendanceId))]
   public Ulid AttendanceId { get; init; }
   [ForeignKey(nameof(PersonId))]

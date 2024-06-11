@@ -6,7 +6,7 @@ namespace GsServer.Models;
 public class ProductVariant
 {
   [Key]
-  public Ulid ProductVariantId { get; init; } = Ulid.NewUlid();
+  public required Ulid ProductVariantId { get; init; }
   [Required(ErrorMessage = "Campo de preenchimento obrigatório", AllowEmptyStrings = false)]
   public required string Color { get; set; }
   [Required(ErrorMessage = "Campo de preenchimento obrigatório", AllowEmptyStrings = false)]

@@ -3,12 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GsServer.Models;
 
-[Index(nameof(MobilePhoneNumber), IsUnique = true)]
-[Index(nameof(Cpf), IsUnique = true)]
+[Index(nameof(FullName), IsUnique = false)]
 public class Person
 {
   [Key]
-  public Ulid PersonId { get; init; } = Ulid.NewUlid();
+  public required Ulid PersonId { get; init; }
   [MinLength(5, ErrorMessage = "O nome completo deve ter no mínimo 5 caracteres")]
   [MaxLength(55, ErrorMessage = "O nome completo deve ter no máximo 55 caracteres")]
   [Required(ErrorMessage = "Campo de preenchimento obrigatório", AllowEmptyStrings = false)]
@@ -43,6 +42,7 @@ public class Person
   public static Person FromProtoRequest(Protobufs.Person request, Ulid createdBy)
     => new()
     {
+      PersonId = Ulid.NewUlid(),
       FullName = request.Name,
       MobilePhoneNumber = request.MobilePhoneNumber,
       BirthDate = request.BirthDate,

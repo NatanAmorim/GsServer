@@ -5,7 +5,7 @@ namespace GsServer.Models;
 public class ProductCategory
 {
   [Key]
-  public Ulid ProductCategoryId { get; init; } = Ulid.NewUlid();
+  public required Ulid ProductCategoryId { get; init; }
   [MinLength(4, ErrorMessage = "O nome deve ter no mínimo 4 caracteres")]
   [Required(ErrorMessage = "Campo de preenchimento obrigatório", AllowEmptyStrings = false)]
   public required string Name { get; set; }

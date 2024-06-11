@@ -8,7 +8,7 @@ namespace GsServer.Models;
 public class Attendance
 {
   [Key]
-  public Ulid AttendanceId { get; init; } = Ulid.NewUlid();
+  public required Ulid AttendanceId { get; init; }
   [ForeignKey(nameof(DisciplineId))]
   public required Ulid DisciplineId { get; init; }
   public virtual Discipline Discipline { get; init; } = null!;
@@ -26,6 +26,7 @@ public class Attendance
   public static Attendance FromProtoRequest(CreateAttendanceRequest request, Ulid createdBy)
     => new()
     {
+      AttendanceId = Ulid.NewUlid(),
       DisciplineId = Ulid.Parse(request.DisciplineId),
       Date = request.Date,
       AttendeesStatuses = request.AttendeesStatuses.Select(

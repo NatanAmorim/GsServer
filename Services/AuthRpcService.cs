@@ -71,6 +71,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
 
     RefreshToken RefreshTokenEntity = new()
     {
+      RefreshTokenId = Ulid.NewUlid(),
       UserId = User.UserId,
       Token = RefreshToken
     };
@@ -139,6 +140,7 @@ public class AuthRpcService : AuthService.AuthServiceBase
 
     User = new User
     {
+      UserId = Ulid.NewUlid(),
       Email = request.Email.Trim().ToLower(),
       Role = "user",
       PasswordHash = generatedPasswordHash,
