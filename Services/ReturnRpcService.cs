@@ -52,6 +52,7 @@ public class ReturnRpcService : ReturnService.ReturnServiceBase
 
     List<GetReturnByIdResponse> Returns = await Query
       .Take(20)
+      .AsNoTracking()
       .ToListAsync();
 
     GetPaginatedReturnsResponse response = new();

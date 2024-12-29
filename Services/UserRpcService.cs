@@ -48,6 +48,7 @@ public class UserRpcService : UserService.UserServiceBase
 
     List<GetUserByIdResponse> Users = await Query
       .Take(20)
+      .AsNoTracking()
       .ToListAsync();
 
     GetPaginatedUsersResponse response = new();

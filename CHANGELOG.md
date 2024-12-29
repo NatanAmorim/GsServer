@@ -14,10 +14,18 @@ Todas as alterações notáveis ​​neste projeto serão documentadas neste ar
 O formato é baseado em [Keep a Changelog (PT-BR)](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere a [Versionamento Semântico (PT-BR)](https://semver.org/lang/pt-BR/).
 
+## 1.0.5-RC-1 (Dec 29, 2024)
+
+- Add `AsNoTracking` AsNoTracking to improve query performance across multiple RPC services.
+- Changes in `CustomerRpcService`
+  - Added query join to fetch customers including related `Person` and `Dependents` entities.
+  - Filtered customers based on `CustomerId` using `Ulid` parsed from the request cursor.
+  - Limited query results to 20 records, tracked without changes, and converted to a list asynchronously.
+
 ## 1.0.4-RC-7 (Jun 11, 2024)
 
 - ID's are now required instead of having a default value to avoid some unintentional new ID problem.
-- People Names are now indexed to make queries faster
+- People "FullName" are now indexed but "MobilePhoneNumber" and "Cpf" are no longer indexed.
 
 ## 1.0.3-RC-7 (Jun 07, 2024)
 

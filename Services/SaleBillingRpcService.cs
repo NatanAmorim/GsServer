@@ -48,6 +48,7 @@ public class SaleBillingRpcService : SaleBillingService.SaleBillingServiceBase
 
     List<GetSaleBillingByIdResponse> SaleBillings = await Query
       .Take(20)
+      .AsNoTracking()
       .ToListAsync();
 
     GetPaginatedSaleBillingsResponse response = new();

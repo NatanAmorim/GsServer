@@ -49,8 +49,9 @@ public class DisciplineRpcService : DisciplineService.DisciplineServiceBase
     }
 
     List<GetDisciplineByIdResponse> Disciplines = await Query
-       .Take(20)
-       .ToListAsync();
+      .Take(20)
+      .AsNoTracking()
+      .ToListAsync();
 
     GetPaginatedDisciplinesResponse response = new();
 

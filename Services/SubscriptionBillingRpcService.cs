@@ -48,6 +48,7 @@ public class SubscriptionBillingRpcService : SubscriptionBillingService.Subscrip
 
     List<GetSubscriptionBillingByIdResponse> SubscriptionBillings = await Query
       .Take(20)
+      .AsNoTracking()
       .ToListAsync();
 
     GetPaginatedSubscriptionBillingsResponse response = new();

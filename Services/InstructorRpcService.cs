@@ -48,6 +48,7 @@ public class InstructorRpcService : InstructorService.InstructorServiceBase
 
     List<GetInstructorByIdResponse> Instructors = await Query
       .Take(20)
+      .AsNoTracking()
       .ToListAsync();
 
     GetPaginatedInstructorsResponse response = new();

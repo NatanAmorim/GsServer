@@ -47,8 +47,9 @@ public class AttendanceRpcService : AttendanceService.AttendanceServiceBase
     }
 
     List<GetAttendanceByIdResponse> Attendances = await Query
-       .Take(20)
-       .ToListAsync();
+      .Take(20)
+      .AsNoTracking()
+      .ToListAsync();
 
     GetPaginatedAttendancesResponse response = new();
 

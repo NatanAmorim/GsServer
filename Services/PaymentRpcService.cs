@@ -48,6 +48,7 @@ public class PaymentRpcService : PaymentService.PaymentServiceBase
 
     List<GetPaymentByIdResponse> Payments = await Query
       .Take(20)
+      .AsNoTracking()
       .ToListAsync();
 
     GetPaginatedPaymentsResponse response = new();

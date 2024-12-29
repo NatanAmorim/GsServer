@@ -48,6 +48,7 @@ public class NotificationRpcService : NotificationService.NotificationServiceBas
 
     List<GetNotificationByIdResponse> Notifications = await Query
       .Take(20)
+      .AsNoTracking()
       .ToListAsync();
 
     GetPaginatedNotificationsResponse response = new();

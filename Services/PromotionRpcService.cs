@@ -48,6 +48,7 @@ public class PromotionRpcService : PromotionService.PromotionServiceBase
 
     List<GetPromotionByIdResponse> Promotions = await Query
       .Take(20)
+      .AsNoTracking()
       .ToListAsync();
 
     GetPaginatedPromotionsResponse response = new();

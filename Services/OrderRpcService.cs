@@ -55,6 +55,7 @@ public class OrderRpcService : OrderService.OrderServiceBase
 
     List<GetOrderByIdResponse> Orders = await Query
       .Take(20)
+      .AsNoTracking()
       .ToListAsync();
 
     GetPaginatedOrdersResponse response = new();

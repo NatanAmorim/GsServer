@@ -48,6 +48,7 @@ public class SaleRpcService : SaleService.SaleServiceBase
 
     List<GetSaleByIdResponse> Sales = await Query
       .Take(20)
+      .AsNoTracking()
       .ToListAsync();
 
     GetPaginatedSalesResponse response = new();

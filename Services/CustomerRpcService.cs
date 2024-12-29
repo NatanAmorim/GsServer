@@ -53,6 +53,7 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
     List<GetCustomerByIdResponse> Customers =
       await Query
         .Take(20)
+        .AsNoTracking()
         .ToListAsync();
 
     GetPaginatedCustomersResponse response = new();
@@ -82,7 +83,13 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
       request.CustomerId
     );
 
-    Customer? Customer = await _dbContext.Customers.FindAsync(request.CustomerId);
+    IQueryable<GetCustomerByIdResponse> Query = _dbContext.Customers
+        .Include(c => c.Person)
+        .Include(c => c.Dependents)
+        .Where(x => x.CustomerId == Ulid.Parse(request.CustomerId))
+        .Select(Customer => Customer.ToGetById());
+
+    GetCustomerByIdResponse? Customer = await Query.FirstOrDefaultAsync();
 
     if (Customer is null)
     {
@@ -102,8 +109,7 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
       typeof(Customer).Name
     );
 
-    return Customer.ToGetById();
-
+    return Customer;
   }
 
   public override async Task<VoidValue> PostAsync(CreateCustomerRequest request, ServerCallContext context)
@@ -133,7 +139,7 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
     return new VoidValue();
   }
 
-  public override Task<VoidValue> PutAsync(UpdateCustomerRequest request, ServerCallContext context)
+  public override async Task<VoidValue> PutAsync(UpdateCustomerRequest request, ServerCallContext context)
   {
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
@@ -145,29 +151,41 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
       request.CustomerId
     );
 
+    Customer? Customer = await _dbContext.Customers.FindAsync(Ulid.Parse(request.CustomerId))
+      ?? throw new RpcException(new Status(
+        StatusCode.NotFound, $"registro não encontrado"
+      ));
+
+    // Attach the entity to the context in the modified state
+    _dbContext.Customers.Attach(Customer);
+
+    Customer.Person = Models.Person.FromProtoRequest(
+      request.Person,
+      Customer.CreatedBy
+    );
+    Customer.BillingAddress = request.BillingAddress;
+    Customer.AdditionalInformation = request.AdditionalInformation;
+    /// TODO FIX right now it does not delete things removed from list
+    // Customer.Dependents =
+    //     request.Dependents.Select(
+    //       Dependent => new Models.Dependent
+    //       {
+    //         DependentId = Ulid.Parse(Dependent.DependentId),
+    //         FullName = Dependent.Name,
+    //         BirthDate = Dependent.BirthDate,
+    //         CreatedBy = Customer.CreatedBy,
+    //       }
+    //     ).ToList();
+
+    await _dbContext.SaveChangesAsync();
+
     _logger.LogInformation(
       "({TraceIdentifier}) record ({RecordType}) updated successfully",
       RequestTracerId,
       typeof(Customer).Name
     );
 
-    throw new NotImplementedException();
-
-    // TODO
-    // CustomerModel? Customer = await _dbContext.Customers.FirstOrDefaultAsync(x => x.Id == request.Id);
-    // if (Customer is null)
-    // {
-    //   throw new RpcException(new Status(
-    //     StatusCode.NotFound, $"registro não encontrado"
-    //   ));
-    // }
-
-    // Customer.Name = request.Name;
-    // // TODO Add Another fields
-
-    // await _dbContext.SaveChangesAsync();
-    // // TODO Log => Record (record type) ID Y was updated. Old value of (field name): (old value). New value: (new value). (This logs specific changes made to a field within a record)
-    // return new UpdateCustomerResponse();
+    return new VoidValue();
   }
 
   public override async Task<VoidValue> DeleteAsync(DeleteCustomerRequest request, ServerCallContext context)
@@ -175,14 +193,14 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
     string RequestTracerId = context.GetHttpContext().TraceIdentifier;
     string UserId = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier)!;
     _logger.LogInformation(
-        "({TraceIdentifier}) User {UserID} deleting record ({RecordType}) with ID ({RecordId})",
-        RequestTracerId,
-        UserId,
-        typeof(Customer).Name,
-        request.CustomerId
-      );
+      "({TraceIdentifier}) User {UserID} deleting record ({RecordType}) with ID ({RecordId})",
+      RequestTracerId,
+      UserId,
+      typeof(Customer).Name,
+      request.CustomerId
+    );
 
-    Customer? Customer = await _dbContext.Customers.FindAsync(request.CustomerId);
+    Customer? Customer = await _dbContext.Customers.FindAsync(Ulid.Parse(request.CustomerId));
 
     if (Customer is null)
     {
@@ -197,7 +215,8 @@ public class CustomerRpcService : CustomerService.CustomerServiceBase
       ));
     }
 
-    /// TODO check if record is being used before deleting it use something like PK or FK
+    /// TODO check if record is being used before deleting it use something like PK or FK.
+    /// TODO check if every related table in the DB is deleted.
 
     _dbContext.Customers.Remove(Customer);
     await _dbContext.SaveChangesAsync();
